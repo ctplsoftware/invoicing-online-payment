@@ -1,0 +1,16 @@
+
+body {
+  font-family: 'Arial', sans-serif;
+  zoom:80%;
+}
+
+.submenu {
+  transition: all 0.8s ease-in-out;
+}
+.submenu .nav-dropdown-title {
+  color: #000; /* Black color */
+  font-weight: bold; /* Bold text */
+}
+.menubtn {
+  cursor: pointer;
+}

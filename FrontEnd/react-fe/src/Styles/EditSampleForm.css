@@ -1,0 +1,77 @@
+/* General styling for the form container */
+.taskform {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.342);
+    margin-top: 50px;
+}
+
+.taskform h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.taskform h5 {
+    text-align: center;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Form styling */
+.taskform form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.taskform .form-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.taskform label {
+    font-weight: bold;
+    color: #333;
+    flex: 1; /* Allows label to take up necessary space */
+}
+
+.taskform input[type="text"],
+.taskform input[type="email"],
+.taskform input[type="date"],
+.taskform input[type="number"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 2; /* Allows input to take up more space */
+}
+
+.taskform button {
+    padding: 10px 15px;
+    border: 1px solid red;
+    border-radius: 4px;
+    background-color: #ff0000;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-self: center;
+}
+
+.taskform button:hover {
+    background-color: #ffffff;
+    color: #ff0000;
+    border: 1px solid #ff0000;
+}
+
+.taskform button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}

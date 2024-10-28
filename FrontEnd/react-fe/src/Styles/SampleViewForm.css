@@ -1,0 +1,58 @@
+.sample-view-form {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+}
+
+.sample-view-form h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.sample-view-form .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.sample-view-form .data-table thead {
+    background-color: #003399;
+    color: #fff;
+}
+
+.sample-view-form .data-table th, 
+.sample-view-form .data-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.sample-view-form .data-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.sample-view-form .data-table .action-button {
+    background-color: #ff0000;
+    color: #fff;
+    border: 1px solid red;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.sample-view-form .data-table .action-button:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+.sample-view-form .data-table .action-button:hover {
+    background-color: #ffffff;
+    color: #ff0000;
+    border: 1px solid #ff0000;
+}
