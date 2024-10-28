@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserRolePermission, SampleForm
+from asset.models.UserModel import UserRolePermission, SampleForm
 from django.contrib.auth.models import User, Group, Permission
 
 class UserSerializer(serializers.ModelSerializer):

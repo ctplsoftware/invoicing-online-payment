@@ -3,8 +3,8 @@ from django.contrib.auth import authenticate, login as auth_login
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User, Group, Permission
-from .models import UserRolePermission, SampleForm
-from .serializers import UserSerializer, UserRolePermissionSerializer, GroupSerializer, PermissionSerializer, SampleFormSerializer
+from asset.models.UserModel import UserRolePermission, SampleForm
+from ..serializers.UserSerializer import UserSerializer, UserRolePermissionSerializer, GroupSerializer, PermissionSerializer, SampleFormSerializer
 
 @api_view(['POST'])
 def signup(request):
