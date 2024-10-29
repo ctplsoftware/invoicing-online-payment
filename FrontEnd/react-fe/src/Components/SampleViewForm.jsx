@@ -12,7 +12,7 @@ const SampleViewForm = () => {
 
     useEffect(() => {
         // Fetch form data
-        axios.get("http://localhost:8000/api/sample-forms/")
+        axios.get("http://localhost:8000/sample-forms/")
             .then((res) => {
                 setData(res.data);
             })

@@ -16,7 +16,7 @@ const TaskOperations = () => {
             const userId = storedUser.user.id; // Assuming `id` is the user ID
 
             // Fetch the user's roles and permissions from the backend
-            axios.get(`http://localhost:8000/api/roles-and-permissions/${userId}/`)
+            axios.get(`http://localhost:8000/roles-and-permissions/${userId}/`)
                 .then(response => {
                     setRoles(response.data.roles);
                     setPermissions(response.data.permissions);

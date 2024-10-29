@@ -17,7 +17,7 @@ const UserRoleForm = () => {
     const save_details = (e) => {
         e.preventDefault();
         const data = { name, email, date, age };
-        axios.post("http://localhost:8000/api/sample-forms/create/", data)
+        axios.post("http://localhost:8000/sample-forms/create/", data)
             .then((res) => {
                 console.log(res.data);
                 alert("Data has been saved successfully!");

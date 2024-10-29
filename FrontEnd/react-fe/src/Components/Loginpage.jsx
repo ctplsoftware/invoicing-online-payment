@@ -32,7 +32,7 @@ const LoginPage = () => {
         e.preventDefault();
         if (password === confirmPassword) {
             const data = { username, password };
-            axios.post("http://localhost:8000/api/signup/", data)
+            axios.post("http://localhost:8000/signup/", data)
                 .then((res) => {
                     setAlert({ message: "Signup successful! Redirecting to login...", type: "success" });
                     setTimeout(() => {
@@ -54,7 +54,7 @@ const LoginPage = () => {
     const login = (e) => {
         e.preventDefault();
         const data = { username: l_username, password: l_password };
-        axios.post("http://localhost:8000/api/login/", data)
+        axios.post("http://localhost:8000/login/", data)
             .then((res) => {
                 localStorage.setItem("userDetails", JSON.stringify(res.data));
                 navigate("/landingpage");

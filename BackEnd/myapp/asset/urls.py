@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import UserView
+from .views import UserView, CustomerView
 
 urlpatterns = [
     path('signup/', UserView.signup, name='signup'),
@@ -12,4 +12,8 @@ urlpatterns = [
     path('sample-forms/create/', UserView.sample_form_create, name='sample_form_create'),
     path('sample-forms/detail/<int:pk>/', UserView.sample_form_detail, name='sample_form_detail'),
     path('sample-forms/update/<int:pk>/', UserView.sample_form_update, name='sample_form_update'),
+    
+    
+    #customer-master
+    path('save-customer', CustomerView.create_customer)
 ]

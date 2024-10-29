@@ -65,7 +65,7 @@ const Navbar1 = () => {
 
             {/* Submenu displayed below the navbar */}
             {showSubmenu && (
-                <div className="submenu shadow-sm" style={{ backgroundColor: '#cfe8ff', color:'#000',padding: '10px 0', position: 'absolute', top: '7.5%', width: '100%', zIndex: '100' }}>
+                <div className="submenu shadow-sm" style={{ backgroundColor: '#cfe8ff', color:'#000',padding: '10px 0', position: 'absolute',  width: '100%', zIndex: '100' }}>
                     <Nav className="mx-auto d-flex justify-content-left">
                         {['Home', 'Dashboard', 'Masters', 'Title4', 'Title5', 'Title6', 'Configuration'].map((title, index) => (
                             <NavDropdown

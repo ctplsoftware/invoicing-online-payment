@@ -12,7 +12,7 @@ const EditSampleForm = () => {
     const { id } = useParams();
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/sample-forms/detail/${id}/`)
+        axios.get(`http://localhost:8000/sample-forms/detail/${id}/`)
             .then((res) => {
                 setName(res.data.name);
                 setEmail(res.data.email);
@@ -27,7 +27,7 @@ const EditSampleForm = () => {
     const edit_details = (e) => {
         e.preventDefault();
         const data = { name, email, date, age };
-        axios.put(`http://localhost:8000/api/sample-forms/update/${id}/`, data)
+        axios.put(`http://localhost:8000/sample-forms/update/${id}/`, data)
             .then((res) => {
                 alert("Data has been saved successfully!");
             })
