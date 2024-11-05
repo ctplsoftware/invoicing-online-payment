@@ -8,6 +8,8 @@ import LoginPage from './Components/Loginpage';
 import LandingPage from './Components/LandingPage';
 import ProtectPage from './Components/ProtectPage';
 
+import CustomerMasterdashboard from './Components/Dashboards/CustomerMasterdashboard';
+
 
 function App() {
   // const [expanded, setExpand] = React.useState(true);
@@ -18,6 +20,8 @@ function App() {
       <Routes>
         <Route path="/landingpage/*" element={<ProtectPage Child={LandingPage}/>}/>
         <Route path='/' element={<LoginPage/>}/>
+        <Route path='/customermasterdashboard' element={<CustomerMasterdashboard/>}/>
+
         {/* <Route path='/navbar' element={<CustomSidenav
         activeKey={activeKey}
         onSelect={setActiveKey}

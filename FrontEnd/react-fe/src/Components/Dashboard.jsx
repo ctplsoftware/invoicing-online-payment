@@ -1,4 +1,5 @@
 import CustomerMaster from "./CustomerMaster";
+import CustomerMasterdashboard from "./Dashboards/CustomerMasterdashboard";
 import TaskOperations from "./TaskOperations";
 import UserPermissionForm from "./UserPermissionForm";
 import UserRoleForm from "./UserRoleForm";
