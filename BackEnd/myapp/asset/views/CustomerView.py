@@ -16,13 +16,13 @@ def create_customer(request):
     validated_data = {
         key: value for key, value in {
             'name': request.data.get('name', '').strip(),
-            'billing_address': request.data.get('billing_address', '').strip(),
+            'delivery_address': request.data.get('delivery_address', '').strip(),
             'additional_address1':additional_address1,
             'additional_address2':additional_address2,
-            'company_address': request.data.get('company_address', '').strip(),
+            'billing_address': request.data.get('billing_address', '').strip(),
             'gstin_number': request.data.get('gstin_number', '').strip(),
             'credit_limit': request.data.get('credit_limit', '').strip(),
-            'expiration_date': request.data.get('expiration_date', '').strip(),
+            'credit_days': request.data.get('credit_days', '').strip(),
             'contact_person': request.data.get('contact_person', '').strip(),
             'contact_number': request.data.get('contact_number', '').strip(),
             'status': 'active',  # Set default status to 'active'
@@ -36,6 +36,70 @@ def create_customer(request):
     if serializer.is_valid():
         serializer.save()  # Save the validated data
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+    
+        print(serializer.errors)  # Log errors for debugging
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+@api_view(['GET'])
+def get_customer_data(request, id=None):
+    if id is not None:
+        try:
+            customer = CustomerMaster.objects.get(id=id)
+            serializer = CustomerSerializer(customer)
+            return Response(serializer.data)
+        except CustomerMaster.DoesNotExist:
+            return Response({"error": "Customer not found"}, status=404)
+    else:
+        customerMaster_data = CustomerMaster.objects.all()
+        serializer = CustomerSerializer(customerMaster_data, many=True)
+        return Response(serializer.data)
+    
+
+@api_view(['GET'])
+def get_customer_editdata(request, id):
+    try:
+        customer = CustomerMaster.objects.get(id=id)
+        serializer = CustomerSerializer(customer)
+        return Response(serializer.data)
+    except CustomerMaster.DoesNotExist:
+        return Response({"error": "Customer not found"}, status=404)
+
+
+@api_view(['PUT'])  # Use PUT for updates
+def update_customer(request, id):
+    try:
+        customer = CustomerMaster.objects.get(id=id)
+    except CustomerMaster.DoesNotExist:
+        return Response({"error": "Customer not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Extract additional addresses
+    additional_addresses = request.data.get('additional_addresses', [])
+    additional_address1 = additional_addresses[0].strip() if len(additional_addresses) > 0 else ''
+    additional_address2 = additional_addresses[1].strip() if len(additional_addresses) > 1 else ''
+
+    validated_data = {
+        key: value for key, value in {
+            'name': request.data.get('name', customer.name).strip(),  # Keep existing value if not provided
+            'delivery_address': request.data.get('delivery_address', customer.delivery_address).strip(),
+            'additional_address1': additional_address1,
+            'additional_address2': additional_address2,
+            'billing_address': request.data.get('billing_address', customer.billing_address).strip(),
+            'gstin_number': request.data.get('gstin_number', customer.gstin_number).strip(),
+            'credit_limit': request.data.get('credit_limit', customer.credit_limit).strip(),
+            'credit_days': request.data.get('credit_days', customer.credit_days).strip(),
+            'contact_person': request.data.get('contact_person', customer.contact_person).strip(),
+            'contact_number': request.data.get('contact_number', customer.contact_number).strip(),
+            'updated_by': '1',  # Update the user ID as necessary
+        }.items() if value  # Only include fields with non-empty values
+    }
+
+    serializer = CustomerSerializer(customer, data=validated_data, partial=True)  # Allow partial updates
+
+    if serializer.is_valid():
+        serializer.save()  # Save the updated data
+        return Response(serializer.data, status=status.HTTP_200_OK)
     else:
         print(serializer.errors)  # Log errors for debugging
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

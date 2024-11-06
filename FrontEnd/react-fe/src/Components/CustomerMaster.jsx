@@ -2,16 +2,20 @@ import React, { useState } from 'react';
 import '../Styles/CustomerMaster.css';
 import { API } from '../API.js';
 import { FaPlus, FaMinus } from 'react-icons/fa';
+import { useParams, useNavigate } from 'react-router-dom';
+
 const CustomerMaster = () => {
     const api = new API();
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         name: '',
+        delivery_address: '',
+        additional_addresses: [],
         billing_address: '',
-        additional_addresses: [], 
-        company_address: '',
         gstin_number: '',
         credit_limit: '',
-        expiration_date: '',
+        credit_days: '',
         contact_person: '',
         contact_number: '',
     });
@@ -47,23 +51,25 @@ const CustomerMaster = () => {
                 additional_addresses: additionalAddresses,
             };
 
-            console.log("completeFormData...",completeFormData);
-            
+            console.log("completeFormData...", completeFormData);
+
 
             const response = await api.save_customer(completeFormData);
             if (response) {
                 console.log('Customer added:', response);
                 alert("Customer Added");
+                navigate('/landingpage/customermasterdashboard');
+
 
                 setFormData({
                     name: '',
-                    billing_address: '',
+                    delivery_address: '',
                     additional_address1: '',
                     additional_address2: '',
-                    company_address: '',      // Reset company address
+                    billing_address: '',      // Reset company address
                     gstin_number: '',          // Reset GSTIN number
                     credit_limit: '',
-                    expiration_date: '',
+                    credit_days: '',
                     contact_person: '',
                     contact_number: '',
                 });
@@ -97,13 +103,13 @@ const CustomerMaster = () => {
                     />
                 </label>
                 <label>
-                    Billing Address
+                    Delivery Address
                     <div className="billing-address-container">
                         <input
                             type="text"
-                            name="billing_address"
+                            name="delivery_address"
                             placeholder="Enter Primary Address"
-                            value={formData.billing_address}
+                            value={formData.delivery_address}
                             onChange={handleChange}
                             required
                         />
@@ -130,12 +136,12 @@ const CustomerMaster = () => {
                     </div>
                 ))}
                 <label>
-                    Company Address
+                    Billing Address
                     <input
                         type="text"
-                        name="company_address"
+                        name="billing_address"
                         placeholder='Enter Company Address'
-                        value={formData.company_address}
+                        value={formData.billing_address}
                         onChange={handleChange}
                     />
                 </label>
@@ -161,14 +167,14 @@ const CustomerMaster = () => {
                     />
                 </label>
                 <label>
-                    Expiration Date <br />
+                    Credit Days
                     <input
-                        type="date"
-                        name="expiration_date"
-                        value={formData.expiration_date}
+                        type="text"
+                        name="credit_days"
+                        placeholder='Enter Credit Limit'
+                        value={formData.credit_days}
                         onChange={handleChange}
                         required
-                        style={{ width: '340px' }}
                     />
                 </label>
                 <label>

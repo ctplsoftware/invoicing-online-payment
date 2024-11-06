@@ -15,5 +15,14 @@ urlpatterns = [
     
     
     #customer-master
-    path('save-customer', CustomerView.create_customer)
+    path('save-customer', CustomerView.create_customer),
+    #fetch-Customer Master
+    path('customermaster_fetch', CustomerView.get_customer_data),
+
+    #update the customer master 
+    path('customermaster_update/<int:id>',CustomerView.update_customer),
+
+    path('customerMasterEditFetch/<int:id>',CustomerView.get_customer_editdata)
+
+
 ]
