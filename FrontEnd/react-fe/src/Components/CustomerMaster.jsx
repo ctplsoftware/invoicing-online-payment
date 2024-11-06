@@ -15,7 +15,7 @@ const CustomerMaster = () => {
         billing_address: '',
         gstin_number: '',
         credit_limit: '',
-        credit_days: '',
+        credit_days: '30',
         contact_person: '',
         contact_number: '',
     });
@@ -59,20 +59,6 @@ const CustomerMaster = () => {
                 console.log('Customer added:', response);
                 alert("Customer Added");
                 navigate('/landingpage/customermasterdashboard');
-
-
-                setFormData({
-                    name: '',
-                    delivery_address: '',
-                    additional_address1: '',
-                    additional_address2: '',
-                    billing_address: '',      // Reset company address
-                    gstin_number: '',          // Reset GSTIN number
-                    credit_limit: '',
-                    credit_days: '',
-                    contact_person: '',
-                    contact_number: '',
-                });
                 setAdditionalAddresses([]);
             } else {
                 console.error('Error adding customer:', response.statusText);
@@ -168,14 +154,21 @@ const CustomerMaster = () => {
                 </label>
                 <label>
                     Credit Days
-                    <input
-                        type="text"
-                        name="credit_days"
-                        placeholder='Enter Credit Limit'
-                        value={formData.credit_days}
-                        onChange={handleChange}
-                        required
-                    />
+                    <div className='credit_days'>
+
+                        <select
+                            name="credit_days"
+                            value={formData.credit_days}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="0">0 days</option>
+                            <option value="30">30 days</option>
+                            <option value="60">60 days</option>
+                            <option value="90">90 days</option>
+                        </select>
+                    </div>
+
                 </label>
                 <label>
                     Contact Person

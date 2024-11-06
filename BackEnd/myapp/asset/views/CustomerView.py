@@ -74,26 +74,28 @@ def update_customer(request, id):
     except CustomerMaster.DoesNotExist:
         return Response({"error": "Customer not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    # Extract additional addresses
+    # Extract additional addresses and set to None if empty
     additional_addresses = request.data.get('additional_addresses', [])
-    additional_address1 = additional_addresses[0].strip() if len(additional_addresses) > 0 else ''
-    additional_address2 = additional_addresses[1].strip() if len(additional_addresses) > 1 else ''
+    additional_address1 = additional_addresses[0].strip() if len(additional_addresses) > 0 else None
+    additional_address2 = additional_addresses[1].strip() if len(additional_addresses) > 1 else None
 
+    # Prepare validated data, explicitly including None for fields to set them to null
     validated_data = {
-        key: value for key, value in {
-            'name': request.data.get('name', customer.name).strip(),  # Keep existing value if not provided
-            'delivery_address': request.data.get('delivery_address', customer.delivery_address).strip(),
-            'additional_address1': additional_address1,
-            'additional_address2': additional_address2,
-            'billing_address': request.data.get('billing_address', customer.billing_address).strip(),
-            'gstin_number': request.data.get('gstin_number', customer.gstin_number).strip(),
-            'credit_limit': request.data.get('credit_limit', customer.credit_limit).strip(),
-            'credit_days': request.data.get('credit_days', customer.credit_days).strip(),
-            'contact_person': request.data.get('contact_person', customer.contact_person).strip(),
-            'contact_number': request.data.get('contact_number', customer.contact_number).strip(),
-            'updated_by': '1',  # Update the user ID as necessary
-        }.items() if value  # Only include fields with non-empty values
+        'name': request.data.get('name', customer.name).strip(),
+        'delivery_address': request.data.get('delivery_address', customer.delivery_address).strip(),
+        'additional_address1': additional_address1,
+        'additional_address2': additional_address2,
+        'billing_address': request.data.get('billing_address', customer.billing_address).strip(),
+        'gstin_number': request.data.get('gstin_number', customer.gstin_number).strip(),
+        'credit_limit': request.data.get('credit_limit', customer.credit_limit).strip(),
+        'credit_days': request.data.get('credit_days', customer.credit_days).strip(),
+        'contact_person': request.data.get('contact_person', customer.contact_person).strip(),
+        'contact_number': request.data.get('contact_number', customer.contact_number).strip(),
+        'updated_by': '1',  # Update the user ID as necessary
     }
+
+    # Remove fields with empty strings from validated_data so they are set to null
+    validated_data = {k: (v if v != '' else None) for k, v in validated_data.items()}
 
     serializer = CustomerSerializer(customer, data=validated_data, partial=True)  # Allow partial updates
 

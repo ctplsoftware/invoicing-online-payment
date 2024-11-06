@@ -45,8 +45,8 @@ const EditCustomerForm = ({ }) => {
             ].filter(address => address)); // Only include non-empty addresses
         };
 
-            fetchCustomer();
-        }, [id]);
+        fetchCustomer();
+    }, [id]);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -59,6 +59,8 @@ const EditCustomerForm = ({ }) => {
 
     const removeAdditionalAddress = (index) => {
         const updatedAddresses = additionalAddresses.filter((_, i) => i !== index);
+        console.log("updatedAddresses...",updatedAddresses);
+        
         setAdditionalAddresses(updatedAddresses);
     };
 
@@ -181,14 +183,21 @@ const EditCustomerForm = ({ }) => {
                 </label>
                 <label>
                     Credit Days
-                    <input
-                        type="text"
-                        name="credit_days"
-                        placeholder='Enter Credit Days'
-                        value={currentCustomer.credit_days}
-                        onChange={handleInputChange}
-                        required
-                    />
+                    <div className='credit_days'>
+
+                        <select
+                            name="credit_days"
+                            value={currentCustomer.credit_days}
+                            onChange={handleInputChange}
+                            required
+                        >
+                            <option value="0">0 days</option>
+                            <option value="30">30 days</option>
+                            <option value="60">60 days</option>
+                            <option value="90">90 days</option>
+                        </select>
+                    </div>
+
                 </label>
                 <label>
                     Contact Person

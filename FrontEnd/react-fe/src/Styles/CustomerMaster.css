@@ -54,6 +54,15 @@ button {
     left: 48%;
 }
 
+.customer-master form select{
+    width: 85%;
+    padding: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    border-collapse: separate;
+
+}
+
 
 
 
