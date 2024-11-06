@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 
 
+
 const CustomerMasterdashboard = () => {
     const api = new API();
     const [customerData, setCustomerData] = useState([]);
@@ -82,10 +83,38 @@ const CustomerMasterdashboard = () => {
         <div>
 
             <h1>Customer Master Dashboard</h1>
-
-            <div> 
+            <div style={{    width: '91%',marginLeft:'63px'}}>
 
                 <DataGrid
+                    rows={customerData}
+                    columns={columns.map(col => ({ ...col, flex: col.width ? undefined : 1 }))}
+                    rowsPerPageOptions={[5, 10, 20]}
+                    pagination
+                    autoHeight
+                    disableExtendRowFullWidth
+                    getRowId={(row) => row.id}
+                    // sx={{
+                    //     maxWidth: '200vw', // Limits the width to 95% of the viewport width
+                    //     '& .MuiDataGrid-columnHeaders': {
+                    //         backgroundColor: '#f4f4f4',
+                    //         fontWeight: 'bold',
+                    //         '&:hover': {
+                    //             backgroundColor: '#f4f4f4',
+                    //             cursor: 'default',
+                    //         },
+                    //     },
+                    //     '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within': {
+                    //         outline: 'none',
+                    //     },
+                    //     '& .MuiDataGrid-cell': {
+                    //         padding: '0 10px',
+                    //     },
+                    // }}
+                />
+            </div>
+
+
+            {/* <DataGrid
                     rows={customerData}
                     columns={columns}
                     rowsPerPageOptions={[5, 10, 20]}
@@ -95,16 +124,22 @@ const CustomerMasterdashboard = () => {
                     getRowId={(row) => row.id}
                     sx={{
                         '& .MuiDataGrid-columnHeaders': {
-                            backgroundColor: '#f4f4f4',
+                            backgroundColor: '#f4f4f4', // Set the background color of column headers
                             fontWeight: 'bold',
+                            '&:hover': {
+                                backgroundColor: '#f4f4f4', // Prevents hover color change by matching the background
+                                cursor: 'default', // Removes pointer cursor on hover
+                            },
+                        },
+                        '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within': {
+                            outline: 'none', // Removes the focus outline to avoid any hover-like effect
                         },
                         '& .MuiDataGrid-cell': {
                             padding: '0 10px',
                         },
                     }}
-                />
+                /> */}
 
-            </div>
 
         </div>
 
