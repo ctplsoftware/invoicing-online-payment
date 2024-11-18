@@ -4,6 +4,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from ..models.CustomerMasterModel import CustomerMaster
 from ..serializers.CustomerSerializer import CustomerSerializer
+from django.utils import timezone
+
 
 @api_view(['POST'])
 def create_customer(request):
@@ -73,6 +75,7 @@ def update_customer(request, id):
         customer = CustomerMaster.objects.get(id=id)
     except CustomerMaster.DoesNotExist:
         return Response({"error": "Customer not found"}, status=status.HTTP_404_NOT_FOUND)
+    
 
     # Extract additional addresses and set to None if empty
     additional_addresses = request.data.get('additional_addresses', [])
@@ -92,10 +95,12 @@ def update_customer(request, id):
         'contact_person': request.data.get('contact_person', customer.contact_person).strip(),
         'contact_number': request.data.get('contact_number', customer.contact_number).strip(),
         'updated_by': '1',  # Update the user ID as necessary
+        'updated_at':timezone.now()
+
     }
 
-    # Remove fields with empty strings from validated_data so they are set to null
-    validated_data = {k: (v if v != '' else None) for k, v in validated_data.items()}
+    
+
 
     serializer = CustomerSerializer(customer, data=validated_data, partial=True)  # Allow partial updates
 

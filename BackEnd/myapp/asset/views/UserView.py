@@ -6,135 +6,59 @@ from django.contrib.auth.models import User, Group, Permission
 from asset.models.UserModel import UserRolePermission, SampleForm
 from ..serializers.UserSerializer import UserSerializer, UserRolePermissionSerializer, GroupSerializer, PermissionSerializer, SampleFormSerializer
 
-@api_view(['POST'])
-def signup(request):
-    username = request.data.get('username')
-    password = request.data.get('password')
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 
-    if User.objects.filter(username=username).exists():
-        return Response({"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
-    user = User.objects.create_user(username=username, password=password)  # Handles password hashing
-    serializer = UserSerializer(user)
-    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 @api_view(['POST'])
 def login(request):
     username = request.data.get('username')
     password = request.data.get('password')
 
-    user = authenticate(username=username, password=password)  # Authenticate using Django's built-in method
+    user = authenticate(username=username, password=password) 
 
     if user is not None:
-        auth_login(request._request, user)  # Log in the user
-        serializer = UserSerializer(user)
+        auth_login(request._request, user)  # This line is still useful for session-based login, can be removed if not needed
         
-        # Fetch role-based permissions for the user
+        # Generate the JWT tokens
+        refresh = RefreshToken.for_user(user)
+        
+        # Serialize user data and user permissions
+        serializer = UserSerializer(user)
         user_role_permissions = UserRolePermission.objects.filter(user=user)
         permission_data = UserRolePermissionSerializer(user_role_permissions, many=True).data
         
         return Response({
             'user': serializer.data,
-            'permissions': permission_data
+            'permissions': permission_data,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token), # type: ignore
         }, status=status.HTTP_200_OK)
-    else:
-        return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
+    
 @api_view(['POST'])
-def assign_permissions(request):
-    role_name = request.data.get('role')
-    user_id = request.data.get('user')
-    can_create = request.data.get('can_create', False)
-    can_read = request.data.get('can_read', False)
-    can_update = request.data.get('can_update', False)
+def forgot_password(request):
+    username = request.data.get('username')
+    new_password = request.data.get('new_password')
 
-    # Find or create the role (group)
-    role, created = Group.objects.get_or_create(name=role_name)
-
-    # Find user
-    user = User.objects.get(id=user_id)
-
-    # Add user to the role (group)
-    user.groups.add(role)
-
-    # Find or create permissions
-    permissions = Permission.objects.all()  # Adjust this based on your needs
-
-    # Assign permissions
-    for perm in permissions:
-        UserRolePermission.objects.update_or_create(
-            user=user,
-            role=role,
-            permission=perm,
-            defaults={
-                'can_create': can_create,
-                'can_read': can_read,
-                'can_update': can_update,
-            }
-        )
-
-    return Response({'status': 'Permissions assigned'}, status=status.HTTP_200_OK)
-
-@api_view(['GET'])
-def get_user_roles_and_permissions(request, user_id):
     try:
-        user = User.objects.get(id=user_id)
+        user = User.objects.get(username=username)
+        user.set_password(new_password)
+        user.save()
+        return Response({"message": "Password updated successfully"}, status=status.HTTP_200_OK)
     except User.DoesNotExist:
-        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    # Fetch user's groups (roles)
-    user_groups = user.groups.all()
-
-    # Serialize roles (groups)
-    group_serializer = GroupSerializer(user_groups, many=True)
-
-    # Fetch all permissions associated with the user's roles
-    user_role_permissions = UserRolePermission.objects.filter(user=user)
-    permission_serializer = UserRolePermissionSerializer(user_role_permissions, many=True)
-
-    return Response({
-        'roles': group_serializer.data,
-        'permissions': permission_serializer.data
-    }, status=status.HTTP_200_OK)
-
-
-@api_view(['POST'])
-def sample_form_create(request):
-    """Create a new SampleForm entry."""
-    serializer = SampleFormSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-def sample_form_list(request):
-    """Retrieve a list of all SampleForm entries."""
-    sample_forms = SampleForm.objects.all()
-    serializer = SampleFormSerializer(sample_forms, many=True)
+@permission_classes([IsAuthenticated])  # Only authenticated users can access this route
+def user_data(request):
+    # Retrieve the user from the authenticated request
+    user = request.user
+    serializer = UserSerializer(user)
     return Response(serializer.data)
-
-@api_view(['GET'])
-def sample_form_detail(request, pk):
-    """Retrieve a specific SampleForm entry by its ID."""
-    try:
-        sample_form = SampleForm.objects.get(pk=pk)
-    except SampleForm.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    serializer = SampleFormSerializer(sample_form)
-    return Response(serializer.data)
-
-@api_view(['PUT'])
-def sample_form_update(request, pk):
-    """Update a specific SampleForm entry by its ID."""
-    try:
-        sample_form = SampleForm.objects.get(pk=pk)
-    except SampleForm.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    serializer = SampleFormSerializer(sample_form, data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

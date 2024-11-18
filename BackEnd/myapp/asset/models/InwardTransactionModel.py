@@ -1,14 +1,14 @@
+from functools import partial
 from django.db import models
 
 class InwardTransaction(models.Model):
-    id = models.AutoField(primary_key=True)
-    part_master_id = models.ForeignKey('PartMaster', on_delete=models.CASCADE, related_name='inward_transactions')
+    part_description = models.CharField(max_length=255, null=True, blank=True)
     quantity = models.FloatField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    remarks = models.CharField(max_length=255, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)  
+    updated_at = models.DateTimeField(null=True, blank=True)
     created_by = models.IntegerField()
     updated_by = models.IntegerField()
-
     class Meta:
         db_table = 'inward_transaction'
         ordering = ['id']

@@ -16,6 +16,11 @@ const Navbar1 = () => {
     const navigate = useNavigate();
 
     function handleLogout() {
+        // //localStorage.removeItem("userDetails"); 
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("userDetails");
+
         navigate("/");
     }
 
@@ -29,10 +34,10 @@ const Navbar1 = () => {
             <Navbar variant="dark" expand="lg" className="navbar shadow-sm" style={{ backgroundColor: '#054982', padding: '10px 20px', position: 'relative' }}>
                 <Container fluid>
                     {/* Hamburger menu button */}
-                    <FontAwesomeIcon 
-                        icon={faBars} 
-                        className="menubtn" 
-                        style={{ color: '#fff', fontSize: '1.8rem', cursor: 'pointer' }} 
+                    <FontAwesomeIcon
+                        icon={faBars}
+                        className="menubtn"
+                        style={{ color: '#fff', fontSize: '1.8rem', cursor: 'pointer' }}
                         onClick={toggleSubmenu} // Trigger submenu toggle
                     />
                     <h4 style={{ fontWeight: '600' }}>
@@ -42,7 +47,7 @@ const Navbar1 = () => {
                     </h4>
 
                     {/* User Profile Dropdown */}
-                    <div className="profile d-flex align-items-center" style={{zIndex: '1000'}}>
+                    <div className="profile d-flex align-items-center" style={{ zIndex: '1000' }}>
                         <NavDropdown
                             title={<ManageAccountsIcon style={{ color: '#ffffff', fontSize: '1.8rem' }} />}
                             id="profile-dropdown"
@@ -63,26 +68,58 @@ const Navbar1 = () => {
                 </Container>
             </Navbar>
 
-            {/* Submenu displayed below the navbar */}
             {showSubmenu && (
-                <div className="submenu shadow-sm" style={{ backgroundColor: '#cfe8ff', color:'#000',padding: '10px 0', position: 'absolute',  width: '100%', zIndex: '100' }}>
+                <div
+                    className="submenu shadow-sm"
+                    style={{
+                        backgroundColor: '#cfe8ff',
+                        color: '#000',
+                        padding: '10px 0',
+                        position: 'absolute',
+                        width: '100%',
+                        zIndex: '100',
+                    }}
+                >
                     <Nav className="mx-auto d-flex justify-content-left">
-                        {['Home', 'Dashboard', 'Masters', 'Title4', 'Title5', 'Title6', 'Configuration'].map((title, index) => (
-                            <NavDropdown
-                                key={index}
-                                title={<span className="nav-dropdown-title">{title}</span>}
-                                id={`submenu-nav-dropdown-${index}`}
-                                className="mx-2"
-                                style={{ color: '#ffffff' }}
-                            >
-                                <NavDropdown.Item href="#action/3.1">Action 1</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.2">Action 2</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.3">Action 3</NavDropdown.Item>
-                            </NavDropdown>
-                        ))}
+                        {['Home', 'Dashboard', 'Masters', 'Title4', 'Title5', 'Title6', 'Configuration', 'Master create'].map(
+                            (title, index) => (
+                                <NavDropdown
+                                    key={index}
+                                    title={<span className="nav-dropdown-title">{title}</span>}
+                                    id={`submenu-nav-dropdown-${index}`}
+                                    className="mx-2"
+                                    style={{ color: '#ffffff' }}
+                                >
+                                    {title === 'Dashboard' ? (
+                                        <>
+                                            <NavDropdown.Item href="/landingpage/customermasterdashboard">
+                                                Customer List
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item href="/landingpage/partmaster-fecthList">
+                                                Partmaster List
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item href="/landingpage/inwardtransactionlist">
+                                                InwardTranaction List
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item href="/landingpage/stockreport">
+                                                Stock Report List
+                                            </NavDropdown.Item>
+                                        </>
+                                    ) : title === 'Master create' ? (
+                                        <NavDropdown.Item href="/landingpage/admincreate">
+                                            Master Create
+                                        </NavDropdown.Item>
+                                    )
+                                        : (
+                                            <NavDropdown.Item href="#action/3.3">Action 3</NavDropdown.Item>
+                                        )}
+                                </NavDropdown>
+                            )
+                        )}
                     </Nav>
                 </div>
             )}
+
         </>
     );
 };

@@ -18,8 +18,8 @@ class CustomerMaster(models.Model):
     contact_person = models.CharField(max_length=255)
     contact_number = models.CharField(max_length=50)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)  
+    updated_at = models.DateTimeField(null=True, blank=True)
     created_by = models.IntegerField()
     updated_by = models.IntegerField()
 

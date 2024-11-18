@@ -59,8 +59,8 @@ const EditCustomerForm = ({ }) => {
 
     const removeAdditionalAddress = (index) => {
         const updatedAddresses = additionalAddresses.filter((_, i) => i !== index);
-        console.log("updatedAddresses...",updatedAddresses);
-        
+        console.log("updatedAddresses...", updatedAddresses);
+
         setAdditionalAddresses(updatedAddresses);
     };
 
@@ -102,7 +102,7 @@ const EditCustomerForm = ({ }) => {
     return (
 
         <div className="customer-master">
-            <h1>daddad</h1>
+            <h1>Update Customer</h1>
 
             <form onSubmit={handleEditSubmit}>
                 <label>
@@ -116,50 +116,7 @@ const EditCustomerForm = ({ }) => {
                         required
                     />
                 </label>
-                <label>
-                    Delivery Address
-                    <input
-                        type="text"
-                        name="delivery_address"
-                        placeholder="Enter Billing Address"
-                        value={currentCustomer.delivery_address}
-                        onChange={handleInputChange}
-                        required
-                    />
-                    <span className="icon-tag" onClick={addAdditionalAddress}>
-                        <FaPlus /> {/* Plus icon */}
-                    </span>
-                </label>
 
-                {additionalAddresses.length > 0 && additionalAddresses.map((address, index) => (
-                    <div key={index} className="additional-address">
-                        <label>
-                            Additional Address {index + 1}
-                            <input
-                                type="text"
-                                placeholder={`Enter Additional Address ${index + 1}`}
-                                value={address}
-                                onChange={(e) => handleAdditionalAddressChange(index, e.target.value)}
-                            />
-                            <span className="icon-tag" onClick={() => removeAdditionalAddress(index)}>
-                                <FaMinus />
-                            </span>
-                        </label>
-                    </div>
-                ))}
-
-
-
-                <label>
-                    Billing Address
-                    <input
-                        type="text"
-                        name="billing_address"
-                        placeholder='Enter Company Address'
-                        value={currentCustomer.billing_address}
-                        onChange={handleInputChange}
-                    />
-                </label>
                 <label>
                     GSTIN Number
                     <input
@@ -221,8 +178,65 @@ const EditCustomerForm = ({ }) => {
                         required
                     />
                 </label>
-                <button type="submit">Save</button>
-            </form>
+
+
+                <label>
+                    Billing Address
+                    <input
+                        type="text"
+                        name="billing_address"
+                        placeholder='Enter Company Address'
+                        value={currentCustomer.billing_address}
+                        onChange={handleInputChange}
+                    />
+                </label>
+
+                <label>
+                    Delivery Address
+                    <input
+                        type="text"
+                        name="delivery_address"
+                        placeholder="Enter Billing Address"
+                        value={currentCustomer.delivery_address}
+                        onChange={handleInputChange}
+                        required
+                    />
+                    <span className="icon-tag" onClick={addAdditionalAddress}>
+                        <FaPlus /> {/* Plus icon */}
+                    </span>
+                </label>
+
+                {additionalAddresses.length > 0 && additionalAddresses.map((address, index) => (
+                    <div key={index} className="additional-address">
+                        <label>
+                            Additional Address {index + 1}
+                            <input
+                                type="text"
+                                placeholder={`Enter Additional Address ${index + 1}`}
+                                value={address}
+                                onChange={(e) => handleAdditionalAddressChange(index, e.target.value)}
+                            />
+                            <span className="icon-tag" onClick={() => removeAdditionalAddress(index)}>
+                                <FaMinus />
+                            </span>
+                        </label>
+                    </div>
+                ))}
+
+
+
+
+                <div style={{ display: 'flex', gap: '32px' }}>
+                    <div className="pm-button-container" style={{ gap: "10px" }}>
+                        <button onClick={() => navigate("/landingpage/customermasterdashboard")}>
+                            Go to Customers
+                        </button>
+                    </div>
+
+                    <div className="pm-button-container" style={{ gap: "10px" }}>
+                        <button type="submit">Submit</button>
+                    </div>
+                </div>            </form>
         </div>
     );
 };

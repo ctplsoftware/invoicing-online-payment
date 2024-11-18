@@ -7,7 +7,7 @@ class UserMaster(models.Model):
         ('customer', 'Customer'),
     ]
     username = models.CharField(max_length=255, unique=True)
-    password = models.CharField(max_length=255)  # Assuming hashed password will be stored
+    password = models.CharField(max_length=255)  
     email = models.EmailField(unique=True)
     is_staff = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default='customer')
     created_at = models.DateTimeField(auto_now_add=True)

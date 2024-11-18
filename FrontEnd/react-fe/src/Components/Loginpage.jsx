@@ -1,66 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import '../Styles/Loginpage.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import appImage from '../Assets/login-dummy.jpg'; // Path to your image file
-import appLogo from '../Assets/logo.webp'; // Path to your image file
-
-
+import appImage from '../Assets/login-dummy.jpg';
+import appLogo from '../Assets/logo.webp';
+import { fetchAndStorePermissions } from './Permissions/PermissionsProvider';
 const LoginPage = () => {
-    const [isLogin, setIsLogin] = useState(true);
     const navigate = useNavigate();
-
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [c_alert, setAlert] = useState({ message: "", type: "" });
-
+    const [isLogin, setIsLogin] = useState(true);
     const [l_username, setL_username] = useState("");
     const [l_password, setL_password] = useState("");
+    const [fpUsername, setFpUsername] = useState("");
+    const [fpNewPassword, setFpNewPassword] = useState("");
 
-    const signupLink = (e) => {
-        e.preventDefault();
-        setIsLogin(false);
-    };
 
-    const loginLink = (e) => {
-        e.preventDefault();
-        setIsLogin(true);
-    };
+    useEffect(() => {
+        const accessToken = localStorage.getItem("accessToken");
 
-    const signup = (e) => {
+        // Check if the token exists and is not expired
+        if (accessToken) {
+            const decodedToken = JSON.parse(atob(accessToken.split('.')[1])); // Decode JWT
+            const currentTime = Date.now() / 1000; // Current time in seconds
+            if (decodedToken.exp > currentTime) {
+                navigate("/landingpage"); // Redirect to landing page if authenticated
+            }
+        }
+    }, [navigate]);
+
+    const login = async (e) => {
         e.preventDefault();
-        if (password === confirmPassword) {
-            const data = { username, password };
-            axios.post("http://localhost:8000/signup/", data)
-                .then((res) => {
-                    setAlert({ message: "Signup successful! Redirecting to login...", type: "success" });
-                    setTimeout(() => {
-                        setIsLogin(true);
-                        setUsername("");
-                        setPassword("");
-                        setConfirmPassword("");
-                        setAlert({ message: "", type: "" });
-                    }, 2000);
-                })
-                .catch(() => {
-                    setAlert({ message: "Couldn't save the data!", type: "error" });
-                });
-        } else {
-            setAlert({ message: "Password Mismatch!", type: "error" });
+        const data = { username: l_username, password: l_password };
+    
+        try {
+            const res = await axios.post("http://localhost:8000/login/", data);
+    
+            // Store tokens and user details
+            localStorage.setItem("accessToken", res.data.access);
+            localStorage.setItem("refreshToken", res.data.refresh);
+            localStorage.setItem("userDetails", JSON.stringify(res.data));
+    
+            // Fetch and store permissions
+            await fetchAndStorePermissions();
+    
+            // Navigate to the landing page
+            navigate("/landingpage");
+        } catch (error) {
+            alert("Invalid Username or Password!!!");
         }
     };
 
-    const login = (e) => {
+    const forgotPassword = (e) => {
         e.preventDefault();
-        const data = { username: l_username, password: l_password };
-        axios.post("http://localhost:8000/login/", data)
-            .then((res) => {
-                localStorage.setItem("userDetails", JSON.stringify(res.data));
-                navigate("/landingpage");
+        const data = { username: fpUsername, new_password: fpNewPassword };
+        axios.post("http://localhost:8000/forgot_password/", data)
+            .then(() => {
+                alert("Password updated successfully!");
+                setIsLogin(true);
             })
             .catch(() => {
-                alert("Invalid Username or Password!!!");
+                alert("User not found or error updating password!");
             });
     };
 
@@ -72,52 +70,46 @@ const LoginPage = () => {
             <div className="right-side">
                 <div className="loginpage">
                     <div className="title-text">
-                    <img src={appLogo} alt="Application" style={{width:'70%'}}/>
+                        <img src={appLogo} alt="Application" style={{ width: '70%' }} />
                     </div>
                     <div className="form-container">
-                        <div className="slide-controls">
-                            <input type="radio" name="slide" id="login" checked={isLogin} onChange={loginLink} />
-                            <input type="radio" name="slide" id="signup" checked={!isLogin} onChange={signupLink} />
-                            <label htmlFor="login" className={`slide login ${isLogin ? 'active' : ''}`} onClick={loginLink}>Login</label>
-                            <label htmlFor="signup" className={`slide signup ${!isLogin ? 'active' : ''}`} onClick={signupLink}>Signup</label>
-                            <div className="slider-tab"></div>
-                        </div>
-                        <div className="form-inner">
-                            {isLogin ? (
-                                <form className="login" onSubmit={login}>
-                                    <br />
+                        {isLogin ? (
+                            <div>
+                                <h2>Login</h2>
+                                <form onSubmit={login}>
                                     <div className="field">
                                         <input type="text" placeholder="Enter Username" required value={l_username} onChange={(e) => setL_username(e.target.value)} />
                                     </div>
                                     <div className="field">
                                         <input type="password" placeholder="Enter Password" required value={l_password} onChange={(e) => setL_password(e.target.value)} />
                                     </div>
-                                    <div className="pass-link" style={{textAlign:'center'}}><a href="#">Forgot password?</a></div>
+                                    <div className="pass-link" style={{ textAlign: 'center' }}>
+                                        <a href="#" onClick={() => setIsLogin(false)}>Forgot password?</a>
+                                    </div>
                                     <div className="field btn">
                                         <button className='btn-save'>Login</button>
                                     </div>
-                                    <div className="signup-link">Not a member? <a href="#" onClick={signupLink}>Signup here</a></div>
                                 </form>
-                            ) : (
-                                <form className="signup" onSubmit={signup}>
+                            </div>
+                        ) : (
+                            <div>
+                                <h2>Forgot Password</h2>
+                                <form onSubmit={forgotPassword}>
                                     <div className="field">
-                                        <br />
-                                        <input type="text" placeholder="Enter your username" required value={username} onChange={(e) => setUsername(e.target.value)} />
+                                        <input type="text" placeholder="Enter Username" required value={fpUsername} onChange={(e) => setFpUsername(e.target.value)} />
                                     </div>
                                     <div className="field">
-                                        <input type="password" placeholder="Enter your password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+                                        <input type="password" placeholder="Enter New Password" required value={fpNewPassword} onChange={(e) => setFpNewPassword(e.target.value)} />
                                     </div>
-                                    <div className="field">
-                                        <input type="password" placeholder="Confirm password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                                    <div className="pass-link" style={{ textAlign: 'center' }}>
+                                        <a href="#" onClick={() => setIsLogin(true)}>Back to Login</a>
                                     </div>
-                                    {c_alert.message && <p className={`alert ${c_alert.type}`}>{c_alert.message}</p>}
                                     <div className="field btn">
-                                        <button className="btn-save" type="submit">Signup</button>
+                                        <button className='btn-save'>Update Password</button>
                                     </div>
-                                    <div className="signup-link">Already a member? <a href="#" onClick={loginLink}>Login here</a></div>
                                 </form>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

@@ -8,9 +8,6 @@ import { useNavigate } from "react-router-dom";
 
 
 
-
-
-
 const CustomerMasterdashboard = () => {
     const api = new API();
     const [customerData, setCustomerData] = useState([]);
@@ -28,11 +25,10 @@ const CustomerMasterdashboard = () => {
             try {
 
                 const customerFetchdata = await api.customermaster_fetch()
-
                 console.log("customerFetchdata....", customerFetchdata);
                 const dataWithSNo = customerFetchdata.map((item, index) => ({
                     ...item,
-                    sno: index + 1 // Add serial number starting from 1
+                    sno: index + 1 
                 }));
                 setCustomerData(dataWithSNo);
 
@@ -40,6 +36,7 @@ const CustomerMasterdashboard = () => {
 
             }
             catch (error) {
+                
                 console.error("Error fetching customer data:", error);
 
             }
@@ -59,8 +56,37 @@ const CustomerMasterdashboard = () => {
         { field: 'credit_limit', headerName: 'Credit Limit', width: 120 },
         { field: 'contact_person', headerName: 'Contact Person', width: 150 },
         { field: 'contact_number', headerName: 'Contact Number', width: 150 },
-        { field: 'created_at', headerName: 'Created At', width: 180 },
-        { field: 'updated_at', headerName: 'Updated At', width: 180 },
+        {
+            field: 'created_at',
+            headerName: 'Created At',
+            width: 180,
+            renderCell: (params) => {
+                const formattedDate = new Date(params.value).toLocaleString('en-IN', {
+                    dateStyle: 'full',
+                    timeStyle: 'medium',
+                    timeZone: 'Asia/Kolkata'
+                });
+                return formattedDate;
+            }
+        },
+        {
+            field: 'updated_at',
+            headerName: 'Updated At',
+            width: 140,
+            renderCell: (params) => {
+                // Check if `updated_at` is null
+                if (!params.value) {
+                    return 'No update';  // Display "No update" if null
+                }
+                // Format the date if it is not null
+                const formattedDate = new Date(params.value).toLocaleString('en-IN', {
+                    dateStyle: 'full',
+                    timeStyle: 'medium',
+                    timeZone: 'Asia/Kolkata'
+                });
+                return formattedDate;
+            }
+        },
         {
             field: 'edit',
             headerName: 'Edit',
@@ -82,34 +108,37 @@ const CustomerMasterdashboard = () => {
     return (
         <div>
 
-            <h1>Customer Master Dashboard</h1>
-            <div style={{    width: '91%',marginLeft:'63px'}}>
 
+            <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
+                <div style={{ marginRight: '48px' }}>
+                    <button onClick={() => navigate("/landingpage")}>Customer Create</button>
+
+                </div>
                 <DataGrid
                     rows={customerData}
-                    columns={columns.map(col => ({ ...col, flex: col.width ? undefined : 1 }))}
-                    rowsPerPageOptions={[5, 10, 20]}
-                    pagination
-                    autoHeight
+                    columns={columns}
+                    pageSize={5} // Set initial page size to 5
+                    rowsPerPageOptions={[5, 10, 20]} // Allow customization                    pagination
                     disableExtendRowFullWidth
+
                     getRowId={(row) => row.id}
-                    // sx={{
-                    //     maxWidth: '200vw', // Limits the width to 95% of the viewport width
-                    //     '& .MuiDataGrid-columnHeaders': {
-                    //         backgroundColor: '#f4f4f4',
-                    //         fontWeight: 'bold',
-                    //         '&:hover': {
-                    //             backgroundColor: '#f4f4f4',
-                    //             cursor: 'default',
-                    //         },
-                    //     },
-                    //     '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within': {
-                    //         outline: 'none',
-                    //     },
-                    //     '& .MuiDataGrid-cell': {
-                    //         padding: '0 10px',
-                    //     },
-                    // }}
+                    sx={{
+                        maxWidth: '200vw', // Limits the width to 95% of the viewport width
+                        '& .MuiDataGrid-columnHeaders': {
+                            backgroundColor: '#f4f4f4',
+                            fontWeight: 'bold',
+                            '&:hover': {
+                                backgroundColor: '#f4f4f4',
+                                cursor: 'default',
+                            },
+                        },
+                        '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within': {
+                            outline: 'none',
+                        },
+                        '& .MuiDataGrid-cell': {
+                            padding: '0 10px',
+                        },
+                    }}
                 />
             </div>
 

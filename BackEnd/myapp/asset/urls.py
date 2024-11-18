@@ -1,28 +1,56 @@
 from django.urls import path
-from .views import UserView, CustomerView
+from .views import UserView, CustomerView ,PartMasterView,InwardTransactionView,AdminCreateView,permissionscheckView,authenticateView
 
 urlpatterns = [
-    path('signup/', UserView.signup, name='signup'),
-    path('login/', UserView.login, name='login'),
-    path('assign_permissions/', UserView.assign_permissions, name='assign_permissions'),
-    path('roles-and-permissions/<int:user_id>/', UserView.get_user_roles_and_permissions, name='get_user_roles_and_permissions'),
 
-    # SampleForm endpoints
-    path('sample-forms/', UserView.sample_form_list, name='sample_form_list'),
-    path('sample-forms/create/', UserView.sample_form_create, name='sample_form_create'),
-    path('sample-forms/detail/<int:pk>/', UserView.sample_form_detail, name='sample_form_detail'),
-    path('sample-forms/update/<int:pk>/', UserView.sample_form_update, name='sample_form_update'),
+    #login pagess
+    path('login/', UserView.login, name='login'),
+    path('forgot_password/', UserView.forgot_password, name='forgot_password'),
+    path('user_data/', UserView.user_data, name='user_Data'),
+
+    path('get_user_permissions/', permissionscheckView.get_permissions, name='check_permission'),
+    path('token/',authenticateView.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('refresh/',authenticateView.CustomTokenRefreshView.as_view(), name='token_refresh'),
+
+
+
     
     
     #customer-master
     path('save-customer', CustomerView.create_customer),
-    #fetch-Customer Master
     path('customermaster_fetch', CustomerView.get_customer_data),
-
-    #update the customer master 
     path('customermaster_update/<int:id>',CustomerView.update_customer),
+    path('customerMasterEditFetch/<int:id>',CustomerView.get_customer_editdata),
 
-    path('customerMasterEditFetch/<int:id>',CustomerView.get_customer_editdata)
+
+    #part master start
+    path('part_master_Create', PartMasterView.create_part_master),
+    path('editGet_part_master/<int:id>', PartMasterView.editGet_part_master),
+    path('get_part_master', PartMasterView.get_part_master),
+    path('update_part_master/<int:id>', PartMasterView.update_part_master),
+
+
+    #Inward transaction start
+    path('create_inwardTransaction',InwardTransactionView.create_inwardTransaction),
+    path('fetch_inward_transaction',InwardTransactionView.fetch_inward_transaction),
+    path('edit_inward_transaction/<int:id>',InwardTransactionView.edit_inward_transaction),
+    path('update_inwardtransaction/<int:id>',InwardTransactionView.update_inwardtransaction),
+
+
+    #admin create
+    path('admin_create',AdminCreateView.admincreates),
+    path('rolesfetch',AdminCreateView.rolesget),
+
+
+
+
+
+
+
+
+
+
+
 
 
 ]
