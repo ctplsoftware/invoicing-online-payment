@@ -35,8 +35,12 @@ def get_part_master(request):
 
 
 @api_view(['GET'])
-def get_partmaster_usermaster(request, userid, part_desc):
+def get_partmaster_usermaster(request):
+    userid = request.GET.get('user_id')
+    part_desc = request.GET.get('part_desc')
+    
     try:
+
         # Filter CustomerMaster for active status and userid
         customers = CustomerMaster.objects.filter(status='active', id=userid)
         
