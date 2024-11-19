@@ -62,6 +62,7 @@ def get_partmaster_usermaster(request, userid, part_desc):
                     customer.additional_address2
                 ] if addr
             ]
+            
             credit_limit = customer.credit_limit
             credit_limit_int = int(credit_limit.replace(",", ""))
 

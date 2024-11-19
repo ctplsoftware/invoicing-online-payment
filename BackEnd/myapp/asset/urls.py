@@ -44,9 +44,8 @@ urlpatterns = [
 
 
       #Android api views
-    path('get_Androidpart_master', AndroidAPIView.get_part_master),
-    path('partmaster-usermaster/<int:userid>/<str:part_desc>', AndroidAPIView.get_partmaster_usermaster, name='get_partmaster_usermaster'),
-
+    path('android/generate-inv/get-part-list', AndroidAPIView.get_part_master),
+    path('android/generate-inv/get-part-details/<int:userid>/<str:part_desc>', AndroidAPIView.get_partmaster_usermaster, name='get_partmaster_usermaster'),
 
 
 
