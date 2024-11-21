@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { API } from '../../API';
 
-function InwardTransactionList() {
+function Userlist() {
     const [pageSize, setPageSize] = useState(5);
     const [searchText, setSearchText] = useState('');
     const [filter, setFilter] = useState('');
@@ -18,55 +18,35 @@ function InwardTransactionList() {
     const navigate = useNavigate();
 
     const columns = [
-        { field: 'Sno', headerName: 'S No', width: 70 },
-        { field: 'part_description', headerName: 'Part Description', flex: 1 },
-        { field: 'quantity', headerName: 'Quantity', flex: 1.5 },
-        { field: 'remarks', headerName: 'Remarks', width: 120 },
-        {
-            field: 'created_at',
-            headerName: 'Created At',
-            width: 150,
-            renderCell: (params) => {
-                const formattedDate = new Date(params.value).toLocaleString('en-IN', {
-                    dateStyle: 'full',
-                    timeStyle: 'medium',
-                    timeZone: 'Asia/Kolkata'
-                });
-                return formattedDate;
-            }
-        },
-        {
-            field: 'updated_at',
-            headerName: 'Updated At',
-            width: 140,
-            renderCell: (params) => {
-                // Check if `updated_at` is null
-                if (!params.value) {
-                    return 'No update';  // Display "No update" if null
-                }
-                // Format the date if it is not null
-                const formattedDate = new Date(params.value).toLocaleString('en-IN', {
-                    dateStyle: 'full',
-                    timeStyle: 'medium',
-                    timeZone: 'Asia/Kolkata'
-                });
-                return formattedDate;
-            }
+        { field: 'Sno', headerName: 'S No', width: 90 },
+        { field: 'username', headerName: 'Username', flex: 0.5 },
+        { field: 'email', headerName: 'Email', width: 250 },
+        { field: 'groups', headerName: 'Roles', width: 300 },
+        { field: 'is_active', headerName: 'Status', flex: 1.5 },
+       
+         {
+            field: 'actions',
+            headerName: 'Actions',
+            width: 80,
+            renderCell: (params) => (
+                <FaEdit onClick={() => handleEditClick(params.row)} style={{ height: '20px', width: '50px', cursor: 'pointer' }} />
+            )
         }
     ];
 
     useEffect(() => {
         const fetchData = async () => {
-            setLoading(true);
+            setLoading(true); // Start loading
             try {
-                const inwardtransactionfecth = await api.fetch_inward_transaction();
+                const usermasterfecth = await api.fetch_usermasterdata();
 
-                const fetchedata = inwardtransactionfecth.map((item, index) => ({
-                    id: item.id,
-                    Sno: index + 1,
-                    part_description: item.part_description,
-                    quantity: item.quantity,
-                    remarks: item.remarks,
+                const fetchedata = usermasterfecth.map((item, index) => ({
+                    id: item.id, // Unique ID for DataGrid
+                    Sno: index + 1, // S.No starting from 1
+                    username: item.username,
+                    email: item.email,
+                    groups: item.groups,
+                    is_active :item.is_active?'Active':'Inactive',
                     created_at: item.created_at,
                     updated_at: item.updated_at,
                 }));
@@ -74,11 +54,11 @@ function InwardTransactionList() {
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
-                setLoading(false);
+                setLoading(false); // Stop loading
             }
         };
 
-        fetchData();
+        fetchData(); // Call fetchData
     }, []);
 
     const handleSearchChange = (e) => {
@@ -87,21 +67,21 @@ function InwardTransactionList() {
 
     const filteredRows = rows.filter((row) => {
         return (
-            row.part_description.toLowerCase().includes(searchText.toLowerCase()) &&
-            (filter ? row.quantity.toLowerCase() === filter : true)
+            row.username.toLowerCase().includes(searchText.toLowerCase()) &&
+            (filter ? row.status.toLowerCase() === filter : true)
         );
     });
 
     const handleEditClick = (row) => {
-        navigate(`/landingpage/inwardtransactionedit/${row.id}`);
+        navigate(`/landingpage/admincreateedit/${row.id}`);
     };
 
     return (
         <div style={{ display: 'contents' }}>
             <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
 
-                <div style={{ marginRight: '48px', marginBottom: '-45px' }}>
-                    <button onClick={() => navigate("/landingpage/inwardtransactionform")}>Inward Create</button>
+                <div style={{ marginRight: '48px',marginBottom:'-45px' }}>
+                    <button onClick={() => navigate("/landingpage/admincreate")}>User Create</button>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -115,7 +95,17 @@ function InwardTransactionList() {
                             style={{ width: 'auto', marginBottom: 10 }}
                         />
                     </div>
-
+                    <div>
+                        <select
+                            value={filter}
+                            onChange={(e) => setFilter(e.target.value)}
+                            style={{ marginBottom: 10 }}
+                        >
+                            <option value="">All</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
                 </div>
 
                 <DataGrid
@@ -125,6 +115,7 @@ function InwardTransactionList() {
                     onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                     rowsPerPageOptions={[5, 10, 20]}
                     pagination
+                    autoHeight
                     disableExtendRowFullWidth
                     sx={{
                         '& .MuiDataGrid-columnHeaders': {
@@ -141,4 +132,4 @@ function InwardTransactionList() {
     );
 }
 
-export default InwardTransactionList;
+export default Userlist;

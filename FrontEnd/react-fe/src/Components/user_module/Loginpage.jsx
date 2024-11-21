@@ -1,10 +1,8 @@
 import React, { useState, useEffect} from 'react';
-import '../Styles/Loginpage.css';
+import '../../Styles/Loginpage.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import appImage from '../Assets/login-dummy.jpg';
-import appLogo from '../Assets/logo.webp';
-import { fetchAndStorePermissions } from './Permissions/PermissionsProvider';
+import { fetchAndStorePermissions } from '../Permissions/PermissionsProvider';
 const LoginPage = () => {
     const navigate = useNavigate();
     const [isLogin, setIsLogin] = useState(true);
@@ -15,17 +13,37 @@ const LoginPage = () => {
 
 
     useEffect(() => {
-        const accessToken = localStorage.getItem("accessToken");
-
-        // Check if the token exists and is not expired
-        if (accessToken) {
-            const decodedToken = JSON.parse(atob(accessToken.split('.')[1])); // Decode JWT
-            const currentTime = Date.now() / 1000; // Current time in seconds
-            if (decodedToken.exp > currentTime) {
-                navigate("/landingpage"); // Redirect to landing page if authenticated
+        const checkAuthentication = async () => {
+            const accessToken = localStorage.getItem('accessToken');
+            const refreshToken = localStorage.getItem('refreshToken');
+    
+            if (accessToken) {
+                const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
+                const currentTime = Date.now() / 1000;
+    
+                if (decodedToken.exp > currentTime) {
+                    navigate('/landingpage'); // Token valid, redirect to landing page
+                } else if (refreshToken) {
+                    // Try refreshing the token
+                    try {
+                        const response = await axios.post('http://localhost:8000/refresh/', {
+                            refresh: refreshToken,
+                        });
+                        localStorage.setItem('accessToken', response.data.access);
+                        navigate('/login'); // Redirect if token refreshed successfully
+                    } catch {
+                        localStorage.clear();
+                        navigate('/login');
+                    }
+                } else {
+                    navigate('/login'); // No valid tokens, redirect to login
+                }
             }
-        }
+        };
+    
+        checkAuthentication();
     }, [navigate]);
+    
 
     const login = async (e) => {
         e.preventDefault();
@@ -65,12 +83,10 @@ const LoginPage = () => {
     return (
         <div className="login-page-container">
             <div className="left-side">
-                <img src={appImage} alt="Application" />
             </div>
             <div className="right-side">
                 <div className="loginpage">
                     <div className="title-text">
-                        <img src={appLogo} alt="Application" style={{ width: '70%' }} />
                     </div>
                     <div className="form-container">
                         {isLogin ? (

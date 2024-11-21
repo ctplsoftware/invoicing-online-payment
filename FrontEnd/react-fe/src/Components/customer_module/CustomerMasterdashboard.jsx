@@ -28,7 +28,7 @@ const CustomerMasterdashboard = () => {
                 console.log("customerFetchdata....", customerFetchdata);
                 const dataWithSNo = customerFetchdata.map((item, index) => ({
                     ...item,
-                    sno: index + 1 
+                    sno: index + 1
                 }));
                 setCustomerData(dataWithSNo);
 
@@ -36,7 +36,7 @@ const CustomerMasterdashboard = () => {
 
             }
             catch (error) {
-                
+
                 console.error("Error fetching customer data:", error);
 
             }
@@ -74,11 +74,9 @@ const CustomerMasterdashboard = () => {
             headerName: 'Updated At',
             width: 140,
             renderCell: (params) => {
-                // Check if `updated_at` is null
                 if (!params.value) {
-                    return 'No update';  // Display "No update" if null
+                    return 'No update';  
                 }
-                // Format the date if it is not null
                 const formattedDate = new Date(params.value).toLocaleString('en-IN', {
                     dateStyle: 'full',
                     timeStyle: 'medium',
@@ -99,7 +97,7 @@ const CustomerMasterdashboard = () => {
     ];
 
     const handleEditClick = (row) => {
-        navigate(`/landingpage/editcustomer-form/${row.id}`); // Ensure this matches your route definition
+        navigate(`/landingpage/editcustomer-form/${row.id}`); 
     };
 
 
@@ -112,18 +110,17 @@ const CustomerMasterdashboard = () => {
             <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
                 <div style={{ marginRight: '48px' }}>
                     <button onClick={() => navigate("/landingpage")}>Customer Create</button>
-
                 </div>
                 <DataGrid
                     rows={customerData}
                     columns={columns}
-                    pageSize={5} // Set initial page size to 5
-                    rowsPerPageOptions={[5, 10, 20]} // Allow customization                    pagination
+                    pageSize={5}
+                    rowsPerPageOptions={[5, 10, 20]}
                     disableExtendRowFullWidth
 
                     getRowId={(row) => row.id}
                     sx={{
-                        maxWidth: '200vw', // Limits the width to 95% of the viewport width
+                        maxWidth: '200vw',
                         '& .MuiDataGrid-columnHeaders': {
                             backgroundColor: '#f4f4f4',
                             fontWeight: 'bold',
@@ -141,35 +138,6 @@ const CustomerMasterdashboard = () => {
                     }}
                 />
             </div>
-
-
-            {/* <DataGrid
-                    rows={customerData}
-                    columns={columns}
-                    rowsPerPageOptions={[5, 10, 20]}
-                    pagination
-                    autoHeight
-                    disableExtendRowFullWidth
-                    getRowId={(row) => row.id}
-                    sx={{
-                        '& .MuiDataGrid-columnHeaders': {
-                            backgroundColor: '#f4f4f4', // Set the background color of column headers
-                            fontWeight: 'bold',
-                            '&:hover': {
-                                backgroundColor: '#f4f4f4', // Prevents hover color change by matching the background
-                                cursor: 'default', // Removes pointer cursor on hover
-                            },
-                        },
-                        '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within': {
-                            outline: 'none', // Removes the focus outline to avoid any hover-like effect
-                        },
-                        '& .MuiDataGrid-cell': {
-                            padding: '0 10px',
-                        },
-                    }}
-                /> */}
-
-
         </div>
 
     )

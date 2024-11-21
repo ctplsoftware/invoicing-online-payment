@@ -1,5 +1,5 @@
 import { FaPlus, FaMinus } from 'react-icons/fa';
-import '../../Styles/CustomerMaster.css'
+import '../../Styles/CustomerMaster.css';
 
 import { API } from '../../API.js';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -8,12 +8,12 @@ import React, { useEffect, useState } from 'react';
 
 
 const EditCustomerForm = ({ }) => {
-    const { id } = useParams(); // Get the ID from the URL
+    const { id } = useParams(); 
     const navigate = useNavigate();
 
 
-    const [currentCustomer, setCurrentCustomer] = useState({}); // Initialize as an empty object
-    const [additionalAddresses, setAdditionalAddresses] = useState([""]); // Start with one empty address
+    const [currentCustomer, setCurrentCustomer] = useState({}); 
+    const [additionalAddresses, setAdditionalAddresses] = useState([""]); 
     const [editMode, setEditMode] = useState(false);
     const [customerData, setCustomerData] = useState([]);
 
@@ -23,11 +23,7 @@ const EditCustomerForm = ({ }) => {
     useEffect(() => {
         const fetchCustomer = async () => {
             const api = new API();
-            const customerData = await api.customerMasterEditFetch(id); // Fetch customer data by ID
-            console.log("customerData..../", customerData);
-
-
-
+            const customerData = await api.customerMasterEditFetch(id); 
             setCurrentCustomer({
                 'id': customerData.id,
                 'name': customerData.name,
@@ -42,7 +38,7 @@ const EditCustomerForm = ({ }) => {
             setAdditionalAddresses([
                 customerData.additional_address1 || "",
                 customerData.additional_address2 || ""
-            ].filter(address => address)); // Only include non-empty addresses
+            ].filter(address => address)); 
         };
 
         fetchCustomer();
@@ -81,11 +77,9 @@ const EditCustomerForm = ({ }) => {
                 (response) => {
                     console.log("Update successful:", response);
                     navigate('/landingpage/customermasterdashboard');
-                    // handle success (e.g., update state, show a success message)
                 },
                 (error) => {
                     console.error("Update failed:", error);
-                    // handle failure (e.g., show an error message)
                 }
             );
             setEditMode(false);

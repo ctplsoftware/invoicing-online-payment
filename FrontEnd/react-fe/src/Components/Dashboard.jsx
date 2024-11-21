@@ -1,15 +1,9 @@
-import CustomerMaster from "./CustomerMaster";
-import CustomerMasterdashboard from "./Dashboards/CustomerMasterdashboard";
-import TaskOperations from "./TaskOperations";
-import UserPermissionForm from "./UserPermissionForm";
-import UserRoleForm from "./UserRoleForm";
+import CustomerMaster from "./customer_module/CustomerMaster";
+
 
 const Dashboard = () => {
     return ( 
         <div className="dashboard">
-            {/* <UserPermissionForm/> */}
-            {/* <UserRoleForm/> */}
-            {/* <TaskOperations/> */}
             <CustomerMaster/>
         </div>
      );

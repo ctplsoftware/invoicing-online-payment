@@ -41,10 +41,8 @@ def get_partmaster_usermaster(request):
     
     try:
 
-        # Filter CustomerMaster for active status and userid
         customers = CustomerMaster.objects.filter(status='active', id=userid)
         
-        # Filter PartMaster for active status and part_desc
         parts = PartMaster.objects.filter(status='active', part_description__icontains=part_desc)
         
         if not customers.exists() or not parts.exists():
@@ -54,11 +52,10 @@ def get_partmaster_usermaster(request):
                 'data': None
             })
 
-        # Extract address data from CustomerMaster
         addresses = []
         credit_limit = None
         if customers.exists():
-            customer = customers.first()  # Assuming one customer per user ID
+            customer = customers.first()  
             addresses = [
                 addr for addr in [
                     customer.delivery_address,
@@ -85,7 +82,6 @@ def get_partmaster_usermaster(request):
             .get('total_quantity', 0)
         )
 
-        # Return response in the desired format
         return Response({
             'success': True,
             'message': "Valid",

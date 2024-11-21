@@ -69,20 +69,17 @@ def get_customer_editdata(request, id):
         return Response({"error": "Customer not found"}, status=404)
 
 
-@api_view(['PUT'])  # Use PUT for updates
+@api_view(['PUT'])  
 def update_customer(request, id):
     try:
         customer = CustomerMaster.objects.get(id=id)
     except CustomerMaster.DoesNotExist:
         return Response({"error": "Customer not found"}, status=status.HTTP_404_NOT_FOUND)
     
-
-    # Extract additional addresses and set to None if empty
     additional_addresses = request.data.get('additional_addresses', [])
     additional_address1 = additional_addresses[0].strip() if len(additional_addresses) > 0 else None
     additional_address2 = additional_addresses[1].strip() if len(additional_addresses) > 1 else None
 
-    # Prepare validated data, explicitly including None for fields to set them to null
     validated_data = {
         'name': request.data.get('name', customer.name).strip(),
         'delivery_address': request.data.get('delivery_address', customer.delivery_address).strip(),
@@ -94,7 +91,7 @@ def update_customer(request, id):
         'credit_days': request.data.get('credit_days', customer.credit_days).strip(),
         'contact_person': request.data.get('contact_person', customer.contact_person).strip(),
         'contact_number': request.data.get('contact_number', customer.contact_number).strip(),
-        'updated_by': '1',  # Update the user ID as necessary
+        'updated_by': '1',  
         'updated_at':timezone.now()
 
     }
@@ -102,11 +99,11 @@ def update_customer(request, id):
     
 
 
-    serializer = CustomerSerializer(customer, data=validated_data, partial=True)  # Allow partial updates
+    serializer = CustomerSerializer(customer, data=validated_data, partial=True) 
 
     if serializer.is_valid():
-        serializer.save()  # Save the updated data
+        serializer.save()  
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
-        print(serializer.errors)  # Log errors for debugging
+        print(serializer.errors)  
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -1,22 +1,26 @@
+import React, { useState } from 'react';
 import { API } from '../../API.js';
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from 'react-router-dom';
+import '../../Styles/CustomerMaster.css';
+import { useNavigate } from "react-router-dom";
 
-const PartMasterEdit = () => {
+
+
+const PartMaster = () => {
     const api = new API();
     const navigate = useNavigate();
-    const { id } = useParams(); // Get the ID from the URL
 
-    // Initialize form data state
+
+    
+
     const [formData, setFormData] = useState({
         part_description: '',
-        status: 'active',  // default to "active" status
+        status: 'active',  
         unit_price: '',
-        uom: ''
+        uom:''
+
     });
 
-    // Handle form input changes
-    const handleChange = (e) => {
+       const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
             ...formData,
@@ -24,44 +28,31 @@ const PartMasterEdit = () => {
         });
     };
 
-    // Fetch the part data on component mount
-    useEffect(() => {
-        const fetchPartMaster = async () => {
-            try {
-                const partmasterData = await api.editGet_part_master(id);  // Fetch existing part data
-                if (partmasterData) {
-                    setFormData({
-                        id :partmasterData.id,
-                        part_description: partmasterData.part_description,
-                        status: partmasterData.status,
-                        unit_price: partmasterData.unit_price,
-                        uom: partmasterData.uom
-                    });
-                }
-            } catch (error) {
-                console.error("Failed to fetch part data:", error);
-            }
-        };
-        fetchPartMaster();
-    }, [id]);
-
-    // Handle form submission for updating the part
-    const handleEditSubmit = async (event) => {
-        event.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         try {
-            await api.update_part_master(formData); // Update the part data
-            alert("Update successful");
-            navigate('/landingpage/partmaster-fecthList');  // Navigate back to list page
+            const response = await api.part_master_Create(formData);
+            if (response) {
+                alert("Part Added");
+                navigate('/landingpage/partmaster-fecthList')
+                setFormData({
+                    part_description: '',
+                    status: 'active',  
+                    unit_price: '',
+                    uom:''
+                });
+            } else {
+                alert("Failed to add part");
+            }
         } catch (error) {
-            console.error("Update failed:", error);
-            alert("Update failed. Please try again.");
+            console.error("Error adding part:", error);
         }
     };
 
     return (
-        <div className="customer-master">
-            <h2>Part Master Update</h2>
-            <form onSubmit={handleEditSubmit}>
+        <div className="customer-master" style={{marginLeft:'460px'}}>
+            <h2>Part Master</h2>
+            <form onSubmit={handleSubmit}>
                 <label>
                     Part Description
                     <input
@@ -74,6 +65,7 @@ const PartMasterEdit = () => {
                         autoFocus
                     />
                 </label>
+
 
                 <label>
                     Status
@@ -88,6 +80,7 @@ const PartMasterEdit = () => {
                             <option value="inactive">Inactive</option>
                         </select>
                     </div>
+
                 </label>
 
                 <label>
@@ -112,20 +105,17 @@ const PartMasterEdit = () => {
                             required
                         >
                             <option value="">Select UOM</option>
-                            <option value="mg">mg</option>
                             <option value="kg">kg</option>
-                            <option value="g">g</option>
+                            <option value="tons">tons</option>
                         </select>
                     </div>
+
                 </label>
-
                 <button onClick={() => navigate("/landingpage/partmaster-fecthList")}>Back</button>
-
-                <button type="submit">Submit</button>
-                
+                    <button type="submit">Submit</button>
             </form>
         </div>
     );
 };
 
-export default PartMasterEdit;
+export default PartMaster;

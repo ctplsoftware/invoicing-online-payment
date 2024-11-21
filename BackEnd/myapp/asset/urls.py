@@ -1,5 +1,8 @@
 from django.urls import path
-from .views import UserView, CustomerView ,PartMasterView,InwardTransactionView,AdminCreateView,permissionscheckView,authenticateView ,AndroidAPIView
+from .views import UserView, CustomerView ,PartMasterView,InwardTransactionView,permissionscheckView,authenticateView ,AndroidAPIView, usercreationView
+from rest_framework_simplejwt.views import (
+    TokenRefreshView,
+)
 
 urlpatterns = [
 
@@ -10,10 +13,12 @@ urlpatterns = [
 
     path('get_user_permissions/', permissionscheckView.get_permissions, name='check_permission'),
     path('token/',authenticateView.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('refresh/',authenticateView.CustomTokenRefreshView.as_view(), name='token_refresh'),
+    # path('refresh/',authenticateView.CustomTokenRefreshView.as_view(), name='token_refresh'),
+    path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
 
-
+    
+    
     
     
     #customer-master
@@ -38,8 +43,14 @@ urlpatterns = [
 
 
     #admin create
-    path('admin_create',AdminCreateView.admincreates),
-    path('rolesfetch',AdminCreateView.rolesget),
+    path('user_create',usercreationView.admincreates),
+    path('rolesfetch',usercreationView.rolesget),
+    path('user-master-get',usercreationView.usermaster_get),
+    path('edit_usermaster/<int:id>',usercreationView.edit_usermaster_fetch),
+    path('edit_usermaster_update/<int:id>',usercreationView.create_update_user),
+
+
+
 
 
 

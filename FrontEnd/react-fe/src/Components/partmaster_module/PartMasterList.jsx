@@ -10,9 +10,8 @@ function PartMasterList() {
     const [pageSize, setPageSize] = useState(5);
     const [searchText, setSearchText] = useState('');
     const [filter, setFilter] = useState('');
-    const [rows, setRows] = useState([]); // To store API data
-    const [loading, setLoading] = useState(true); // Loading state
-
+    const [rows, setRows] = useState([]); 
+    const [loading, setLoading] = useState(true); 
 
     const api = new API();
     const navigate = useNavigate();
@@ -41,11 +40,9 @@ function PartMasterList() {
             headerName: 'Updated At',
             width: 140,
             renderCell: (params) => {
-                // Check if `updated_at` is null
                 if (!params.value) {
-                    return 'No update';  // Display "No update" if null
+                    return 'No update';  
                 }
-                // Format the date if it is not null
                 const formattedDate = new Date(params.value).toLocaleString('en-IN', {
                     dateStyle: 'full',
                     timeStyle: 'medium',
@@ -65,14 +62,14 @@ function PartMasterList() {
 
     useEffect(() => {
         const fetchData = async () => {
-            setLoading(true); // Start loading
+            setLoading(true); 
             try {
                 const partmasterfecth = await api.get_part_master();
                 console.log("partmasterfecth", partmasterfecth);
 
                 const fetchedata = partmasterfecth.map((item, index) => ({
-                    id: item.id, // Unique ID for DataGrid
-                    Sno: index + 1, // S.No starting from 1
+                    id: item.id, 
+                    Sno: index + 1, 
                     part_description: item.part_description,
                     status: item.status,
                     unit_price: item.unit_price,
@@ -84,11 +81,11 @@ function PartMasterList() {
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
-                setLoading(false); // Stop loading
+                setLoading(false); 
             }
         };
 
-        fetchData(); // Call fetchData
+        fetchData(); 
     }, []);
 
     const handleSearchChange = (e) => {
