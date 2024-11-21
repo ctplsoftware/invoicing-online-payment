@@ -73,7 +73,7 @@ function Userlist() {
     });
 
     const handleEditClick = (row) => {
-        navigate(`/landingpage/admincreateedit/${row.id}`);
+        navigate(`/landingpage/useredit/${row.id}`);
     };
 
     return (
