@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from "react-router-dom";
 import { FaEdit } from 'react-icons/fa';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import { API } from '../../API';
+import DataTable from 'react-data-table-component';
+
 
 function Userlist() {
     const [pageSize, setPageSize] = useState(5);
@@ -108,7 +107,7 @@ function Userlist() {
                     </div>
                 </div>
 
-                <DataGrid
+                <DataTable
                     rows={filteredRows}
                     columns={columns}
                     pageSize={pageSize}

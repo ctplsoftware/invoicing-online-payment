@@ -15,60 +15,63 @@ function PartMasterList() {
     const navigate = useNavigate();
 
     const columns = [
-        { field: 'Sno', headerName: 'S No', width: 70 },
-        { field: 'part_description', headerName: 'Part Description', flex: 1 },
-        { field: 'status', headerName: 'Status', width: 110 },
-        { field: 'unit_price', headerName: 'Unit Price', flex: 1.5 },
-        { field: 'uom', headerName: 'UOM (unit of measure)', width: 120 },
+        { name: 'S No', selector: row => row.Sno, width: '70px' },
+        { name: 'Part Description', selector: row => row.part_description, flex: 1 },
+        { name: 'Status', selector: row => row.status, width: '110px' },
+        { name: 'Unit Price', selector: row => row.unit_price, flex: 1.5 },
+        { name: 'UOM (Unit of Measure)', selector: row => row.uom, width: '120px' },
         {
             name: 'Created At',
-            selector: 'created_at',
-           
-            width: '150px',
-            cell: (row) => {
+            selector: row => row.created_at,
+            cell: row => {
                 const formattedDate = new Date(row.created_at).toLocaleString('en-IN', {
                     dateStyle: 'full',
                     timeStyle: 'medium',
-                    timeZone: 'Asia/Kolkata'
+                    timeZone: 'Asia/Kolkata',
                 });
                 return formattedDate;
-            }
+            },
+            width: '150px',
         },
         {
-            field: 'updated_at',
-            headerName: 'Updated At',
-            width: 140,
-            renderCell: (params) => {
-                if (!params.value) {
-                    return 'No update';  
+            name: 'Updated At',
+            selector: row => row.updated_at,
+            cell: row => {
+                if (!row.updated_at) {
+                    return 'No update';
                 }
-                const formattedDate = new Date(params.value).toLocaleString('en-IN', {
+                const formattedDate = new Date(row.updated_at).toLocaleString('en-IN', {
                     dateStyle: 'full',
                     timeStyle: 'medium',
-                    timeZone: 'Asia/Kolkata'
+                    timeZone: 'Asia/Kolkata',
                 });
                 return formattedDate;
-            }
-        }, {
-            field: 'actions',
-            headerName: 'Actions',
-            width: 80,
-            renderCell: (params) => (
-                <FaEdit onClick={() => handleEditClick(params.row)} style={{ height: '20px', width: '50px', cursor: 'pointer' }} />
-            )
-        }
+            },
+            width: '140px',
+        },
+        {
+            name: 'Actions',
+            selector: row => row.id,
+            cell: row => (
+                <FaEdit
+                    onClick={() => handleEditClick(row)}
+                    style={{ height: '20px', width: '50px', cursor: 'pointer' }}
+                />
+            ),
+            width: '80px',
+        },
     ];
 
     useEffect(() => {
         const fetchData = async () => {
-            setLoading(true); 
+            setLoading(true);
             try {
                 const partmasterfecth = await api.get_part_master();
                 console.log("partmasterfecth", partmasterfecth);
 
                 const fetchedata = partmasterfecth.map((item, index) => ({
-                    id: item.id, 
-                    Sno: index + 1, 
+                    id: item.id,
+                    Sno: index + 1,
                     part_description: item.part_description,
                     status: item.status,
                     unit_price: item.unit_price,
@@ -80,11 +83,11 @@ function PartMasterList() {
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
-                setLoading(false); 
+                setLoading(false);
             }
         };
 
-        fetchData(); 
+        fetchData();
     }, []);
 
     const handleSearchChange = (e) => {
@@ -149,13 +152,10 @@ function PartMasterList() {
             <DataTable
                 title="Part Master List"
                 columns={columns}
-                rows={filteredRows}
+                data={filteredRows} // Correct prop name
                 pagination
                 paginationPerPage={pageSize}
-                onChangeRowsPerPage={(newPageSize) => {
-                    console.log('New Page Size:', newPageSize); // For debugging
-                    setPageSize(newPageSize);
-                }}
+                onChangeRowsPerPage={(newPageSize) => setPageSize(newPageSize)}
                 highlightOnHover
                 striped
                 responsive

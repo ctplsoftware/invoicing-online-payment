@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { DataGrid } from '@mui/x-data-grid';
 import { API } from '../../API.js';
-import { Box } from '@mui/material';
 import { FaEdit } from 'react-icons/fa';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
+import DataTable from "react-data-table-component";
 
 
 
@@ -111,7 +110,7 @@ const CustomerMasterdashboard = () => {
                 <div style={{ marginRight: '48px' }}>
                     <button onClick={() => navigate("/landingpage")}>Customer Create</button>
                 </div>
-                <DataGrid
+                <DataTable
                     rows={customerData}
                     columns={columns}
                     pageSize={5}
