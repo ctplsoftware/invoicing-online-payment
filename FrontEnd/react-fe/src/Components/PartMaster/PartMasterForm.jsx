@@ -117,8 +117,8 @@ const PartMaster = () => {
                     </div>
 
                 </label>
-                <button onClick={() => navigate("/landingpage/partmaster-fecthList")}>Back</button>
-                    <button type="submit">Submit</button>
+                <button  style={{marginLeft:'-40%',marginTop:'6%'}} className="btn-save2" onClick={() => navigate("/landingpage/partmaster-fecthList")}>Back</button>
+                    <button style={{marginTop:'6%'}} className="btn-save" type="submit">Submit</button>
             </form>
         </div>
     );

@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
-import { useNavigate } from "react-router-dom";
 import { FaEdit } from 'react-icons/fa';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
+import { useNavigate } from "react-router-dom";
 import { API } from '../../API';
+import DataTable from 'react-data-table-component';
 
 function PartMasterList() {
     const [pageSize, setPageSize] = useState(5);
@@ -12,7 +10,6 @@ function PartMasterList() {
     const [filter, setFilter] = useState('');
     const [rows, setRows] = useState([]); // To store API data
     const [loading, setLoading] = useState(true); // Loading state
-
 
     const api = new API();
     const navigate = useNavigate();
@@ -24,11 +21,12 @@ function PartMasterList() {
         { field: 'unit_price', headerName: 'Unit Price', flex: 1.5 },
         { field: 'uom', headerName: 'UOM (unit of measure)', width: 120 },
         {
-            field: 'created_at',
-            headerName: 'Created At',
-            width: 150,
-            renderCell: (params) => {
-                const formattedDate = new Date(params.value).toLocaleString('en-IN', {
+            name: 'Created At',
+            selector: 'created_at',
+           
+            width: '150px',
+            cell: (row) => {
+                const formattedDate = new Date(row.created_at).toLocaleString('en-IN', {
                     dateStyle: 'full',
                     timeStyle: 'medium',
                     timeZone: 'Asia/Kolkata'
@@ -107,57 +105,78 @@ function PartMasterList() {
     };
 
     return (
-        <div style={{ display: 'contents' }}>
-            <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
+        <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
+            {/* Button to create new Part */}
+            <div style={{ marginRight: '48px', marginBottom: '-45px' }}>
+                <button
+                    onClick={() => navigate("/landingpage/partmaster-form")}
+                    style={{
+                        padding: '10px 20px',
+                        backgroundColor: '#1976d2',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                    }}
+                >
+                    Part Create
+                </button>
+            </div>
 
-                <div style={{ marginRight: '48px',marginBottom:'-45px' }}>
-                    <button onClick={() => navigate("/landingpage/partmaster-form")}>Part Create</button>
+            {/* Search and Filter */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div>
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        value={searchText}
+                        onChange={handleSearchChange}
+                        style={{ width: 'auto', marginBottom: 10 }}
+                    />
                 </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-
-                    <div>
-                        <input
-                            type="text"
-                            placeholder="Search..."
-                            value={searchText}
-                            onChange={handleSearchChange}
-                            style={{ width: 'auto', marginBottom: 10 }}
-                        />
-                    </div>
-                    <div>
-                        <select
-                            value={filter}
-                            onChange={(e) => setFilter(e.target.value)}
-                            style={{ marginBottom: 10 }}
-                        >
-                            <option value="">All</option>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                    </div>
+                <div>
+                    <select
+                        value={filter}
+                        onChange={(e) => setFilter(e.target.value)}
+                        style={{ marginBottom: 10 }}
+                    >
+                        <option value="">All</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
                 </div>
+            </div>
 
-                <DataGrid
-                    rows={filteredRows}
-                    columns={columns}
-                    pageSize={pageSize}
-                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                    rowsPerPageOptions={[5, 10, 20]}
-                    pagination
-                    autoHeight
-                    disableExtendRowFullWidth
-                    sx={{
-                        '& .MuiDataGrid-columnHeaders': {
+            {/* DataTable for displaying rows */}
+            <DataTable
+                title="Part Master List"
+                columns={columns}
+                rows={filteredRows}
+                pagination
+                paginationPerPage={pageSize}
+                onChangeRowsPerPage={(newPageSize) => {
+                    console.log('New Page Size:', newPageSize); // For debugging
+                    setPageSize(newPageSize);
+                }}
+                highlightOnHover
+                striped
+                responsive
+                progressPending={loading} // Show loading indicator
+                customStyles={{
+                    headCells: {
+                        style: {
                             backgroundColor: '#f4f4f4',
                             fontWeight: 'bold',
                         },
-                        '& .MuiDataGrid-cell': {
-                            padding: '0 10px',
+                    },
+                    rows: {
+                        style: {
+                            fontSize: '0.875rem',
                         },
-                    }}
-                />
-            </div>
+                    },
+                }}
+            />
+
         </div>
     );
 }

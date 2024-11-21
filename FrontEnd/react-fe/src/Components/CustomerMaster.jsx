@@ -86,7 +86,7 @@ const CustomerMaster = () => {
         <>
             {permissions.includes('asset.view_sampleform') ? (
                 <div className="empty-state">
-                    <h3>No access to this form</h3>
+                    <h3 style={{ marginTop: "15%" }}>No access to this page</h3>
                     {/* Optionally add more details or links */}
                 </div>
             ) : (
@@ -97,8 +97,8 @@ const CustomerMaster = () => {
 
                 <div className="customer-master">
 
-                    <h2>Customer Master</h2>
-                    <form onSubmit={handleSubmit}>
+                    <u><h3 className='headingfont-bold'>Customer Master</h3></u>
+                    <form style={{ marginLeft: '6%' }} onSubmit={handleSubmit}>
                         <label>
                             Customer Name
                             <input
@@ -194,7 +194,7 @@ const CustomerMaster = () => {
                                     onChange={handleChange}
                                     required
                                 />
-                                <span className="icon-tag" onClick={addAdditionalAddress}>
+                                <span style={{ marginLeft: '5%' }} className="icon-tag" onClick={addAdditionalAddress}>
                                     <FaPlus /> {/* Plus icon */}
                                 </span>
                             </div>
@@ -211,7 +211,7 @@ const CustomerMaster = () => {
                                         value={address}
                                         onChange={(e) => handleAdditionalAddressChange(index, e.target.value)}
                                     />
-                                    <span className="icon-tag" onClick={() => removeAdditionalAddress(index)}>
+                                    <span style={{ marginLeft: '5%' }} className="icon-tag" onClick={() => removeAdditionalAddress(index)}>
                                         <FaMinus /> {/* Minus icon */}
                                     </span>
                                 </label>
@@ -219,17 +219,6 @@ const CustomerMaster = () => {
                         ))}
 
 
-                        <div style={{ display: 'flex', gap: '32px' }}>
-                            <div className="pm-button-container" style={{ gap: "10px" }}>
-                                <button onClick={() => navigate("/landingpage/customermasterdashboard")}>
-                                    Go to Customers
-                                </button>
-                            </div>
-
-                            <div className="pm-button-container" style={{ gap: "10px" }}>
-                                <button type="submit">Submit</button>
-                            </div>
-                        </div>
 
 
 
@@ -238,6 +227,17 @@ const CustomerMaster = () => {
                     </form>
 
 
+                    <div style={{ display: 'flex', gap: '30%',marginTop:"3%" }}>
+                        <div className="pm-button-container" style={{ gap: "10px" }}>
+                            <button className="btn-save2" onClick={() => navigate("/landingpage/customermasterdashboard")}>
+                                Go to Customers
+                            </button>
+                        </div>
+
+                        <div className="pm-button-container" style={{ gap: "10px" }}>
+                            <button className='btn-save' type="submit">Submit</button>
+                        </div>
+                    </div>
 
                 </div>
 

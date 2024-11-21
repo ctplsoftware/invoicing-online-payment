@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import '../Styles/Navbar.css'; // Update this file with new styles
+import { faUserCog } from '@fortawesome/free-solid-svg-icons';
+
+import '../Styles/Navbar.css';
 
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -11,34 +12,53 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
 const Navbar1 = () => {
-    const [showSubmenu, setShowSubmenu] = useState(false); // State to toggle submenu visibility
+    const [showSubmenu, setShowSubmenu] = useState(false);
+    const [activeDropdown, setActiveDropdown] = useState(null);
+    const submenuRef = useRef(null);
+    const navbarRef = useRef(null);
     const data = JSON.parse(localStorage.getItem("userDetails"));
     const navigate = useNavigate();
 
-    function handleLogout() {
-        // //localStorage.removeItem("userDetails"); 
+    const handleLogout = () => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("userDetails");
-
         navigate("/");
-    }
-
-    // Toggle submenu on hamburger icon click
-    const toggleSubmenu = () => {
-        setShowSubmenu(!showSubmenu);
     };
 
+    // Close submenu only if clicked outside navbar or submenu
+    const handleClickOutside = (event) => {
+        if (
+            submenuRef.current &&
+            navbarRef.current &&
+            !submenuRef.current.contains(event.target) &&
+            !navbarRef.current.contains(event.target)
+        ) {
+            setShowSubmenu(false);
+            setActiveDropdown(null);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener("click", handleClickOutside);
+        return () => document.removeEventListener("click", handleClickOutside);
+    }, []);
+
     return (
-        <>
-            <Navbar variant="dark" expand="lg" className="navbar shadow-sm" style={{ backgroundColor: '#054982', padding: '10px 20px', position: 'relative' }}>
+        <div ref={navbarRef}>
+            <Navbar
+                variant="dark"
+                expand="lg"
+                className="navbar shadow-sm"
+                style={{ backgroundColor: '#054982', padding: '10px 20px' }}
+            >
                 <Container fluid>
-                    {/* Hamburger menu button */}
+                    {/* Hover to open submenu */}
                     <FontAwesomeIcon
                         icon={faBars}
                         className="menubtn"
                         style={{ color: '#fff', fontSize: '1.8rem', cursor: 'pointer' }}
-                        onClick={toggleSubmenu} // Trigger submenu toggle
+                        onMouseEnter={() => setShowSubmenu(true)} // Show submenu on hover
                     />
                     <h4 style={{ fontWeight: '600' }}>
                         <Link to='/landingpage' className="text-decoration-none" style={{ color: '#ffffff' }}>
@@ -46,14 +66,13 @@ const Navbar1 = () => {
                         </Link>
                     </h4>
 
-                    {/* User Profile Dropdown */}
                     <div className="profile d-flex align-items-center" style={{ zIndex: '1000' }}>
                         <NavDropdown
-                            title={<ManageAccountsIcon style={{ color: '#ffffff', fontSize: '1.8rem' }} />}
-                            id="profile-dropdown"
-                            align="end"
-                            className="custom-dropdown"
-                        >
+                             title={<FontAwesomeIcon icon={faUserCog} style={{ color: '#ffffff', fontSize: '1.8rem' }} />}
+                             id="profile-dropdown"
+                             align="end"
+                             className="custom-dropdown"
+                         >
                             <NavDropdown.ItemText>
                                 <p className="mb-0" style={{ fontSize: '0.9rem', color: '#333' }}>
                                     <strong>Username:</strong> {data.user.username}
@@ -68,59 +87,54 @@ const Navbar1 = () => {
                 </Container>
             </Navbar>
 
-            {showSubmenu && (
-                <div
-                    className="submenu shadow-sm"
-                    style={{
-                        backgroundColor: '#cfe8ff',
-                        color: '#000',
-                        padding: '10px 0',
-                        position: 'absolute',
-                        width: '100%',
-                        zIndex: '100',
-                    }}
-                >
-                    <Nav className="mx-auto d-flex justify-content-left">
-                        {['Home', 'Dashboard', 'Masters', 'Title4', 'Title5', 'Title6', 'Configuration', 'Master create'].map(
-                            (title, index) => (
-                                <NavDropdown
-                                    key={index}
-                                    title={<span className="nav-dropdown-title">{title}</span>}
-                                    id={`submenu-nav-dropdown-${index}`}
-                                    className="mx-2"
-                                    style={{ color: '#ffffff' }}
-                                >
-                                    {title === 'Dashboard' ? (
-                                        <>
-                                            <NavDropdown.Item href="/landingpage/customermasterdashboard">
-                                                Customer List
-                                            </NavDropdown.Item>
-                                            <NavDropdown.Item href="/landingpage/partmaster-fecthList">
-                                                Partmaster List
-                                            </NavDropdown.Item>
-                                            <NavDropdown.Item href="/landingpage/inwardtransactionlist">
-                                                InwardTranaction List
-                                            </NavDropdown.Item>
-                                            <NavDropdown.Item href="/landingpage/stockreport">
-                                                Stock Report List
-                                            </NavDropdown.Item>
-                                        </>
-                                    ) : title === 'Master create' ? (
-                                        <NavDropdown.Item href="/landingpage/admincreate">
-                                            Master Create
-                                        </NavDropdown.Item>
-                                    )
-                                        : (
-                                            <NavDropdown.Item href="#action/3.3">Action 3</NavDropdown.Item>
-                                        )}
-                                </NavDropdown>
-                            )
-                        )}
-                    </Nav>
-                </div>
-            )}
-
+            {/* Submenu with hover logic */}
+            <div
+                ref={submenuRef}
+                className={`submenu shadow-sm ${showSubmenu ? 'visible' : 'hidden'}`}
+                style={{
+                    backgroundColor: '#cfe8ff',
+                    color: '#000',
+                    padding: '10px 0',
+                    position: 'absolute',
+                    width: '100%',
+                    zIndex: '100',
+                    top: '50px',
+                    transition: 'opacity 0.3s ease, top 0.3s ease',
+                    opacity: showSubmenu ? 1 : 0,
+                }}
+                onMouseEnter={() => setShowSubmenu(true)} // Keep submenu open on hover
+                onMouseLeave={() => setShowSubmenu(false)} // Close submenu when leaving
+            >
+                <Nav className="d-flex " style={{marginLeft:'3%',paddingRight:'3%'}}>
+                    {[ 'Masters', 'Reports', 'User Management'].map((title, index) => (
+                        <NavDropdown
+    key={index}
+    title={<span className="nav-dropdown-title">{title}</span>}
+    id={`submenu-nav-dropdown-${index}`}
+    className="custom-nav-dropdown mx-2"
+    style={{ marginTop: '-8px' }} // Inline style for positioning
+    show={activeDropdown === index}
+    onMouseEnter={() => setActiveDropdown(index)}
+    onMouseLeave={() => setActiveDropdown(null)}
+>
+    {title === 'Masters' ? (
+        <>
+            <NavDropdown.Item href="/landingpage/customermasterdashboard">Customer Master </NavDropdown.Item>
+            <NavDropdown.Item href="/landingpage/partmaster-fecthList">Part Master </NavDropdown.Item>
+            <NavDropdown.Item href="/landingpage/inwardtransactionlist">Inward Transaction </NavDropdown.Item>
         </>
+    ) : title === 'User Management' ? (
+        <NavDropdown.Item href="/landingpage/admincreate">User Master</NavDropdown.Item>
+        
+    ) : (
+        <NavDropdown.Item href="/landingpage/stockreport">Stock Report </NavDropdown.Item>
+
+    )}
+</NavDropdown>
+                    ))}
+                </Nav>
+            </div>
+        </div>
     );
 };
 

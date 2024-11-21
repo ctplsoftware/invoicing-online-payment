@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
-import { useNavigate } from "react-router-dom";
 import { FaEdit } from 'react-icons/fa';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
+import { useNavigate } from "react-router-dom";
 import { API } from '../../API';
+import DataTable from 'react-data-table-component';
 
 function InwardTransactionList() {
     const [pageSize, setPageSize] = useState(5);
@@ -12,7 +10,6 @@ function InwardTransactionList() {
     const [filter, setFilter] = useState('');
     const [rows, setRows] = useState([]); // To store API data
     const [loading, setLoading] = useState(true); // Loading state
-
 
     const api = new API();
     const navigate = useNavigate();
@@ -57,7 +54,7 @@ function InwardTransactionList() {
 
     useEffect(() => {
         const fetchData = async () => {
-            setLoading(true);
+            setLoading(true); // Start loading
             try {
                 const inwardtransactionfecth = await api.fetch_inward_transaction();
 
@@ -74,7 +71,7 @@ function InwardTransactionList() {
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
-                setLoading(false);
+                setLoading(false); // Stop loading
             }
         };
 
@@ -97,46 +94,63 @@ function InwardTransactionList() {
     };
 
     return (
-        <div style={{ display: 'contents' }}>
-            <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
+        <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
+            {/* Button to create new Inward Transaction */}
+            <div style={{ marginRight: '48px', marginBottom: '-45px' }}>
+                <button
+                    onClick={() => navigate("/landingpage/inwardtransactionform")}
+                    style={{
+                        padding: '10px 20px',
+                        backgroundColor: '#1976d2',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                    }}
+                >
+                    Inward Create
+                </button>
+            </div>
 
-                <div style={{ marginRight: '48px', marginBottom: '-45px' }}>
-                    <button onClick={() => navigate("/landingpage/inwardtransactionform")}>Inward Create</button>
+            {/* Search and Filter */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div>
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        value={searchText}
+                        onChange={handleSearchChange}
+                        style={{ width: 'auto', marginBottom: 10 }}
+                    />
                 </div>
+            </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-
-                    <div>
-                        <input
-                            type="text"
-                            placeholder="Search..."
-                            value={searchText}
-                            onChange={handleSearchChange}
-                            style={{ width: 'auto', marginBottom: 10 }}
-                        />
-                    </div>
-
-                </div>
-
-                <DataGrid
-                    rows={filteredRows}
-                    columns={columns}
-                    pageSize={pageSize}
-                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                    rowsPerPageOptions={[5, 10, 20]}
-                    pagination
-                    disableExtendRowFullWidth
-                    sx={{
-                        '& .MuiDataGrid-columnHeaders': {
+            {/* DataTable for displaying rows */}
+            <DataTable
+                title="Inward Transaction List"
+                columns={columns}
+                rows={filteredRows}
+                pagination
+                paginationPerPage={pageSize}
+                onChangeRowsPerPage={(newPageSize) => setPageSize(newPageSize)}
+                highlightOnHover
+                striped
+                responsive
+                progressPending={loading} // Show loading indicator
+                customStyles={{
+                    headCells: {
+                        style: {
                             backgroundColor: '#f4f4f4',
                             fontWeight: 'bold',
                         },
-                        '& .MuiDataGrid-cell': {
-                            padding: '0 10px',
+                    },
+                    rows: {
+                        style: {
+                            fontSize: '0.875rem',
                         },
-                    }}
-                />
-            </div>
+                    },
+                }}
+            />
         </div>
     );
 }

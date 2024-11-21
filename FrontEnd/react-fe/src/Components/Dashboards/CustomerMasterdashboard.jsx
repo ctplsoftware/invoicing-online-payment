@@ -1,12 +1,8 @@
-import { useEffect, useState } from "react";
-import { DataGrid } from '@mui/x-data-grid';
-import { API } from '../../API.js';
-import { Box } from '@mui/material';
-import { FaEdit } from 'react-icons/fa';
-import { FaPlus, FaMinus } from 'react-icons/fa';
+import React, { useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
+import { API } from "../../API.js";
+import { FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-
-
 
 const CustomerMasterdashboard = () => {
     const api = new API();
@@ -98,83 +94,56 @@ const CustomerMasterdashboard = () => {
         },
     ];
 
-    const handleEditClick = (row) => {
-        navigate(`/landingpage/editcustomer-form/${row.id}`); // Ensure this matches your route definition
-    };
+  // Navigate to edit form
+  const handleEditClick = (row) => {
+    navigate(`/landingpage/editcustomer-form/${row.id}`);
+  };
 
-
-
-
-    return (
-        <div>
-
-
-            <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
-                <div style={{ marginRight: '48px' }}>
-                    <button onClick={() => navigate("/landingpage")}>Customer Create</button>
-
-                </div>
-                <DataGrid
-                    rows={customerData}
-                    columns={columns}
-                    pageSize={5} // Set initial page size to 5
-                    rowsPerPageOptions={[5, 10, 20]} // Allow customization                    pagination
-                    disableExtendRowFullWidth
-
-                    getRowId={(row) => row.id}
-                    sx={{
-                        maxWidth: '200vw', // Limits the width to 95% of the viewport width
-                        '& .MuiDataGrid-columnHeaders': {
-                            backgroundColor: '#f4f4f4',
-                            fontWeight: 'bold',
-                            '&:hover': {
-                                backgroundColor: '#f4f4f4',
-                                cursor: 'default',
-                            },
-                        },
-                        '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within': {
-                            outline: 'none',
-                        },
-                        '& .MuiDataGrid-cell': {
-                            padding: '0 10px',
-                        },
-                    }}
-                />
-            </div>
-
-
-            {/* <DataGrid
-                    rows={customerData}
-                    columns={columns}
-                    rowsPerPageOptions={[5, 10, 20]}
-                    pagination
-                    autoHeight
-                    disableExtendRowFullWidth
-                    getRowId={(row) => row.id}
-                    sx={{
-                        '& .MuiDataGrid-columnHeaders': {
-                            backgroundColor: '#f4f4f4', // Set the background color of column headers
-                            fontWeight: 'bold',
-                            '&:hover': {
-                                backgroundColor: '#f4f4f4', // Prevents hover color change by matching the background
-                                cursor: 'default', // Removes pointer cursor on hover
-                            },
-                        },
-                        '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within': {
-                            outline: 'none', // Removes the focus outline to avoid any hover-like effect
-                        },
-                        '& .MuiDataGrid-cell': {
-                            padding: '0 10px',
-                        },
-                    }}
-                /> */}
-
-
-        </div>
-
-    )
-
-
-}
+  return (
+    <div style={{ width: "100%", padding: "20px", backgroundColor: "#fff", borderRadius: "8px", boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)" }}>
+      <div style={{ display: "flex", float:'right',marginBottom: "20px" ,marginRight:'7%'}}>
+        <button
+        className="btn-save"
+          onClick={() => navigate("/landingpage")}
+          style={{
+            backgroundColor: "#1976d2",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          Create Customer
+        </button>
+      </div>
+      <DataTable
+        title="Customer Master"
+        columns={columns}
+        rows={customerData}
+        pagination
+        highlightOnHover
+        striped
+        responsive
+        fixedHeader
+        fixedHeaderScrollHeight="500px"
+        noDataComponent={<div style={{ textAlign: "center", fontSize: "1rem", color: "#888" }}>No data available</div>}  // Custom message for empty data
+        customStyles={{
+          headCells: {
+            style: {
+              backgroundColor: "#f9f9f9",
+              fontWeight: "bold",
+              fontSize: "0.9rem",
+            },
+          },
+          rows: {
+            style: {
+              fontSize: "0.875rem",
+            },
+          },
+        }}
+      />
+    </div>
+  );
+};
 
 export default CustomerMasterdashboard;

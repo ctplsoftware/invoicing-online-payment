@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import '../Styles/Navbar.css'; // Update this file with new styles
@@ -56,7 +55,7 @@ const Navbar1 = () => {
                 </Navbar.Collapse>
                 <div className="profile d-flex align-items-center">
                     <NavDropdown
-                        title={<ManageAccountsIcon style={{ color: '#ffffff', fontSize: '1.8rem' }} />}
+                        title={<faUserCog style={{ color: '#ffffff', fontSize: '1.8rem' }} />}
                         id="profile-dropdown"
                         align="end"
                         className="custom-dropdown"

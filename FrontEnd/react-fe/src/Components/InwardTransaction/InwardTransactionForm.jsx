@@ -115,13 +115,13 @@ const InwardTransactionForm = () => {
                 </div>
 
                 <div style={{ display: 'flex', gap: '32px' }}>
-                    <div className="pm-button-container" style={{ gap: "10px" }}>
-                        <button onClick={() => navigate("/landingpage/inwardtransactionlist")}>Back</button>
+                    <div className="pm-button-container "  style={{ gap: "10px",marginLeft:'-20%',marginTop:'6%' }}>
+                        <button className='btn-save2' onClick={() => navigate("/landingpage/inwardtransactionlist")}>Back</button>
 
                     </div>
 
-                    <div className="pm-button-container" style={{ gap: "10px" }}>
-                        <button type="submit">Submit</button>
+                    <div className="pm-button-container" style={{ gap: "10px",marginTop:'6%',marginLeft:'80%' }}>
+                        <button className='btn-save' type="submit">Submit</button>
                     </div>
                 </div>
 

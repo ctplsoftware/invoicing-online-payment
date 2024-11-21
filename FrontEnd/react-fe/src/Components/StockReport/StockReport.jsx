@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
-import { useNavigate } from "react-router-dom";
 import { FaEdit } from 'react-icons/fa';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
+import { useNavigate } from "react-router-dom";
 import { API } from '../../API';
-
-
+import DataTable from 'react-data-table-component';
 
 const StockReport = () => {
 
@@ -42,7 +38,6 @@ const StockReport = () => {
                             id: item.id,
                             part_description: item.part_description,
                             quantity: item.quantity,
-
                         };
                     }
                     return acc;
@@ -64,7 +59,6 @@ const StockReport = () => {
         fetchData();
     }, []);
 
-
     const handleSearchChange = (e) => {
         setSearchText(e.target.value);
     };
@@ -82,48 +76,48 @@ const StockReport = () => {
 
 
     return (
-        <div style={{ display: 'contents' }}>
-            <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
-
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-
-                    <div>
-                        <input
-                            type="text"
-                            placeholder="Search..."
-                            value={searchText}
-                            onChange={handleSearchChange}
-                            style={{ width: 'auto', marginBottom: 10 }}
-                        />
-                    </div>
-
+        <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
+            {/* Search bar */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div>
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        value={searchText}
+                        onChange={handleSearchChange}
+                        style={{ width: 'auto', marginBottom: 10 }}
+                    />
                 </div>
+            </div>
 
-                <DataGrid
-                    rows={filteredRows}
-                    columns={columns}
-                    pageSize={pageSize}
-                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                    rowsPerPageOptions={[5, 10, 20]}
-                    pagination
-                    disableExtendRowFullWidth
-                    sx={{
-                        '& .MuiDataGrid-columnHeaders': {
+            {/* DataTable */}
+            <DataTable
+                title="Stock Report"
+                columns={columns}
+                rows={filteredRows}
+                pagination
+                paginationPerPage={pageSize}
+                onChangeRowsPerPage={(newPageSize) => setPageSize(newPageSize)}
+                highlightOnHover
+                striped
+                responsive
+                progressPending={loading} // Show loading indicator
+                customStyles={{
+                    headCells: {
+                        style: {
                             backgroundColor: '#f4f4f4',
                             fontWeight: 'bold',
                         },
-                        '& .MuiDataGrid-cell': {
-                            padding: '0 10px',
+                    },
+                    rows: {
+                        style: {
+                            fontSize: '0.875rem',
                         },
-                    }}
-                />
-            </div>
+                    },
+                }}
+            />
         </div>
-    )
+    );
+};
 
-
-
-}
-
-export default StockReport
+export default StockReport;
