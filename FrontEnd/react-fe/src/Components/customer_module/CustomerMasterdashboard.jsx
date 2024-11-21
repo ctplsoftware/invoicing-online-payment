@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
-import { API } from "../../API.js";
-import { FaEdit } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { DataGrid } from '@mui/x-data-grid';
+import { API } from '../../API.js';
+import { Box } from '@mui/material';
+import { FaEdit } from 'react-icons/fa';
+import { FaPlus, FaMinus } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
+
+
 
 const CustomerMasterdashboard = () => {
     const api = new API();
@@ -24,7 +28,7 @@ const CustomerMasterdashboard = () => {
                 console.log("customerFetchdata....", customerFetchdata);
                 const dataWithSNo = customerFetchdata.map((item, index) => ({
                     ...item,
-                    sno: index + 1 
+                    sno: index + 1
                 }));
                 setCustomerData(dataWithSNo);
 
@@ -32,7 +36,7 @@ const CustomerMasterdashboard = () => {
 
             }
             catch (error) {
-                
+
                 console.error("Error fetching customer data:", error);
 
             }
@@ -70,11 +74,9 @@ const CustomerMasterdashboard = () => {
             headerName: 'Updated At',
             width: 140,
             renderCell: (params) => {
-                // Check if `updated_at` is null
                 if (!params.value) {
-                    return 'No update';  // Display "No update" if null
+                    return 'No update';  
                 }
-                // Format the date if it is not null
                 const formattedDate = new Date(params.value).toLocaleString('en-IN', {
                     dateStyle: 'full',
                     timeStyle: 'medium',
@@ -94,56 +96,53 @@ const CustomerMasterdashboard = () => {
         },
     ];
 
-  // Navigate to edit form
-  const handleEditClick = (row) => {
-    navigate(`/landingpage/editcustomer-form/${row.id}`);
-  };
+    const handleEditClick = (row) => {
+        navigate(`/landingpage/editcustomer-form/${row.id}`); 
+    };
 
-  return (
-    <div style={{ width: "100%", padding: "20px", backgroundColor: "#fff", borderRadius: "8px", boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)" }}>
-      <div style={{ display: "flex", float:'right',marginBottom: "20px" ,marginRight:'7%'}}>
-        <button
-        className="btn-save"
-          onClick={() => navigate("/landingpage")}
-          style={{
-            backgroundColor: "#1976d2",
-            color: "#fff",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
-          Create Customer
-        </button>
-      </div>
-      <DataTable
-        title="Customer Master"
-        columns={columns}
-        rows={customerData}
-        pagination
-        highlightOnHover
-        striped
-        responsive
-        fixedHeader
-        fixedHeaderScrollHeight="500px"
-        noDataComponent={<div style={{ textAlign: "center", fontSize: "1rem", color: "#888" }}>No data available</div>}  // Custom message for empty data
-        customStyles={{
-          headCells: {
-            style: {
-              backgroundColor: "#f9f9f9",
-              fontWeight: "bold",
-              fontSize: "0.9rem",
-            },
-          },
-          rows: {
-            style: {
-              fontSize: "0.875rem",
-            },
-          },
-        }}
-      />
-    </div>
-  );
-};
+
+
+
+    return (
+        <div>
+
+
+            <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
+                <div style={{ marginRight: '48px' }}>
+                    <button onClick={() => navigate("/landingpage")}>Customer Create</button>
+                </div>
+                <DataGrid
+                    rows={customerData}
+                    columns={columns}
+                    pageSize={5}
+                    rowsPerPageOptions={[5, 10, 20]}
+                    disableExtendRowFullWidth
+
+                    getRowId={(row) => row.id}
+                    sx={{
+                        maxWidth: '200vw',
+                        '& .MuiDataGrid-columnHeaders': {
+                            backgroundColor: '#f4f4f4',
+                            fontWeight: 'bold',
+                            '&:hover': {
+                                backgroundColor: '#f4f4f4',
+                                cursor: 'default',
+                            },
+                        },
+                        '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within': {
+                            outline: 'none',
+                        },
+                        '& .MuiDataGrid-cell': {
+                            padding: '0 10px',
+                        },
+                    }}
+                />
+            </div>
+        </div>
+
+    )
+
+
+}
 
 export default CustomerMasterdashboard;

@@ -182,6 +182,50 @@ class API {
 
     }
 
+    async fetch_usermasterdata() {
+
+        const response = await axios.get(`${BaseURL}/user-master-get`)
+
+        return response.data;
+
+    }
+
+
+    async edit_usermaster_fetch(id) {
+        try {
+            const response = await axios.get(`${BaseURL}/edit_usermaster/${id}`);
+            return response.data;
+
+        }
+        catch (error) {
+
+            console.error('Error fetching assets data:', error);
+            throw error; // Re-throw the error to be caught by the caller
+
+        }
+
+    }
+
+
+
+    async update_usermaster(user_master, onSuccess = () => { }, onFailure = () => { }) {
+        try {
+            const response = await axios.put(`${BaseURL}/edit_usermaster_update/${user_master.id}`, user_master);
+            console.log("response...api",response.data);
+
+            if (typeof onSuccess === 'function') {
+                onSuccess(response); // Safely call onSuccess
+            }
+        } catch (error) {
+            console.error('Error updating customer:', error);
+            if (typeof onFailure === 'function') {
+                onFailure(error); // Safely call onFailure
+            }
+        }
+    }
+
+
+
 
 
 

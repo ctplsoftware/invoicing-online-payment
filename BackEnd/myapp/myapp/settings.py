@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
+from django.conf import settings
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +28,7 @@ SECRET_KEY = 'django-insecure-hy^3)hdi!uk^azdu*pz6e^wxfv7=0t18=p#q^ak-(y@=1%xr)1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -157,3 +160,11 @@ CORS_ALLOW_HEADERS = [
     'origin',
     'x-csrftoken',
 ]
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  # Set access token expiry
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    # Set refresh token expiry
+    'ROTATE_REFRESH_TOKENS': True,                 # Issue new refresh token on refresh
+    'BLACKLIST_AFTER_ROTATION': True,              # Blacklist old refresh tokens
+    'AUTH_HEADER_TYPES': ('Bearer',),             # Token type in headers
+}

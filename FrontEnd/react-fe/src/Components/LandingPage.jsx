@@ -2,20 +2,18 @@ import { Route, Routes } from "react-router-dom";
 import Navbar1 from "./Navbar";
 import Dashboard from "./Dashboard";
 import '../Styles/LandingPage.css'
-import UserRoleForm from "./UserRoleForm";
-import SampleViewForm from "./SampleViewForm";
-import EditSampleForm from "./EditSampleForm";
-import CustomerMasterdashboard from "./Dashboards/CustomerMasterdashboard";
-import EditCustomerForm from '../Components/CustomerMasterEdit/EditCustomerForm.jsx'
-import PartMaster from "../Components/PartMaster/PartMasterForm.jsx";
-import PartMasterList from '../Components/PartMaster/PartMasterList.jsx'
-import PartMasterEdit from "../Components/PartMaster/PartMasterEdit.jsx";
-import InwardTransactionForm from "./InwardTransaction/InwardTransactionForm.jsx";
-import InwardTransactionList from "./InwardTransaction/InwardTransactionList.jsx";
-import InwardTransactionEdit from "./InwardTransaction/InwardTransactionEdit.jsx";
-import StockReport from "./StockReport/StockReport.jsx";
-import Admincreate from "./AdminCreate/Admincreate.jsx";
-
+import CustomerMasterdashboard from "./customer_module/CustomerMasterdashboard.jsx";
+import EditCustomerForm from './customer_module/EditCustomerForm.jsx'
+import PartMaster from "./partmaster_module/PartMasterForm.jsx";
+import PartMasterList from './partmaster_module/PartMasterList.jsx'
+import PartMasterEdit from "./partmaster_module/PartMasterEdit.jsx";
+import InwardTransactionForm from "./inwardtransaction_module/InwardTransactionForm.jsx";
+import InwardTransactionList from "./inwardtransaction_module/InwardTransactionList.jsx";
+import InwardTransactionEdit from "./inwardtransaction_module/InwardTransactionEdit.jsx";
+import StockReport from "./stock_report/StockReport.jsx";
+import Usercreate from "./user_create_module/Usercreate.jsx";
+import Userlist from "./user_create_module/Userlist.jsx";
+import Useredit from "./user_create_module/Useredit.jsx";
 const LandingPage = () => {
     return (
         <div className="landingpage">
@@ -25,9 +23,6 @@ const LandingPage = () => {
             <div className="components">
                 <Routes>
                     <Route path="/*" element={<Dashboard />} />
-                    <Route path="/sample-form" element={<UserRoleForm />} />
-                    <Route path="/view-form" element={<SampleViewForm />} />
-                    <Route path="/edit-form/:id" element={<EditSampleForm />} />
                     <Route path='/customermasterdashboard' element={<CustomerMasterdashboard />} />
                     <Route path="/editcustomer-form/:id" element={<EditCustomerForm />} />
                     <Route path="/partmaster-form" element={<PartMaster />} />
@@ -37,7 +32,11 @@ const LandingPage = () => {
                     <Route path="/inwardtransactionlist" element={<InwardTransactionList/>}/>
                     <Route path="/inwardtransactionedit/:id" element={<InwardTransactionEdit/>}/>
                     <Route path="/stockreport" element={<StockReport/>}/>
-                    <Route path="/admincreate" element={<Admincreate/>}/>
+                    <Route path="/usercreate" element={<Usercreate/>}/>
+                    <Route path="/userlist" element={<Userlist/>}/>
+                    <Route path="/useredit/:id" element={<Useredit/>}/>
+
+
                 </Routes>
             </div>
         </div>

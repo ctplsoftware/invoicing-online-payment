@@ -1,29 +1,19 @@
-import React, { useState } from 'react';
 import { API } from '../../API.js';
-import '../../Styles/CustomerMaster.css';
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from 'react-router-dom';
 
-
-
-const PartMaster = () => {
+const PartMasterEdit = () => {
     const api = new API();
     const navigate = useNavigate();
+    const { id } = useParams(); // Get the ID from the URL
 
-
-    
-
-    // Initialize form data state
     const [formData, setFormData] = useState({
         part_description: '',
-        status: 'active',  // default to "active" status
+        status: 'active',  
         unit_price: '',
-        uom:''
-
+        uom: ''
     });
 
-   
-
-    // Handle form input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -32,32 +22,42 @@ const PartMaster = () => {
         });
     };
 
-    // Handle form submission
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await api.part_master_Create(formData);
-            if (response) {
-                alert("Part Added");
-                navigate('/landingpage/partmaster-fecthList')
-                setFormData({
-                    part_description: '',
-                    status: 'active',  // reset to default
-                    unit_price: '',
-                    uom:''
-                });
-            } else {
-                alert("Failed to add part");
+    useEffect(() => {
+        const fetchPartMaster = async () => {
+            try {
+                const partmasterData = await api.editGet_part_master(id);  
+                if (partmasterData) {
+                    setFormData({
+                        id :partmasterData.id,
+                        part_description: partmasterData.part_description,
+                        status: partmasterData.status,
+                        unit_price: partmasterData.unit_price,
+                        uom: partmasterData.uom
+                    });
+                }
+            } catch (error) {
+                console.error("Failed to fetch part data:", error);
             }
+        };
+        fetchPartMaster();
+    }, [id]);
+
+    const handleEditSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            await api.update_part_master(formData); 
+            alert("Update successful");
+            navigate('/landingpage/partmaster-fecthList');  
         } catch (error) {
-            console.error("Error adding part:", error);
+            console.error("Update failed:", error);
+            alert("Update failed. Please try again.");
         }
     };
 
     return (
         <div className="customer-master">
-            <h2>Part Master</h2>
-            <form onSubmit={handleSubmit}>
+            <h2>Part Master Update</h2>
+            <form onSubmit={handleEditSubmit}>
                 <label>
                     Part Description
                     <input
@@ -70,7 +70,6 @@ const PartMaster = () => {
                         autoFocus
                     />
                 </label>
-
 
                 <label>
                     Status
@@ -85,7 +84,6 @@ const PartMaster = () => {
                             <option value="inactive">Inactive</option>
                         </select>
                     </div>
-
                 </label>
 
                 <label>
@@ -115,13 +113,15 @@ const PartMaster = () => {
                             <option value="g">g</option>
                         </select>
                     </div>
-
                 </label>
-                <button  style={{marginLeft:'-40%',marginTop:'6%'}} className="btn-save2" onClick={() => navigate("/landingpage/partmaster-fecthList")}>Back</button>
-                    <button style={{marginTop:'6%'}} className="btn-save" type="submit">Submit</button>
+
+                <button onClick={() => navigate("/landingpage/partmaster-fecthList")}>Back</button>
+
+                <button type="submit">Submit</button>
+                
             </form>
         </div>
     );
 };
 
-export default PartMaster;
+export default PartMasterEdit;

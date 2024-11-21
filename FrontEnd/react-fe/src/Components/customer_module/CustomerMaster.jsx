@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
-import '../Styles/CustomerMaster.css';
-import { API } from '../API.js';
+import '../../Styles/CustomerMaster.css';
+import { API } from '../../API.js';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-import permissionList from '../permission.js';
+import permissionList from '../../permission.js';
 
 
 const CustomerMaster = () => {
@@ -95,7 +95,7 @@ const CustomerMaster = () => {
 
 
 
-                <div className="customer-master">
+                <div className="customer-master" style={{marginLeft:'460px'}}>
 
                     <u><h3 className='headingfont-bold'>Customer Master</h3></u>
                     <form style={{ marginLeft: '6%' }} onSubmit={handleSubmit}>

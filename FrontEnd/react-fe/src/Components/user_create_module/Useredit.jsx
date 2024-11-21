@@ -1,83 +1,86 @@
 import React, { useEffect, useState } from 'react';
 import { API } from '../../API.js';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import '../../Styles/AdminMaster.css'; // Make sure to import the CSS file
 
-const Admincreate = () => {
+const Useredit = () => {
     const api = new API();
     const navigate = useNavigate();
+    const { id } = useParams();
 
     const [formData, setFormData] = useState({
         username: '',
         password: '',
         confirm_password: '',
-        mail: '',
+        email: '',
         customer: '',
-        status: '',
+        status: 'Active',
         role: '',
     });
     const [roledata, setRoleData] = useState([]);
     const [customerName, setCustomerName] = useState([]);
+    const [isCustomerDropdownEnabled, setIsCustomerDropdownEnabled] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        if (name === 'role') {
-            const selectedRole = roledata.find(role => role.name === value);
-            setFormData({
-                ...formData,
-                role: value,
-                role_id: selectedRole ? selectedRole.id : '',  
-            });
-        } else if (name === 'customer') {
-            const selectedCustomer = customerName.find(customer => customer.name === value);
-            setFormData({
-                ...formData,
-                customer: value,
-                customer_id: selectedCustomer ? selectedCustomer.id : '', 
-            });
-        } else {
-            setFormData({
-                ...formData,
-                [name]: value,
-                customer_id :''
-            });
+        // Update formData
+        setFormData({ ...formData, [name]: value });
+
+        // Enable or disable the Customer dropdown based on the selected role
+        if (name === 'role_id') {
+            const selectedRole = roledata.find((role) => role.id === parseInt(value));
+            if (selectedRole?.name === 'Customer') {
+                setIsCustomerDropdownEnabled(true);
+            } else {
+                setIsCustomerDropdownEnabled(false);
+                setFormData((prevData) => ({ ...prevData, customer_id: '' })); // Clear customer_id
+            }
         }
     };
+
 
 
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const rolesfetch = await api.fetch_rolesdata();
+                const rolesfetch = await api.edit_usermaster_fetch(id);
+                const fetch_roles = await api.fetch_rolesdata();
                 const customerNamefetch = await api.customermaster_fetch();
 
-                const fetchedata = rolesfetch.map((item, index) => ({
-                    id: item.id,
-                    name: item.name,
-
-                }));
-
-                const fetchdataincustomer = customerNamefetch.map((item, index) => ({
-
-                    id: item.id,
-                    name: item.name
+                console.log("get succes rolesfetch ", rolesfetch);
 
 
-                }));
+                if (rolesfetch) {
+
+                    setFormData({
+                        id: rolesfetch.id,
+                        username: rolesfetch.username,
+                        email: rolesfetch.email,
+                        customer_id: rolesfetch.customer?.id || '', 
+                        role_id: rolesfetch.groups[0]?.id || '', 
+                        status: rolesfetch.is_active ? 'Active' : 'Inactive',
+                    })
+
+                    const initialRole = fetch_roles.find((role) => role.id === rolesfetch.groups[0]?.id);
+                    setIsCustomerDropdownEnabled(initialRole?.name === 'Customer');
+                }
+
+                // Fetch all roles
+                setRoleData(fetch_roles);
+
+                // Fetch all customers
+                setCustomerName(customerNamefetch);
 
 
-
-                setRoleData(fetchedata);
-                setCustomerName(fetchdataincustomer);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
 
         fetchData();
-    }, []);
+    }, [id]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -88,27 +91,39 @@ const Admincreate = () => {
         console.log("data", formData);
 
         const submitData = {
+            id: formData.id,
             username: formData.username,
             password: formData.password,
-            mail: formData.mail,
+            mail: formData.email,
             status: formData.status,
-            role_id: formData.role_id,   // Send role_id
-            customer_id: formData.customer_id,  // Send customer_id
+            role_id: formData.role_id,
+            customer_id: formData.customer_id,
         };
 
-        console.log("submitData..",submitData);
-        
+        console.log("submitData..", submitData);
 
         try {
-            const response = await api.admin_create(submitData);
-            if (response) {
-                alert("Added");
-            } else {
-                alert("Failed to add part");
-            }
+            await api.update_usermaster(
+                submitData,
+                (response) => {
+                    console.log("response in handleSubmit", response.data);
+                    if (response.data.success) {
+                        alert("User updated successfully!");
+                        navigate('/landingpage/admincreatelist');
+                    } else {
+                        alert("Failed to edit part. Backend returned a failure.");
+                    }
+                },
+                (error) => {
+                    console.error("Error in onFailure:", error);
+                    alert("Failed to edit part. An error occurred.");
+                }
+            );
         } catch (error) {
-            console.error("Error adding part:", error);
+            console.error("Unexpected error in handleSubmit:", error);
+            alert("Failed to edit part. Please try again.");
         }
+    
     };
 
     return (
@@ -123,7 +138,7 @@ const Admincreate = () => {
             boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)'
         }}>
 
-            <h2>Master Create</h2>
+            <h2>User Edit</h2>
             <form onSubmit={handleSubmit} className="admin-create-form">
                 <div className="form-row">
                     <label>
@@ -169,7 +184,7 @@ const Admincreate = () => {
                             type="email"
                             name="mail"
                             placeholder="Enter Email"
-                            value={formData.mail}
+                            value={formData.email}
                             onChange={handleChange}
                             required
                         />
@@ -180,15 +195,15 @@ const Admincreate = () => {
                     <label>
                         Role
                         <select
-                            name="role"
-                            value={formData.role}
+                            name="role_id"
+                            value={formData.role_id}
                             onChange={handleChange}
                             required
                         >
                             <option value="">Select Role</option>
-                            {roledata.map((row, index) => (
-                                <option key={index} value={row.name}>
-                                    {row.name}
+                            {roledata.map((role) => (
+                                <option key={role.id} value={role.id}>
+                                    {role.name}
                                 </option>
                             ))}
                         </select>
@@ -196,18 +211,21 @@ const Admincreate = () => {
                     <label>
                         Customer
                         <select
-                            name="customer"
-                            value={formData.customer}
+                            name="customer_id"
+                            value={formData.customer_id}
                             onChange={handleChange}
                             required
-                            disabled={formData.role !== "Customer"}
+                            disabled={!isCustomerDropdownEnabled}
+
+
                         >
                             <option value="">Select Customer</option>
-                            {customerName.map((row, index) => (
-                                <option key={index} value={row.name}>
-                                    {row.name}
-                                </option>
-                            ))}
+                            {
+                                customerName.map((customer) => (
+                                    <option key={customer.id} value={customer.id}>
+                                        {customer.name}
+                                    </option>
+                                ))}
                         </select>
                     </label>
                 </div>
@@ -234,4 +252,4 @@ const Admincreate = () => {
     );
 };
 
-export default Admincreate;
+export default Useredit;
