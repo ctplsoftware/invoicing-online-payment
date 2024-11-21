@@ -54,7 +54,7 @@ const PartMaster = () => {
             <h2>Part Master</h2>
             <form onSubmit={handleSubmit}>
                 <label>
-                    Part Description
+                    Part Name
                     <input
                         type="text"
                         name="part_description"

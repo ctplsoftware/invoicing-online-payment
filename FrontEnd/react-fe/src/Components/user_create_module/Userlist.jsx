@@ -81,7 +81,7 @@ function Userlist() {
             <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
 
                 <div style={{ marginRight: '48px',marginBottom:'-45px' }}>
-                    <button onClick={() => navigate("/landingpage/admincreate")}>User Create</button>
+                    <button onClick={() => navigate("/landingpage/usercreate")}>User Create</button>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -109,7 +109,7 @@ function Userlist() {
                 </div>
 
                 <DataTable
-                    rows={filteredRows}
+                    data={filteredRows}
                     columns={columns}
                     pageSize={pageSize}
                     onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}

@@ -95,7 +95,7 @@ const CustomerMaster = () => {
 
 
 
-                <div className="customer-master" style={{marginLeft:'460px'}}>
+                <div className="customer-master" style={{ marginLeft: '460px' }}>
 
                     <u><h3 className='headingfont-bold'>Customer Master</h3></u>
                     <form style={{ marginLeft: '6%' }} onSubmit={handleSubmit}>
@@ -133,6 +133,25 @@ const CustomerMaster = () => {
                                 required
                             />
                         </label>
+
+                        <label>
+                            Credit Days
+                            <div className='credit_days'>
+
+                                <select
+                                    name="credit_days"
+                                    value={formData.credit_days}
+                                    onChange={handleChange}
+                                    required
+                                >
+                                    <option value="0">0 days</option>
+                                    <option value="30">30 days</option>
+                                    <option value="60">60 days</option>
+                                    <option value="90">90 days</option>
+                                </select>
+                            </div>
+
+                        </label>
                         <label>
                             Contact Person
                             <input
@@ -155,24 +174,7 @@ const CustomerMaster = () => {
                                 required
                             />
                         </label>
-                        <label>
-                            Credit Days
-                            <div className='credit_days'>
 
-                                <select
-                                    name="credit_days"
-                                    value={formData.credit_days}
-                                    onChange={handleChange}
-                                    required
-                                >
-                                    <option value="0">0 days</option>
-                                    <option value="30">30 days</option>
-                                    <option value="60">60 days</option>
-                                    <option value="90">90 days</option>
-                                </select>
-                            </div>
-
-                        </label>
                         <label>
                             Billing Address
                             <input
@@ -227,7 +229,7 @@ const CustomerMaster = () => {
                     </form>
 
 
-                    <div style={{ display: 'flex', gap: '30%',marginTop:"3%" }}>
+                    <div style={{ display: 'flex', gap: '30%', marginTop: "3%" }}>
                         <div className="pm-button-container" style={{ gap: "10px" }}>
                             <button className="btn-save2" onClick={() => navigate("/landingpage/customermasterdashboard")}>
                                 Go to Customers

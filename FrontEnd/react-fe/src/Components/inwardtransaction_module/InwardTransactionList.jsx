@@ -127,7 +127,7 @@ function InwardTransactionList() {
             <DataTable
                 title="Inward Transaction List"
                 columns={columns}
-                rows={filteredRows}
+                data={filteredRows}
                 pagination
                 paginationPerPage={pageSize}
                 onChangeRowsPerPage={(newPageSize) => setPageSize(newPageSize)}
