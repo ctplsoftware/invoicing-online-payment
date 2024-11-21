@@ -15,41 +15,41 @@ function InwardTransactionList() {
     const navigate = useNavigate();
 
     const columns = [
-        { field: 'Sno', headerName: 'S No', width: 70 },
-        { field: 'part_description', headerName: 'Part Description', flex: 1 },
-        { field: 'quantity', headerName: 'Quantity', flex: 1.5 },
-        { field: 'remarks', headerName: 'Remarks', width: 120 },
+        { name: 'S No', selector: row => row.Sno, width: '70px' },
+        { name: 'Part Description', selector: row => row.part_description, flex: 1 },
+        { name: 'Quantity', selector: row => row.quantity, flex: 1.5 },
+        { name: 'Remarks', selector: row => row.remarks, width: '120px' },
         {
-            field: 'created_at',
-            headerName: 'Created At',
-            width: 150,
-            renderCell: (params) => {
-                const formattedDate = new Date(params.value).toLocaleString('en-IN', {
+            name: 'Created At',
+            selector: row => row.created_at,
+            cell: row => {
+                const formattedDate = new Date(row.created_at).toLocaleString('en-IN', {
                     dateStyle: 'full',
                     timeStyle: 'medium',
-                    timeZone: 'Asia/Kolkata'
+                    timeZone: 'Asia/Kolkata',
                 });
                 return formattedDate;
-            }
+            },
+            width: '150px',
         },
         {
-            field: 'updated_at',
-            headerName: 'Updated At',
-            width: 140,
-            renderCell: (params) => {
-                if (!params.value) {
-                    return 'No update';  
+            name: 'Updated At',
+            selector: row => row.updated_at,
+            cell: row => {
+                if (!row.updated_at) {
+                    return 'No update';
                 }
-                const formattedDate = new Date(params.value).toLocaleString('en-IN', {
+                const formattedDate = new Date(row.updated_at).toLocaleString('en-IN', {
                     dateStyle: 'full',
                     timeStyle: 'medium',
-                    timeZone: 'Asia/Kolkata'
+                    timeZone: 'Asia/Kolkata',
                 });
                 return formattedDate;
-            }
-        }
+            },
+            width: '140px',
+        },
     ];
-
+    
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true); // Start loading

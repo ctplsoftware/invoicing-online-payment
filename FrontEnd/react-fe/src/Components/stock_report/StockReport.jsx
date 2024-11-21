@@ -16,11 +16,11 @@ const StockReport = () => {
     const [loading, setLoading] = useState(true);
 
     const columns = [
-        { field: 'Sno', headerName: 'S No', width: 70 },
-        { field: 'part_description', headerName: 'Part Description', flex: 1 },
-        { field: 'quantity', headerName: 'Quantity', flex: 1.5 },
-
+        { name: 'S No', selector: row => row.Sno, width: '70px' },
+        { name: 'Part Description', selector: row => row.part_description, flex: 1 },
+        { name: 'Quantity', selector: row => row.quantity, flex: 1.5 },
     ];
+    
 
     useEffect(() => {
         const fetchData = async () => {

@@ -15,24 +15,25 @@ function Userlist() {
 
     const api = new API();
     const navigate = useNavigate();
-
     const columns = [
-        { field: 'Sno', headerName: 'S No', width: 90 },
-        { field: 'username', headerName: 'Username', flex: 0.5 },
-        { field: 'email', headerName: 'Email', width: 250 },
-        { field: 'groups', headerName: 'Roles', width: 300 },
-        { field: 'is_active', headerName: 'Status', flex: 1.5 },
-       
-         {
-            field: 'actions',
-            headerName: 'Actions',
-            width: 80,
-            renderCell: (params) => (
-                <FaEdit onClick={() => handleEditClick(params.row)} style={{ height: '20px', width: '50px', cursor: 'pointer' }} />
-            )
-        }
+        { name: 'S No', selector: row => row.Sno, width: '90px' },
+        { name: 'Username', selector: row => row.username, flex: 0.5 },
+        { name: 'Email', selector: row => row.email, width: '250px' },
+        { name: 'Roles', selector: row => row.groups, width: '300px' },
+        { name: 'Status', selector: row => row.is_active, flex: 1.5 },
+        {
+            name: 'Actions',
+            selector: row => row.id,
+            cell: row => (
+                <FaEdit
+                    onClick={() => handleEditClick(row)}
+                    style={{ height: '20px', width: '50px', cursor: 'pointer' }}
+                />
+            ),
+            width: '80px',
+        },
     ];
-
+    
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true); // Start loading

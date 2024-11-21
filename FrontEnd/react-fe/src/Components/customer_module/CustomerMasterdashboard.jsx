@@ -47,54 +47,56 @@ const CustomerMasterdashboard = () => {
     }, [])
 
     const columns = [
-        { field: 'sno', headerName: 'S. No', width: 70 },
-        { field: 'name', headerName: 'Name', width: 150 },
-        { field: 'gstin_number', headerName: 'GSTIN Number', width: 150 },
-        { field: 'delivery_address', headerName: 'Delivery Address', width: 150 },
-        { field: 'billing_address', headerName: 'Billing Address', width: 150 },
-        { field: 'credit_limit', headerName: 'Credit Limit', width: 120 },
-        { field: 'contact_person', headerName: 'Contact Person', width: 150 },
-        { field: 'contact_number', headerName: 'Contact Number', width: 150 },
+        { name: 'S No', selector: row => row.sno, width: '70px' },
+        { name: 'Name', selector: row => row.name, width: '150px' },
+        { name: 'GSTIN Number', selector: row => row.gstin_number, width: '150px' },
+        { name: 'Delivery Address', selector: row => row.delivery_address, width: '150px' },
+        { name: 'Billing Address', selector: row => row.billing_address, width: '150px' },
+        { name: 'Credit Limit', selector: row => row.credit_limit, width: '120px' },
+        { name: 'Contact Person', selector: row => row.contact_person, width: '150px' },
+        { name: 'Contact Number', selector: row => row.contact_number, width: '150px' },
         {
-            field: 'created_at',
-            headerName: 'Created At',
-            width: 180,
-            renderCell: (params) => {
-                const formattedDate = new Date(params.value).toLocaleString('en-IN', {
+            name: 'Created At',
+            selector: row => row.created_at,
+            cell: row => {
+                const formattedDate = new Date(row.created_at).toLocaleString('en-IN', {
                     dateStyle: 'full',
                     timeStyle: 'medium',
-                    timeZone: 'Asia/Kolkata'
+                    timeZone: 'Asia/Kolkata',
                 });
                 return formattedDate;
-            }
+            },
+            width: '180px',
         },
         {
-            field: 'updated_at',
-            headerName: 'Updated At',
-            width: 140,
-            renderCell: (params) => {
-                if (!params.value) {
-                    return 'No update';  
+            name: 'Updated At',
+            selector: row => row.updated_at,
+            cell: row => {
+                if (!row.updated_at) {
+                    return 'No update';
                 }
-                const formattedDate = new Date(params.value).toLocaleString('en-IN', {
+                const formattedDate = new Date(row.updated_at).toLocaleString('en-IN', {
                     dateStyle: 'full',
                     timeStyle: 'medium',
-                    timeZone: 'Asia/Kolkata'
+                    timeZone: 'Asia/Kolkata',
                 });
                 return formattedDate;
-            }
+            },
+            width: '140px',
         },
         {
-            field: 'edit',
-            headerName: 'Edit',
-            width: 100,
-            renderCell: (params) => (
-                <FaEdit onClick={() => handleEditClick(params.row)} style={{ height: '20px', width: '50px', cursor: 'pointer' }} />
-
+            name: 'Actions',
+            selector: row => row.id,
+            cell: row => (
+                <FaEdit
+                    onClick={() => handleEditClick(row)}
+                    style={{ height: '20px', width: '50px', cursor: 'pointer' }}
+                />
             ),
+            width: '100px',
         },
     ];
-
+    
     const handleEditClick = (row) => {
         navigate(`/landingpage/editcustomer-form/${row.id}`); 
     };
@@ -107,8 +109,8 @@ const CustomerMasterdashboard = () => {
 
 
             <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
-                <div style={{ marginRight: '48px' }}>
-                    <button onClick={() => navigate("/landingpage")}>Customer Create</button>
+                <div style={{ marginRight: '5%',marginBottom:'1%' }}>
+                    <button className="btn-save" onClick={() => navigate("/landingpage")}>Customer Create</button>
                 </div>
                 <DataTable
                     rows={customerData}
