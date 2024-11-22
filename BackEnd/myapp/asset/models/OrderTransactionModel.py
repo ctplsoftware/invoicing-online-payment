@@ -12,7 +12,7 @@ class OrderTransaction(models.Model):
 
     id = models.AutoField(primary_key=True)
     part_number = models.CharField(max_length=255)
-    part_description = models.CharField(max_length=255)
+    part_name = models.CharField(max_length=255)
     order_quantity = models.CharField(max_length=50)
     order_mode = models.CharField(max_length=10, choices=ORDER_MODE_CHOICES)
     order_value = models.FloatField()

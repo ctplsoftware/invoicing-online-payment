@@ -16,38 +16,27 @@ function InwardTransactionList() {
 
     const columns = [
         { name: 'S No', selector: row => row.Sno, width: '70px' },
-        { name: 'Part Description', selector: row => row.part_description, flex: 1 },
-        { name: 'Quantity', selector: row => row.quantity, flex: 1.5 },
-        { name: 'Remarks', selector: row => row.remarks, width: '120px' },
+        { name: 'Part Name', selector: row => row.part_name, flex: 1 },
+        { name: 'Inward Quantity', selector: row => row.inward_quantity, flex: 1.5 },
+        { name: 'UOM (unit of measure) ', selector: row => row.uom , width: '220px' },
+        { name: 'comments ', selector: row => row.comments , width: '320px' },
         {
-            name: 'Created At',
-            selector: row => row.created_at,
+            name: 'Inward Date',
+            selector: row => row.inward_date,
             cell: row => {
-                const formattedDate = new Date(row.created_at).toLocaleString('en-IN', {
+                const formattedDate = new Date(row.inward_date).toLocaleString('en-IN', {
                     dateStyle: 'full',
                     timeStyle: 'medium',
                     timeZone: 'Asia/Kolkata',
                 });
                 return formattedDate;
             },
-            width: '150px',
+            width: '350px',
         },
-        {
-            name: 'Updated At',
-            selector: row => row.updated_at,
-            cell: row => {
-                if (!row.updated_at) {
-                    return 'No update';
-                }
-                const formattedDate = new Date(row.updated_at).toLocaleString('en-IN', {
-                    dateStyle: 'full',
-                    timeStyle: 'medium',
-                    timeZone: 'Asia/Kolkata',
-                });
-                return formattedDate;
-            },
-            width: '140px',
-        },
+        { name: 'Inward By ', selector: row => row.inward_by , width: '120px' },
+        
+
+        
     ];
     
     useEffect(() => {
@@ -59,9 +48,12 @@ function InwardTransactionList() {
                 const fetchedata = inwardtransactionfecth.map((item, index) => ({
                     id: item.id,
                     Sno: index + 1,
-                    part_description: item.part_description,
-                    quantity: item.quantity,
-                    remarks: item.remarks,
+                    part_name: item.part_name,
+                    inward_quantity: item.inward_quantity,
+                    comments : item.comments ,
+                    uom :item.uom,
+                    inward_by:item.inward_by,
+                    inward_date:item.inward_date,
                     created_at: item.created_at,
                     updated_at: item.updated_at,
                 }));
@@ -82,7 +74,7 @@ function InwardTransactionList() {
 
     const filteredRows = rows.filter((row) => {
         return (
-            row.part_description.toLowerCase().includes(searchText.toLowerCase()) &&
+            row.part_name.toLowerCase().includes(searchText.toLowerCase()) &&
             (filter ? row.quantity.toLowerCase() === filter : true)
         );
     });

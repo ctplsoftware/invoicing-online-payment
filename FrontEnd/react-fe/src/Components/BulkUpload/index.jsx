@@ -64,7 +64,7 @@ const UserPermissionForm = () => {
                 />
             </div>
             <div id="btn">
-                    <button style={{ float: 'right', marginBottom:'1%' }} type="submit" className="btn-save">Upload</button>
+                    <button style={{ float: 'right', marginBottom:'1%' }} type="Save" className="btn-save">Upload</button>
                 </div>
             <form onSubmit={handleSubmit}>
                 <table>

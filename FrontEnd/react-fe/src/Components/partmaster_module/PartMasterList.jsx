@@ -16,10 +16,11 @@ function PartMasterList() {
 
     const columns = [
         { name: 'S No', selector: row => row.Sno, width: '70px' },
-        { name: 'Part Description', selector: row => row.part_description, flex: 1 },
-        { name: 'Status', selector: row => row.status, width: '110px' },
+        { name: 'Part Name', selector: row => row.part_name, flex: 1 },
         { name: 'Unit Price', selector: row => row.unit_price, flex: 1.5 },
         { name: 'UOM (Unit of Measure)', selector: row => row.uom, width: '120px' },
+        { name: 'Status', selector: row => row.status, width: '110px' },
+
         {
             name: 'Created At',
             selector: row => row.created_at,
@@ -72,7 +73,7 @@ function PartMasterList() {
                 const fetchedata = partmasterfecth.map((item, index) => ({
                     id: item.id,
                     Sno: index + 1,
-                    part_description: item.part_description,
+                    part_name: item.part_name,
                     status: item.status,
                     unit_price: item.unit_price,
                     uom: item.uom,
@@ -96,7 +97,7 @@ function PartMasterList() {
 
     const filteredRows = rows.filter((row) => {
         return (
-            row.part_description.toLowerCase().includes(searchText.toLowerCase()) &&
+            row.part_name.toLowerCase().includes(searchText.toLowerCase()) &&
             (filter ? row.status.toLowerCase() === filter : true)
         );
     });

@@ -254,7 +254,7 @@ const Useredit = () => {
                         </div>
 
                         <div className="pm-button-container" style={{ gap: "10px" }}>
-                            <button className='btn-save' type="submit">Submit</button>
+                            <button className='btn-save' type="Save">Update</button>
                         </div>
                     </div>
             </form>

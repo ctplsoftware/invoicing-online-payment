@@ -17,7 +17,7 @@ const StockReport = () => {
 
     const columns = [
         { name: 'S No', selector: row => row.Sno, width: '70px' },
-        { name: 'Part Description', selector: row => row.part_description, flex: 1 },
+        { name: 'Part Description', selector: row => row.part_name, flex: 1 },
         { name: 'Quantity', selector: row => row.quantity, flex: 1.5 },
     ];
     
@@ -29,14 +29,14 @@ const StockReport = () => {
                 const inwardtransactionfetch = await api.fetch_inward_transaction();
 
                 const itemMap = inwardtransactionfetch.reduce((acc, item) => {
-                    const normalizedDescription = item.part_description.toLowerCase();
+                    const normalizedDescription = item.part_name.toLowerCase();
 
                     if (acc[normalizedDescription]) {
                         acc[normalizedDescription].quantity += item.quantity;
                     } else {
                         acc[normalizedDescription] = {
                             id: item.id,
-                            part_description: item.part_description,
+                            part_name: item.part_name,
                             quantity: item.quantity,
                         };
                     }
@@ -65,7 +65,7 @@ const StockReport = () => {
 
     const filteredRows = rows.filter((row) => {
         return (
-            row.part_description.toLowerCase().includes(searchText.toLowerCase()) &&
+            row.part_name.toLowerCase().includes(searchText.toLowerCase()) &&
             (filter ? row.quantity.toLowerCase() === filter : true)
         );
     });

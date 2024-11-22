@@ -91,6 +91,7 @@ def update_customer(request, id):
         'credit_days': request.data.get('credit_days', customer.credit_days).strip(),
         'contact_person': request.data.get('contact_person', customer.contact_person).strip(),
         'contact_number': request.data.get('contact_number', customer.contact_number).strip(),
+        'status': request.data.get('status', customer.status).strip(),
         'updated_by': '1',  
         'updated_at':timezone.now()
 

@@ -8,9 +8,9 @@ const InwardTransactionEdit = () => {
     const { id } = useParams();
 
     const [formData, setFormData] = useState({
-        part_description: '',
+        part_name: '',
         quantity: '',
-        remarks: ''
+        comments : ''
     });
 
     const handleChange = (e) => {
@@ -30,9 +30,9 @@ const InwardTransactionEdit = () => {
                 if (inwardmasterData) {
                     setFormData({
                         id: inwardmasterData.id,
-                        part_description: inwardmasterData.part_description,
+                        part_name: inwardmasterData.part_name,
                         quantity: inwardmasterData.quantity,
-                        remarks: inwardmasterData.remarks,
+                        comments : inwardmasterData.comments ,
 
                     });
                 }
@@ -57,14 +57,14 @@ const InwardTransactionEdit = () => {
 
     return (
         <div className="customer-master">
-            <h2>Inward Master Update</h2>
+            <h2>Inward Process Update</h2>
             <form onSubmit={handleEditSubmit}>
                 <label>
                     Part Description
                     <div>
                         <select
-                            name="part_description"
-                            value={formData.part_description}
+                            name="part_name"
+                            value={formData.part_name}
                             onChange={handleChange}
                             required
                         >
@@ -86,12 +86,12 @@ const InwardTransactionEdit = () => {
                 </label>
 
                 <label>
-                    Remarks
+                    comments 
                     <input
                         type="text"
-                        name="remarks"
-                        placeholder='Enter Remarks'
-                        value={formData.remarks}
+                        name="comments "
+                        placeholder='Enter comments '
+                        value={formData.comments }
                         onChange={handleChange}
                         required
                     />
@@ -100,7 +100,7 @@ const InwardTransactionEdit = () => {
 
                 <button onClick={() => navigate("/landingpage/inwardtransactionlist")}>Back</button>
 
-                <button type="submit">Submit</button>
+                <button type="Save">Update</button>
 
             </form>
         </div>

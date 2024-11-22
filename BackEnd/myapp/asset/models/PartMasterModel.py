@@ -1,7 +1,7 @@
 from django.db import models
 
 class PartMaster(models.Model):
-    part_description = models.CharField(max_length=255)
+    part_name = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=50)
     unit_price = models.FloatField()
     uom = models.CharField(max_length=100,null=True, blank=True)

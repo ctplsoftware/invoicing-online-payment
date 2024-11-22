@@ -23,14 +23,14 @@ def get_part_master(request):
     # Filter the PartMaster data where status is 'active'
     active_parts = PartMaster.objects.filter(status="active")
     
-    # Extract only the part_description
-    part_descriptions = [part.part_description for part in active_parts]
+    # Extract only the part_name
+    part_names = [part.part_name for part in active_parts]
 
     # Construct the response in the desired format
     return Response({
         'success': True,
         'message': "Valid",
-        'data': part_descriptions
+        'data': part_names
     })
 
 
