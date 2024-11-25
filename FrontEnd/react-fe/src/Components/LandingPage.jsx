@@ -14,6 +14,8 @@ import StockReport from "./stock_report/StockReport.jsx";
 import Usercreate from "./user_create_module/Usercreate.jsx";
 import Userlist from "./user_create_module/Userlist.jsx";
 import Useredit from "./user_create_module/Useredit.jsx";
+import StockDetails from './stock_report/StockDetails.jsx'
+
 const LandingPage = () => {
     return (
         <div className="landingpage">
@@ -35,6 +37,8 @@ const LandingPage = () => {
                     <Route path="/usercreate" element={<Usercreate/>}/>
                     <Route path="/userlist" element={<Userlist/>}/>
                     <Route path="/useredit/:id" element={<Useredit/>}/>
+                    <Route path="/stock-part-details/:partname" element={<StockDetails />} />
+
 
 
                 </Routes>
