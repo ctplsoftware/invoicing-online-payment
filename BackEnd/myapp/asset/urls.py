@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import UserView, CustomerView ,PartMasterView,InwardTransactionView,permissionscheckView,authenticateView ,AndroidAPIView, usercreationView
+from .views import UserView, CustomerView ,PartMasterView,InwardTransactionView,permissionscheckView,authenticateView ,AndroidAPIView, usercreationView,OrderTransactionViews
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
@@ -53,9 +53,13 @@ urlpatterns = [
 
 
 
-
+    #android 
     path('android/generate-inv/get-part-list', AndroidAPIView.get_part_master),
     path('android/generate-inv/get-part-details', AndroidAPIView.get_partmaster_usermaster, name='get_partmaster_usermaster'),
+    path('create-ordertransaction',OrderTransactionViews.create_ordertransaction),
+    path('getOrderTransactions/<str:order_no>', OrderTransactionViews.getOrderTransactionsForOrderNumber),
+    path('create-order--transaction', OrderTransactionViews.create_orderplace_transaction),
+    path('upload-attachments',OrderTransactionViews.upload_attachment)
 
 
 
