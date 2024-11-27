@@ -17,7 +17,11 @@ const LoginPage = () => {
     useEffect(() => {
         const checkAuthentication = async () => {
             const accessToken = localStorage.getItem('accessToken');
+            console.log("accessToken..check authentication",accessToken);
+            
             const refreshToken = localStorage.getItem('refreshToken');
+            console.log("refreshToken.. cheak ",refreshToken);
+
     
             if (accessToken) {
                 const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
