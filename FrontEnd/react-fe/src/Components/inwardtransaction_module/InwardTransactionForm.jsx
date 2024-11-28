@@ -68,7 +68,7 @@ const InwardTransactionForm = () => {
     };
 
     return (
-        <div className="customer-master" style={{marginLeft:'460px'}}>
+        <div className="customer-master" style={{marginLeft:'360px'}}>
             <h2>Inward Transaction Master</h2>
             <form onSubmit={handleSubmit}>
                 <label>

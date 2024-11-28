@@ -109,24 +109,57 @@ function Userlist() {
                 </div>
 
                 <DataTable
-                    data={filteredRows}
-                    columns={columns}
-                    pageSize={pageSize}
-                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                    rowsPerPageOptions={[5, 10, 20]}
-                    pagination
-                    autoHeight
-                    disableExtendRowFullWidth
-                    sx={{
-                        '& .MuiDataGrid-columnHeaders': {
-                            backgroundColor: '#f4f4f4',
-                            fontWeight: 'bold',
+                title="User Management List"
+                columns={columns}
+                data={filteredRows}
+                pagination
+                paginationPerPage={pageSize}
+                onChangeRowsPerPage={(newPageSize) => setPageSize(newPageSize)}
+                highlightOnHover
+                striped
+                responsive
+                progressPending={loading}
+                customStyles={{
+                    headCells: {
+                        style: {
+                            backgroundColor: "#0b5ca0",
+                            color: '#ffffff',
+                            '&:hover': {
+                                backgroundColor: "#0b5ca0",
+                            },
                         },
-                        '& .MuiDataGrid-cell': {
-                            padding: '0 10px',
+                        activeSortStyle: {
+                            '&:hover': {
+                                color: 'white',
+                            },
                         },
-                    }}
-                />
+                    },
+                    rows: {
+                        style: {
+                            border: '0.4px solid #e0e0e0',
+                        },
+                    },
+                    headCells: {
+                        style: {
+                            backgroundColor: "#0b5ca0",
+                            color: '#ffffff', fontSize: '15px',
+                            fontWeight: 'bold'
+                        },
+                    },
+                    cells: {
+                        style: {
+                            border: '0.4px solid #e0e0e0',
+                        },
+                    },
+                    pagination: {
+                        style: {
+                            fontSize: '12px',
+                            padding: '10px',
+                            justifyContent: 'flex-end', // Align pagination to the left
+                        },
+                    },
+                }}
+            />
             </div>
         </div>
     );

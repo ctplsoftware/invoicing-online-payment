@@ -132,7 +132,7 @@ const CustomerMasterdashboard = () => {
 
             {/* DataTable */}
             <DataTable
-                title="Customer Master Dashboard"
+                title="Customer Master List"
                 columns={columns}
                 data={filteredRows}
                 pagination
@@ -141,17 +141,44 @@ const CustomerMasterdashboard = () => {
                 highlightOnHover
                 striped
                 responsive
-                progressPending={loading} // Loading spinner
+                progressPending={loading}
                 customStyles={{
                     headCells: {
                         style: {
-                            backgroundColor: '#f4f4f4',
-                            fontWeight: 'bold',
+                            backgroundColor: "#0b5ca0",
+                            color: '#ffffff',
+                            '&:hover': {
+                                backgroundColor: "#0b5ca0",
+                            },
+                        },
+                        activeSortStyle: {
+                            '&:hover': {
+                                color: 'white',
+                            },
                         },
                     },
                     rows: {
                         style: {
-                            fontSize: '0.875rem',
+                            border: '0.4px solid #e0e0e0',
+                        },
+                    },
+                    headCells: {
+                        style: {
+                            backgroundColor: "#0b5ca0",
+                            color: '#ffffff', fontSize: '15px',
+                            fontWeight: 'bold'
+                        },
+                    },
+                    cells: {
+                        style: {
+                            border: '0.4px solid #e0e0e0',
+                        },
+                    },
+                    pagination: {
+                        style: {
+                            fontSize: '12px',
+                            padding: '10px',
+                            justifyContent: 'flex-end', // Align pagination to the left
                         },
                     },
                 }}

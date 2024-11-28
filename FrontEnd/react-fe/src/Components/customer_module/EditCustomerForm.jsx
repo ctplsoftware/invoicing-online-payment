@@ -8,12 +8,12 @@ import React, { useEffect, useState } from 'react';
 
 
 const EditCustomerForm = ({ }) => {
-    const { id } = useParams(); 
+    const { id } = useParams();
     const navigate = useNavigate();
 
 
-    const [currentCustomer, setCurrentCustomer] = useState({}); 
-    const [additionalAddresses, setAdditionalAddresses] = useState([""]); 
+    const [currentCustomer, setCurrentCustomer] = useState({});
+    const [additionalAddresses, setAdditionalAddresses] = useState([""]);
     const [editMode, setEditMode] = useState(false);
     const [customerData, setCustomerData] = useState([]);
 
@@ -23,7 +23,7 @@ const EditCustomerForm = ({ }) => {
     useEffect(() => {
         const fetchCustomer = async () => {
             const api = new API();
-            const customerData = await api.customerMasterEditFetch(id); 
+            const customerData = await api.customerMasterEditFetch(id);
             setCurrentCustomer({
                 'id': customerData.id,
                 'name': customerData.name,
@@ -38,7 +38,7 @@ const EditCustomerForm = ({ }) => {
             setAdditionalAddresses([
                 customerData.additional_address1 || "",
                 customerData.additional_address2 || ""
-            ].filter(address => address)); 
+            ].filter(address => address));
         };
 
         fetchCustomer();
@@ -220,17 +220,18 @@ const EditCustomerForm = ({ }) => {
 
 
 
-                <div style={{ display: 'flex', gap: '32px' }}>
+                <div style={{ display: 'flex', gap: '30%', marginTop: "3%" }}>
                     <div className="pm-button-container" style={{ gap: "10px" }}>
-                        <button onClick={() => navigate("/landingpage/customermasterdashboard")}>
+                        <button className="btn-save2" onClick={() => navigate("/landingpage/customermasterdashboard")}>
                             Go to Customers
                         </button>
                     </div>
 
                     <div className="pm-button-container" style={{ gap: "10px" }}>
-                        <button type="submit">Submit</button>
+                        <button className='btn-save' type="submit">Submit</button>
                     </div>
-                </div>            </form>
+                </div>
+            </form>
         </div>
     );
 };

@@ -126,7 +126,7 @@ const Usercreate = () => {
 
         }}>
 
-            <h2>User Create</h2>
+            <h3 class="nonheadingfont-bold">User Create</h3>
             <form onSubmit={handleSubmit} className="admin-create-form">
                 <div className="form-row">
                     <label>
