@@ -59,7 +59,7 @@ urlpatterns = [
     path('create-ordertransaction',AndroidAPIView.create_ordertransaction),
     path('getOrderTransactions/<str:order_no>', AndroidAPIView.getOrderTransactionsForOrderNumber),
     path('create-order--transaction', AndroidAPIView.create_orderplace_transaction),
-    path('upload-attachments',AndroidAPIView.upload_attachment)
+    path('upload-attachments',AndroidAPIView.upload_attachment),
 
 
 

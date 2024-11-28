@@ -106,7 +106,7 @@ const CustomerMasterdashboard = () => {
             <div style={{ marginRight: '5%', marginBottom: '1%' }}>
                 <button
                     className="btn-save"
-                    onClick={() => navigate("/landingpage")}
+                    onClick={() => navigate("/landingpage/customermastercreate")}
                 >
                     Customer Create
                 </button>

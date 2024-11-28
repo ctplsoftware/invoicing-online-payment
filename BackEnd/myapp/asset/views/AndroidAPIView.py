@@ -23,6 +23,8 @@ from ..models.AttachmentsModel import Attachment
 from ..serializers.AttachmentsSerializer import AttachmentsSerializer
 from ..serializers.OrderPlacedTransactionSerializer import OrderPlacedTransactionSerializer
 from django.utils.timezone import now
+import os
+
 
 
 
@@ -229,6 +231,66 @@ def create_orderplace_transaction(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    
+@api_view(['GET'])
+def getOrderTransactions(request):
+    try:
+        # Fetch all order records
+        orders = OrderTransaction.objects.all()
+
+        # Serialize the order data into a list of dictionaries
+        order_data = [
+            {
+                "unit_price": order.unit_price,
+                "qty": order.quantity,
+                "total_amount": order.total_amount,
+                "uom": order.uom,
+            }
+            for order in orders
+        ]
+
+        return Response({
+            'success': True,
+            'message': "Valid",
+            'data': order_data
+        })
+    except Exception as e:
+        return Response({
+            'success': False,
+            'message': f"An error occurred: {str(e)}",
+            'data': None
+        })    
+        
+        
+@api_view(['GET'])
+def getPendingOrderTransactions(request):
+    try:
+        # Fetch only pending orders
+        pending_orders = OrderTransaction.objects.filter(status='pending')
+
+        # Serialize the pending order data into a list of dictionaries
+        pending_order_data = [
+            {
+                "unit_price": order.unit_price,
+                "qty": order.quantity,
+                "total_amount": order.total_amount,
+                "uom": order.uom,
+            }
+            for order in pending_orders
+        ]
+
+        return Response({
+            'success': True,
+            'message': "Valid",
+            'data': pending_order_data
+        })
+    except Exception as e:
+        return Response({
+            'success': False,
+            'message': f"An error occurred: {str(e)}",
+            'data': None
+        })        
            
     
 @api_view(['POST'])
@@ -241,10 +303,4 @@ def upload_attachment(request):
     serializer = AttachmentsSerializer(attachment)
     
     return Response(serializer.data, status=status.HTTP_201_CREATED)    
-
-
-    
-        
-        
-
 

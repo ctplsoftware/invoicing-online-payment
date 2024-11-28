@@ -15,6 +15,7 @@ import Usercreate from "./user_create_module/Usercreate.jsx";
 import Userlist from "./user_create_module/Userlist.jsx";
 import Useredit from "./user_create_module/Useredit.jsx";
 import StockDetails from './stock_report/StockDetails.jsx'
+import CustomerMaster from "./customer_module/CustomerMaster.jsx";
 
 const LandingPage = () => {
     return (
@@ -25,6 +26,7 @@ const LandingPage = () => {
             <div className="components">
                 <Routes>
                     <Route path="/*" element={<Dashboard />} />
+                    <Route path='/customermastercreate' element={<CustomerMaster />} />
                     <Route path='/customermasterdashboard' element={<CustomerMasterdashboard />} />
                     <Route path="/editcustomer-form/:id" element={<EditCustomerForm />} />
                     <Route path="/partmaster-form" element={<PartMaster />} />
