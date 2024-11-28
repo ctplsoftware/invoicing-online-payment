@@ -13,7 +13,7 @@ const PartMaster = () => {
     
 
     const [formData, setFormData] = useState({
-        part_description: '',
+        part_name: '',
         status: 'active',  
         unit_price: '',
         uom:''
@@ -36,7 +36,7 @@ const PartMaster = () => {
                 alert("Part Added");
                 navigate('/landingpage/partmaster-fecthList')
                 setFormData({
-                    part_description: '',
+                    part_name: '',
                     status: 'active',  
                     unit_price: '',
                     uom:''
@@ -57,31 +57,15 @@ const PartMaster = () => {
                     Part Name
                     <input
                         type="text"
-                        name="part_description"
-                        placeholder='Enter Part Description'
-                        value={formData.part_description}
+                        name="part_name"
+                        placeholder='Enter Part Name'
+                        value={formData.part_name}
                         onChange={handleChange}
                         required
                         autoFocus
                     />
                 </label>
 
-
-                <label>
-                    Status
-                    <div>
-                        <select
-                            name="status"
-                            value={formData.status}
-                            onChange={handleChange}
-                            required
-                        >
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                    </div>
-
-                </label>
 
                 <label>
                     Unit Price
@@ -105,14 +89,30 @@ const PartMaster = () => {
                             required
                         >
                             <option value="">Select UOM</option>
-                            <option value="kg">kg</option>
                             <option value="tons">tons</option>
                         </select>
                     </div>
 
                 </label>
+
+                
+                <label>
+                    Status
+                    <div>
+                        <select
+                            name="status"
+                            value={formData.status}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+
+                </label>
                 <button  style={{marginLeft:'-40%',marginTop:'6%'}} className="btn-save2" onClick={() => navigate("/landingpage/partmaster-fecthList")}>Back</button>
-                    <button style={{marginTop:'6%'}} className="btn-save" type="submit">Submit</button>
+                    <button style={{marginTop:'6%'}} className="btn-save" type="Save">Save</button>
             </form>
         </div>
     );

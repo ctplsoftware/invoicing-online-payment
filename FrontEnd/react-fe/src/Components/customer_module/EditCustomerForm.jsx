@@ -24,6 +24,8 @@ const EditCustomerForm = ({ }) => {
         const fetchCustomer = async () => {
             const api = new API();
             const customerData = await api.customerMasterEditFetch(id);
+            console.log("customerData...", customerData);
+
             setCurrentCustomer({
                 'id': customerData.id,
                 'name': customerData.name,
@@ -33,8 +35,11 @@ const EditCustomerForm = ({ }) => {
                 'credit_limit': customerData.credit_limit,
                 'credit_days': customerData.credit_days,
                 'contact_person': customerData.contact_person,
-                'contact_number': customerData.contact_number
+                'contact_number': customerData.contact_number,
+                'status': customerData.status
             });
+            console.log("currentCustomer.status", customerData.status);
+
             setAdditionalAddresses([
                 customerData.additional_address1 || "",
                 customerData.additional_address2 || ""
@@ -218,6 +223,22 @@ const EditCustomerForm = ({ }) => {
                 ))}
 
 
+                <label>
+                    Status
+                    <div>
+                        <select
+                            name="status"
+                            value={currentCustomer.status}
+                            onChange={handleInputChange}
+                            required
+                        >
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </label>
+
+
 
 
                 <div style={{ display: 'flex', gap: '30%', marginTop: "3%" }}>
@@ -228,7 +249,7 @@ const EditCustomerForm = ({ }) => {
                     </div>
 
                     <div className="pm-button-container" style={{ gap: "10px" }}>
-                        <button className='btn-save' type="submit">Submit</button>
+                        <button className='btn-save' type="submit">Update</button>
                     </div>
                 </div>
             </form>

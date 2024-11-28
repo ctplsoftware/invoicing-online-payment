@@ -8,7 +8,7 @@ const PartMasterEdit = () => {
     const { id } = useParams(); // Get the ID from the URL
 
     const [formData, setFormData] = useState({
-        part_description: '',
+        part_name: '',
         status: 'active',  
         unit_price: '',
         uom: ''
@@ -29,7 +29,7 @@ const PartMasterEdit = () => {
                 if (partmasterData) {
                     setFormData({
                         id :partmasterData.id,
-                        part_description: partmasterData.part_description,
+                        part_name: partmasterData.part_name,
                         status: partmasterData.status,
                         unit_price: partmasterData.unit_price,
                         uom: partmasterData.uom
@@ -59,31 +59,16 @@ const PartMasterEdit = () => {
             <h2>Part Master Update</h2>
             <form onSubmit={handleEditSubmit}>
                 <label>
-                    Part Description
+                    Part Name
                     <input
                         type="text"
-                        name="part_description"
-                        placeholder='Enter Part Description'
-                        value={formData.part_description}
+                        name="part_name"
+                        placeholder='Enter Part Name'
+                        value={formData.part_name}
                         onChange={handleChange}
                         required
                         autoFocus
                     />
-                </label>
-
-                <label>
-                    Status
-                    <div>
-                        <select
-                            name="status"
-                            value={formData.status}
-                            onChange={handleChange}
-                            required
-                        >
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                    </div>
                 </label>
 
                 <label>
@@ -108,16 +93,29 @@ const PartMasterEdit = () => {
                             required
                         >
                             <option value="">Select UOM</option>
-                            <option value="mg">mg</option>
-                            <option value="kg">kg</option>
-                            <option value="g">g</option>
+                            <option value="tons">tons</option>
+                        </select>
+                    </div>
+                </label>
+
+                <label>
+                    Status
+                    <div>
+                        <select
+                            name="status"
+                            value={formData.status}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
                         </select>
                     </div>
                 </label>
 
                 <button  className='btn-save2 ' style={{marginLeft:'-45%'}} onClick={() => navigate("/landingpage/partmaster-fecthList")}>Back</button>
 
-                <button className='btn-save' type="submit">Submit</button>
+                <button className='btn-save' type="submit">Update</button>
                 
             </form>
         </div>

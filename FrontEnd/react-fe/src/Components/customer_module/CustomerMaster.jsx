@@ -53,6 +53,8 @@ const CustomerMaster = () => {
     };
 
     const handleSubmit = async (e) => {
+        console.log("hitt");
+        
         e.preventDefault();
         try {
             console.log(formData);
@@ -226,7 +228,6 @@ const CustomerMaster = () => {
 
 
 
-                    </form>
 
 
                     <div style={{ display: 'flex', gap: '30%', marginTop: "3%" }}>
@@ -237,11 +238,14 @@ const CustomerMaster = () => {
                         </div>
 
                         <div className="pm-button-container" style={{ gap: "10px" }}>
-                            <button className='btn-save' type="submit">Submit</button>
+                            <button className='btn-save' type="Save">Save</button>
                         </div>
                     </div>
 
+                    </form>
+
                 </div>
+
 
             )
 

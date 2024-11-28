@@ -16,10 +16,11 @@ function PartMasterList() {
 
     const columns = [
         { name: 'S No', selector: row => row.Sno, width: '70px' },
-        { name: 'Part Description', selector: row => row.part_description, grow: 2 },
+        { name: 'Part Name', selector: row => row.part_name, flex: 1 },
+        { name: 'Unit Price', selector: row => row.unit_price, flex: 1.5 },
+        { name: 'UOM (Unit of Measure)', selector: row => row.uom, width: '120px' },
         { name: 'Status', selector: row => row.status, width: '110px' },
-        { name: 'Unit Price', selector: row => row.unit_price, grow: 1 },
-        { name: 'UOM (Unit of Measure)', selector: row => row.uom, width: '140px' },
+
         {
             name: 'Created At',
             selector: row => row.created_at,
@@ -65,7 +66,7 @@ function PartMasterList() {
                 const fetchedData = partmasterfetch.map((item, index) => ({
                     id: item.id,
                     Sno: index + 1,
-                    part_description: item.part_description,
+                    part_name: item.part_name,
                     status: item.status,
                     unit_price: item.unit_price,
                     uom: item.uom,
@@ -87,10 +88,12 @@ function PartMasterList() {
         setSearchText(e.target.value);
     };
 
-    const filteredRows = rows.filter(row => (
-        row.part_description.toLowerCase().includes(searchText.toLowerCase()) &&
-        (filter ? row.status.toLowerCase() === filter : true)
-    ));
+    const filteredRows = rows.filter((row) => {
+        return (
+            row.part_name.toLowerCase().includes(searchText.toLowerCase()) &&
+            (filter ? row.status.toLowerCase() === filter : true)
+        );
+    });
 
     const handleEditClick = (row) => {
         navigate(`/landingpage/partmaster-edit/${row.id}`);

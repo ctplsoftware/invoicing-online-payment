@@ -5,3 +5,4 @@ class InwardTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = InwardTransaction
         fields = '__all__' 
+

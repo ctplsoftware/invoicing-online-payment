@@ -13,10 +13,15 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 from django.conf import settings
+import os
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+MEDIA_URL = '/media/'  # URL to access uploaded files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Path to save uploaded files
 
 
 # Quick-start development settings - unsuitable for production

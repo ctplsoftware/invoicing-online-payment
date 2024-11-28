@@ -158,12 +158,12 @@ class API {
 
 
 
-    // admin create 
-    async admin_create(data) {
+    // User create 
+    async user_create(data) {
         try {
             console.log("datasss in api", data);
 
-            const response = await axios.post(`${BaseURL}/admin_create`, data)
+            const response = await axios.post(`${BaseURL}/user_create`, data)
 
             return response.data;
 

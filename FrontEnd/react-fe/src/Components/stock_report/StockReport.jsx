@@ -16,11 +16,32 @@ const StockReport = () => {
     const [loading, setLoading] = useState(true);
 
     const columns = [
-        { name: 'S No', selector: row => row.Sno, width: '100px' },
-        { name: 'Part Description', selector: row => row.part_description, flex: 1 },
-        { name: 'Quantity', selector: row => row.quantity, flex: 1.5 },
+        { name: 'S No', selector: row => row.Sno, width: '70px' },
+        { name: 'Part Name', selector: row => row.part_name, flex: 1 },
+        { 
+            name: 'Current Stock', 
+            cell: row => (
+                <span 
+                    style={{
+                        color: 'blue',
+                        textDecoration: 'underline',
+                        cursor: 'pointer'
+                    }} 
+                    onClick={() => handleQuantityClick(row.part_name)}
+                >
+                    {row.inward_quantity}
+                </span>
+            ), 
+            flex: 1.5 
+        },
     ];
-    
+
+        const handleQuantityClick = (partName) => {
+            console.log('Clicked Part Name:', partName);
+            // Navigate to another page or perform an API call with the partName
+            navigate(`/landingpage/stock-part-details/${encodeURIComponent(partName)}`);
+        };
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -29,15 +50,15 @@ const StockReport = () => {
                 const inwardtransactionfetch = await api.fetch_inward_transaction();
 
                 const itemMap = inwardtransactionfetch.reduce((acc, item) => {
-                    const normalizedDescription = item.part_description.toLowerCase();
+                    const normalizedDescription = item.part_name.toLowerCase();
 
                     if (acc[normalizedDescription]) {
-                        acc[normalizedDescription].quantity += item.quantity;
+                        acc[normalizedDescription].inward_quantity += item.inward_quantity;
                     } else {
                         acc[normalizedDescription] = {
                             id: item.id,
-                            part_description: item.part_description,
-                            quantity: item.quantity,
+                            part_name: item.part_name,
+                            inward_quantity: item.inward_quantity,
                         };
                     }
                     return acc;
@@ -65,8 +86,8 @@ const StockReport = () => {
 
     const filteredRows = rows.filter((row) => {
         return (
-            row.part_description.toLowerCase().includes(searchText.toLowerCase()) &&
-            (filter ? row.quantity.toLowerCase() === filter : true)
+            row.part_name.toLowerCase().includes(searchText.toLowerCase()) &&
+            (filter ? row.inward_quantity.toLowerCase() === filter : true)
         );
     });
 

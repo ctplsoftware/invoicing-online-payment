@@ -3,6 +3,8 @@ import '../../Styles/Loginpage.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { fetchAndStorePermissions } from '../Permissions/PermissionsProvider';
+import { BaseURL } from "../../utils";
+
 const LoginPage = () => {
     const navigate = useNavigate();
     const [isLogin, setIsLogin] = useState(true);
@@ -15,7 +17,11 @@ const LoginPage = () => {
     useEffect(() => {
         const checkAuthentication = async () => {
             const accessToken = localStorage.getItem('accessToken');
+            console.log("accessToken..check authentication",accessToken);
+            
             const refreshToken = localStorage.getItem('refreshToken');
+            console.log("refreshToken.. cheak ",refreshToken);
+
     
             if (accessToken) {
                 const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
@@ -50,7 +56,7 @@ const LoginPage = () => {
         const data = { username: l_username, password: l_password };
     
         try {
-            const res = await axios.post("http://localhost:8000/login/", data);
+            const res = await axios.post(`${BaseURL}/login/`, data);
     
             // Store tokens and user details
             localStorage.setItem("accessToken", res.data.access);

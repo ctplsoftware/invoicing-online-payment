@@ -100,10 +100,10 @@ const Usercreate = () => {
         
 
         try {
-            const response = await api.admin_create(submitData);
+            const response = await api.user_create(submitData);
             if (response) {
                 alert("Added");
-                navigate('/landingpage/admincreatelist');
+                navigate('/landingpage/userlist');
 
             } else {
                 alert("Failed to add part");
@@ -240,7 +240,7 @@ const Usercreate = () => {
                         </div>
 
                         <div className="pm-button-container" style={{ gap: "10px" }}>
-                            <button className='btn-save' type="submit">Submit</button>
+                            <button className='btn-save' type="Save">Save</button>
                         </div>
                     </div>
 

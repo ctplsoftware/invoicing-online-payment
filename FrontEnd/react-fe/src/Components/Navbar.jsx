@@ -106,7 +106,7 @@ const Navbar1 = () => {
                 onMouseLeave={() => setShowSubmenu(false)} // Close submenu when leaving
             >
                 <Nav className="d-flex " style={{marginLeft:'3%',paddingRight:'3%'}}>
-                    {[ 'Masters', 'Reports', 'User Management'].map((title, index) => (
+                    {[ 'Masters', 'Reports', 'User Management','Process'].map((title, index) => (
                         <NavDropdown
     key={index}
     title={<span className="nav-dropdown-title">{title}</span>}
@@ -121,12 +121,16 @@ const Navbar1 = () => {
         <>
             <NavDropdown.Item href="/landingpage/customermasterdashboard">Customer Master </NavDropdown.Item>
             <NavDropdown.Item href="/landingpage/partmaster-fecthList">Part Master </NavDropdown.Item>
-            <NavDropdown.Item href="/landingpage/inwardtransactionlist">Inward Transaction </NavDropdown.Item>
         </>
     ) : title === 'User Management' ? (
-        <NavDropdown.Item href="/landingpage/usercreate">User Master</NavDropdown.Item>
+        <NavDropdown.Item href="/landingpage/usercreate">User</NavDropdown.Item>
         
-    ) : (
+    ): title === 'Process' ? (
+        <NavDropdown.Item href="/landingpage/inwardtransactionlist">Inward Process </NavDropdown.Item>
+        
+    )
+    
+    : (
         <NavDropdown.Item href="/landingpage/stockreport">Stock Report </NavDropdown.Item>
 
     )}

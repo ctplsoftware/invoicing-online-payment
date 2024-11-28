@@ -246,7 +246,17 @@ const Useredit = () => {
                     </label>
                 </div>
 
-                <button type="submit">Submit</button>
+                <div style={{ display: 'flex', gap: '10%', marginTop: "3%" }}>
+                        <div className="pm-button-container" style={{ gap: "10px" }}>
+                            <button className="btn-save2" onClick={() => navigate("/landingpage/userlist")}>
+                                Go to user
+                            </button>
+                        </div>
+
+                        <div className="pm-button-container" style={{ gap: "10px" }}>
+                            <button className='btn-save' type="Save">Update</button>
+                        </div>
+                    </div>
             </form>
         </div>
     );
