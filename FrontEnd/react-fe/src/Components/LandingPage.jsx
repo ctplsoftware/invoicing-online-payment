@@ -43,7 +43,7 @@ const LandingPage = () => {
                     <Route path="/userlist" element={<Userlist/>}/>
                     <Route path="/useredit/:id" element={<Useredit/>}/>
                     <Route path="/stock-part-details/:partname" element={<StockDetails />} />
-                    <Route path="/locationmaster" element={<LocationMaster />} />
+                    <Route path="/locationmastercreate" element={<LocationMaster />} />
                     <Route path="/locationmasterlist" element={<LocationMasterList />} />
                     <Route path="/locationmasteredit/:id" element={<LocationMasterEdit />} />
 
