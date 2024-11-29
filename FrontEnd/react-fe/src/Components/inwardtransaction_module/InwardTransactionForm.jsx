@@ -14,12 +14,12 @@ const InwardTransactionForm = () => {
         inward_quantity: '',
         comments: '',
         uom: '',
+        location_id:'',
     });
 
     const [partdatafetch, setPartDataFetch] = useState([]);
 
-
-
+    const [locationnamefetch, setLocationnamefetch] = useState([]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -33,10 +33,19 @@ const InwardTransactionForm = () => {
         const fetchData = async () => {
             try {
                 const inwardTransactioncreate = await api.get_part_master();
+                const locationnamefetch = await api.fetch_locationmasterdata();
                 console.log("Fetched Part Data:", inwardTransactioncreate);
                 const activeParts = inwardTransactioncreate.filter(
                     (part) => part.status === "active"
                 );
+
+                const locationactive = locationnamefetch.filter(
+                    (locationget) => locationget.status === 'active'
+                );
+
+                setLocationnamefetch(locationactive || [])
+
+
 
                 setPartDataFetch(activeParts || []);
             } catch (error) {
@@ -54,17 +63,16 @@ const InwardTransactionForm = () => {
 
             const userDetails = localStorage.getItem("userDetails");
 
-                const parsedUserDetails = JSON.parse(userDetails); // Parse the JSON string
-                const username = parsedUserDetails.user?.username; // Safely access the username
-                console.log("Username:", username);
-           
-            
+            const parsedUserDetails = JSON.parse(userDetails); // Parse the JSON string
+            const username = parsedUserDetails.user?.username; // Safely access the username
 
             // Add username to formData
             const dataToSubmit = {
                 ...formData,
-                inward_by: username, 
+                inward_by: username,
             };
+            console.log("dataToSubmit",dataToSubmit);
+            
             const response = await api.inwardTransactioncreate(dataToSubmit);
             if (response) {
                 alert("Inward Added");
@@ -131,6 +139,25 @@ const InwardTransactionForm = () => {
                     </div>
 
                 </label>
+
+
+                <label>
+                    Location Name
+                    <select
+                        name="location_id" // Use location_id as the name
+                        value={formData.location_id}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="">Select Location Name</option>
+                        {locationnamefetch.map((row) => (
+                            <option key={row.id} value={row.id}>
+                                {row.name}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+
                 <label>
                     Comments
                     <input

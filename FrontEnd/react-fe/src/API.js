@@ -240,7 +240,7 @@ class API {
         }
     }
 
-    async fetch_usermasterdata() {
+    async fetch_locationmasterdata() {
 
         const response = await axios.get(`${BaseURL}/locationmaster_list`)
 

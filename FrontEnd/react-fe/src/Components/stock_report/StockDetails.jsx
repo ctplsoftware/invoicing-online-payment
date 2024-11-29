@@ -19,7 +19,6 @@ const StockDetails = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                console.log("Fetching details for part:", partname);
                 const inwardTransactionFetch = await api.fetch_inward_transaction();
 
                 // Filter data for the specific part_name
@@ -27,11 +26,15 @@ const StockDetails = () => {
                     item => item.part_name.toLowerCase() === partname.toLowerCase()
                 );
 
+                
                 // Add unique id property for DataGrid
                 const formattedData = filteredData.map((item, index) => ({
-                    id: index + 1, // Ensure unique ID for DataGrid rows
+                    Sno: index + 1, // Ensure unique ID for DataGrid rows
                     ...item,
                 }));
+
+                console.log("formattedData...",formattedData);
+                
 
                 setRows(formattedData);
             } catch (error) {
@@ -48,15 +51,27 @@ const StockDetails = () => {
 
 
     const columns = [
-        { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'part_name', headerName: 'Part Name', width: 150 },
-        { field: 'inward_quantity', headerName: 'Quantity', width: 150 },
-        { field: 'uom', headerName: 'UOM', width: 100 },
-        { field: 'comments', headerName: 'Comments', width: 200 },
-        { field: 'inward_date', headerName: 'Inward Date', width: 200 },
-        { field: 'inward_by', headerName: 'Inward By', width: 150 },
-
+        { name: 'Sno', selector: row => row.Sno, width: '70px' },
+        { name: 'Part Name', selector: row => row.part_name, width: '150px' },
+        { name: 'Quantity', selector: row => row.inward_quantity, width: '150px' },
+        { name: 'UOM', selector: row => row.uom, width: '100px' },
+        { name: 'Comments', selector: row => row.comments, width: '200px' },
+        {
+            name: 'Inward date',
+            selector: row => row.inward_date,
+            cell: row => {
+                const formattedDate = new Date(row.inward_date).toLocaleString('en-IN', {
+                    dateStyle: 'medium',
+                    timeStyle: 'short',
+                    timeZone: 'Asia/Kolkata',
+                });
+                return formattedDate;
+            },
+            width: '180px',
+        },
+        { name: 'Inward By', selector: row => row.inward_by, width: '173px' },
     ];
+    
 
     return (
         <div style={{ height: 268, width: '60%', marginLeft: '278px', marginTop: '29px' }}>
@@ -64,6 +79,7 @@ const StockDetails = () => {
             <DataTable
                 title="Stock Report"
                 columns={columns}
+                data={rows}
                 loading={loading}
                 pagination
                 paginationPerPage={pageSize}

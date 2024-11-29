@@ -102,7 +102,7 @@ function PartMasterList() {
     return (
         <div style={{ width: '90%', margin: '20px auto', fontFamily: 'Arial, sans-serif' }}>
             {/* Create Button */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '15px' }}>
+            <div style={{  justifyContent: 'flex-end', marginBottom: '15px' }}>
                 <button
                     onClick={() => navigate("/landingpage/partmaster-form")}
                     style={{

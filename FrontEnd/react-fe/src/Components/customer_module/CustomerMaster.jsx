@@ -53,7 +53,6 @@ const CustomerMaster = () => {
     };
 
     const handleSubmit = async (e) => {
-        console.log("hitt");
         
         e.preventDefault();
         try {
@@ -63,9 +62,6 @@ const CustomerMaster = () => {
                 ...formData,
                 additional_addresses: additionalAddresses,
             };
-
-            console.log("completeFormData...", completeFormData);
-
 
             const response = await api.save_customer(completeFormData);
             if (response) {

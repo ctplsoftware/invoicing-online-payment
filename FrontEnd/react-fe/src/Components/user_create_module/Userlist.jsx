@@ -40,6 +40,9 @@ function Userlist() {
             try {
                 const usermasterfecth = await api.fetch_usermasterdata();
 
+                console.log("usermasterfecth",usermasterfecth);
+                
+
                 const fetchedata = usermasterfecth.map((item, index) => ({
                     id: item.id, // Unique ID for DataGrid
                     Sno: index + 1, // S.No starting from 1
@@ -67,8 +70,8 @@ function Userlist() {
 
     const filteredRows = rows.filter((row) => {
         return (
-            row.username.toLowerCase().includes(searchText.toLowerCase()) &&
-            (filter ? row.status.toLowerCase() === filter : true)
+            row.username?.toLowerCase().includes(searchText.toLowerCase()) &&
+            (filter ? row.is_active?.toLowerCase() === filter : true)
         );
     });
 

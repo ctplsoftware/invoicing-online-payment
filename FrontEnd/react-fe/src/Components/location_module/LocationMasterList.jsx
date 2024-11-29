@@ -66,7 +66,7 @@ function LocationMasterList() {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const locationmasterfecth = await api.fetch_usermasterdata();
+                const locationmasterfecth = await api.fetch_locationmasterdata();
                 console.log("afafafaf",locationmasterfecth);
                 
 
