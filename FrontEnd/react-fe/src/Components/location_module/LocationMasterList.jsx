@@ -111,14 +111,7 @@ function LocationMasterList() {
             <div style={{ marginRight: '48px', marginBottom: '-45px' }}>
                 <button
                     onClick={() => navigate("/landingpage/locationmastercreate")}
-                    style={{
-                        padding: '10px 20px',
-                        backgroundColor: '#1976d2',
-                        color: '#fff',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                    }}
+                   className='btn-save'
                 >
                     Location Create
                 </button>
@@ -150,26 +143,53 @@ function LocationMasterList() {
 
             {/* DataTable for displaying rows */}
             <DataTable
-                title="Location Master List"
+                title="Stock Report"
                 columns={columns}
-                data={filteredRows} // Correct prop name
+                loading={loading}
                 pagination
                 paginationPerPage={pageSize}
                 onChangeRowsPerPage={(newPageSize) => setPageSize(newPageSize)}
                 highlightOnHover
                 striped
                 responsive
-                progressPending={loading} // Show loading indicator
+                progressPending={loading}
                 customStyles={{
                     headCells: {
                         style: {
-                            backgroundColor: '#f4f4f4',
-                            fontWeight: 'bold',
+                            backgroundColor: "#0b5ca0",
+                            color: '#ffffff',
+                            '&:hover': {
+                                backgroundColor: "#0b5ca0",
+                            },
+                        },
+                        activeSortStyle: {
+                            '&:hover': {
+                                color: 'white',
+                            },
                         },
                     },
                     rows: {
                         style: {
-                            fontSize: '0.875rem',
+                            border: '0.4px solid #e0e0e0',
+                        },
+                    },
+                    headCells: {
+                        style: {
+                            backgroundColor: "#0b5ca0",
+                            color: '#ffffff', fontSize: '15px',
+                            fontWeight: 'bold'
+                        },
+                    },
+                    cells: {
+                        style: {
+                            border: '0.4px solid #e0e0e0',
+                        },
+                    },
+                    pagination: {
+                        style: {
+                            fontSize: '12px',
+                            padding: '10px',
+                            justifyContent: 'flex-end', // Align pagination to the left
                         },
                     },
                 }}
