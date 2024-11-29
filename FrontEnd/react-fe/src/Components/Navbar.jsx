@@ -121,6 +121,8 @@ const Navbar1 = () => {
         <>
             <NavDropdown.Item href="/landingpage/customermasterdashboard">Customer Master </NavDropdown.Item>
             <NavDropdown.Item href="/landingpage/partmaster-fecthList">Part Master </NavDropdown.Item>
+            <NavDropdown.Item href="/landingpage/locationmasterlist">Location Master </NavDropdown.Item>
+
         </>
     ) : title === 'User Management' ? (
         <NavDropdown.Item href="/landingpage/usercreate">User</NavDropdown.Item>

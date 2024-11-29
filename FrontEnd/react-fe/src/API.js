@@ -224,6 +224,62 @@ class API {
         }
     }
 
+    //Location master
+
+    async locationmaster_create(data) {
+        try {
+
+            const response = await axios.post(`${BaseURL}/locationmaster_create`, data)
+
+            return response.data;
+
+
+        } catch (error) {
+            console.error('Error updating customer:', error);
+
+        }
+    }
+
+    async fetch_usermasterdata() {
+
+        const response = await axios.get(`${BaseURL}/locationmaster_list`)
+
+        return response.data;
+
+    }
+
+
+    async edit_location_fetch(id) {
+        try {
+            const response = await axios.get(`${BaseURL}/locationmaster_edit/${id}`);
+            return response.data;
+
+        }
+        catch (error) {
+
+            console.error('Error fetching assets data:', error);
+            throw error; // Re-throw the error to be caught by the caller
+
+        }
+
+    }
+
+    async update_locationmaster(location_master, onSuccess = () => { }, onFailure = () => { }) {
+        try {
+            const response = await axios.put(`${BaseURL}/edit_locationmaster_update/${location_master.id}`, location_master);
+            console.log("response...api",response.data);
+
+            if (typeof onSuccess === 'function') {
+                onSuccess(response); // Safely call onSuccess
+            }
+        } catch (error) {
+            console.error('Error updating customer:', error);
+            if (typeof onFailure === 'function') {
+                onFailure(error); // Safely call onFailure
+            }
+        }
+    }
+
 
 
 

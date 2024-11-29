@@ -16,6 +16,9 @@ import Userlist from "./user_create_module/Userlist.jsx";
 import Useredit from "./user_create_module/Useredit.jsx";
 import StockDetails from './stock_report/StockDetails.jsx'
 import CustomerMaster from "./customer_module/CustomerMaster.jsx";
+import LocationMaster from "./location_module/LocationMasterForm.jsx";
+import LocationMasterList from "./location_module/LocationMasterList.jsx";
+import LocationMasterEdit from "./location_module/LocationMasterEdit.jsx";
 
 const LandingPage = () => {
     return (
@@ -40,6 +43,11 @@ const LandingPage = () => {
                     <Route path="/userlist" element={<Userlist/>}/>
                     <Route path="/useredit/:id" element={<Useredit/>}/>
                     <Route path="/stock-part-details/:partname" element={<StockDetails />} />
+                    <Route path="/locationmaster" element={<LocationMaster />} />
+                    <Route path="/locationmasterlist" element={<LocationMasterList />} />
+                    <Route path="/locationmasteredit/:id" element={<LocationMasterEdit />} />
+
+
 
 
 

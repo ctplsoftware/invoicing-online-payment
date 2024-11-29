@@ -8,3 +8,4 @@ from .PartMasterModel import PartMaster
 from .UserMasterModel import UserMaster
 from .OrderPlacedTransactionModel import OrderPlacedTransaction
 from .AttachmentsModel import Attachment
+from .LocationMasterModel import LoactionMaster
