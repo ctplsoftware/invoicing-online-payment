@@ -8,8 +8,8 @@ function PartMasterList() {
     const [pageSize, setPageSize] = useState(5);
     const [searchText, setSearchText] = useState('');
     const [filter, setFilter] = useState('');
-    const [rows, setRows] = useState([]); // To store API data
-    const [loading, setLoading] = useState(true); // Loading state
+    const [rows, setRows] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const api = new API();
     const navigate = useNavigate();
@@ -26,40 +26,35 @@ function PartMasterList() {
             selector: row => row.created_at,
             cell: row => {
                 const formattedDate = new Date(row.created_at).toLocaleString('en-IN', {
-                    dateStyle: 'full',
-                    timeStyle: 'medium',
+                    dateStyle: 'medium',
+                    timeStyle: 'short',
                     timeZone: 'Asia/Kolkata',
                 });
                 return formattedDate;
             },
-            width: '150px',
+            width: '180px',
         },
         {
             name: 'Updated At',
             selector: row => row.updated_at,
-            cell: row => {
-                if (!row.updated_at) {
-                    return 'No update';
-                }
-                const formattedDate = new Date(row.updated_at).toLocaleString('en-IN', {
-                    dateStyle: 'full',
-                    timeStyle: 'medium',
+            cell: row => row.updated_at
+                ? new Date(row.updated_at).toLocaleString('en-IN', {
+                    dateStyle: 'medium',
+                    timeStyle: 'short',
                     timeZone: 'Asia/Kolkata',
-                });
-                return formattedDate;
-            },
-            width: '140px',
+                })
+                : 'No update',
+            width: '180px',
         },
         {
             name: 'Actions',
-            selector: row => row.id,
             cell: row => (
                 <FaEdit
                     onClick={() => handleEditClick(row)}
-                    style={{ height: '20px', width: '50px', cursor: 'pointer' }}
+                    style={{ height: '20px', width: '80px', cursor: 'pointer', color: '#1976d2' }}
                 />
             ),
-            width: '80px',
+            width: '130px',
         },
     ];
 
@@ -67,10 +62,8 @@ function PartMasterList() {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const partmasterfecth = await api.get_part_master();
-                console.log("partmasterfecth", partmasterfecth);
-
-                const fetchedata = partmasterfecth.map((item, index) => ({
+                const partmasterfetch = await api.get_part_master();
+                const fetchedData = partmasterfetch.map((item, index) => ({
                     id: item.id,
                     Sno: index + 1,
                     part_name: item.part_name,
@@ -80,7 +73,7 @@ function PartMasterList() {
                     created_at: item.created_at,
                     updated_at: item.updated_at,
                 }));
-                setRows(fetchedata);
+                setRows(fetchedData);
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
@@ -107,9 +100,9 @@ function PartMasterList() {
     };
 
     return (
-        <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
-            {/* Button to create new Part */}
-            <div style={{ marginRight: '48px', marginBottom: '-45px' }}>
+        <div style={{ width: '90%', margin: '20px auto', fontFamily: 'Arial, sans-serif' }}>
+            {/* Create Button */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '15px' }}>
                 <button
                     onClick={() => navigate("/landingpage/partmaster-form")}
                     style={{
@@ -121,61 +114,93 @@ function PartMasterList() {
                         cursor: 'pointer',
                     }}
                 >
-                    Part Create
+                    Create Part
                 </button>
             </div>
 
             {/* Search and Filter */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div>
-                    <input
-                        type="text"
-                        placeholder="Search..."
-                        value={searchText}
-                        onChange={handleSearchChange}
-                        style={{ width: 'auto', marginBottom: 10 }}
-                    />
-                </div>
-                <div>
-                    <select
-                        value={filter}
-                        onChange={(e) => setFilter(e.target.value)}
-                        style={{ marginBottom: 10 }}
-                    >
-                        <option value="">All</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
-                </div>
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+                <input
+                    type="text"
+                    placeholder="Search..."
+                    value={searchText}
+                    onChange={handleSearchChange}
+                    style={{
+                        padding: '8px 12px',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        width: '250px',
+                    }}
+                />
+                <select
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                    style={{
+                        padding: '8px 12px',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        width: '150px',
+                    }}
+                >
+                    <option value="">All</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
             </div>
 
-            {/* DataTable for displaying rows */}
+            {/* DataTable */}
             <DataTable
                 title="Part Master List"
                 columns={columns}
-                data={filteredRows} // Correct prop name
+                data={filteredRows}
                 pagination
                 paginationPerPage={pageSize}
                 onChangeRowsPerPage={(newPageSize) => setPageSize(newPageSize)}
                 highlightOnHover
                 striped
                 responsive
-                progressPending={loading} // Show loading indicator
+                progressPending={loading}
                 customStyles={{
                     headCells: {
                         style: {
-                            backgroundColor: '#f4f4f4',
-                            fontWeight: 'bold',
+                            backgroundColor: "#0b5ca0",
+                            color: '#ffffff',
+                            '&:hover': {
+                                backgroundColor: "#0b5ca0",
+                            },
+                        },
+                        activeSortStyle: {
+                            '&:hover': {
+                                color: 'white',
+                            },
                         },
                     },
                     rows: {
                         style: {
-                            fontSize: '0.875rem',
+                            border: '0.4px solid #e0e0e0',
+                        },
+                    },
+                    headCells: {
+                        style: {
+                            backgroundColor: "#0b5ca0",
+                            color: '#ffffff', fontSize: '15px',
+                            fontWeight: 'bold'
+                        },
+                    },
+                    cells: {
+                        style: {
+                            border: '0.4px solid #e0e0e0',
+                        },
+                    },
+                    pagination: {
+                        style: {
+                            fontSize: '12px',
+                            padding: '10px',
+                            justifyContent: 'flex-end', // Align pagination to the left
                         },
                     },
                 }}
             />
-
         </div>
     );
 }

@@ -31,7 +31,23 @@ function InwardTransactionList() {
                 });
                 return formattedDate;
             },
-            width: '350px',
+            width: '250px',
+        },
+        {
+            name: 'Updated At',
+            selector: row => row.updated_at,
+            cell: row => {
+                if (!row.updated_at) {
+                    return 'No update';
+                }
+                const formattedDate = new Date(row.updated_at).toLocaleString('en-IN', {
+                    dateStyle: 'full',
+                    timeStyle: 'medium',
+                    timeZone: 'Asia/Kolkata',
+                });
+                return formattedDate;
+            },
+            width: '170px',
         },
         { name: 'Inward By ', selector: row => row.inward_by , width: '120px' },
         
@@ -126,17 +142,44 @@ function InwardTransactionList() {
                 highlightOnHover
                 striped
                 responsive
-                progressPending={loading} // Show loading indicator
+                progressPending={loading}
                 customStyles={{
                     headCells: {
                         style: {
-                            backgroundColor: '#f4f4f4',
-                            fontWeight: 'bold',
+                            backgroundColor: "#0b5ca0",
+                            color: '#ffffff',
+                            '&:hover': {
+                                backgroundColor: "#0b5ca0",
+                            },
+                        },
+                        activeSortStyle: {
+                            '&:hover': {
+                                color: 'white',
+                            },
                         },
                     },
                     rows: {
                         style: {
-                            fontSize: '0.875rem',
+                            border: '0.4px solid #e0e0e0',
+                        },
+                    },
+                    headCells: {
+                        style: {
+                            backgroundColor: "#0b5ca0",
+                            color: '#ffffff', fontSize: '15px',
+                            fontWeight: 'bold'
+                        },
+                    },
+                    cells: {
+                        style: {
+                            border: '0.4px solid #e0e0e0',
+                        },
+                    },
+                    pagination: {
+                        style: {
+                            fontSize: '12px',
+                            padding: '10px',
+                            justifyContent: 'flex-end', // Align pagination to the left
                         },
                     },
                 }}

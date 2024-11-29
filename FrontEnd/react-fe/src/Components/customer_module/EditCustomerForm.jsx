@@ -241,17 +241,18 @@ const EditCustomerForm = ({ }) => {
 
 
 
-                <div style={{ display: 'flex', gap: '32px' }}>
+                <div style={{ display: 'flex', gap: '30%', marginTop: "3%" }}>
                     <div className="pm-button-container" style={{ gap: "10px" }}>
-                        <button onClick={() => navigate("/landingpage/customermasterdashboard")}>
+                        <button className="btn-save2" onClick={() => navigate("/landingpage/customermasterdashboard")}>
                             Go to Customers
                         </button>
                     </div>
 
                     <div className="pm-button-container" style={{ gap: "10px" }}>
-                        <button type="Save">Update</button>
+                        <button className='btn-save' type="submit">Update</button>
                     </div>
-                </div>            </form>
+                </div>
+            </form>
         </div>
     );
 };

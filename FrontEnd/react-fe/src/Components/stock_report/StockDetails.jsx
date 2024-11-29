@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
-import { DataGrid } from '@mui/x-data-grid';
 import { API } from '../../API';
 import { useNavigate } from "react-router-dom";
+import DataTable from 'react-data-table-component';
+
 
 
 const StockDetails = () => {
     const { partname } = useParams(); // Get part_name from the URL
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [pageSize, setPageSize] = useState(5);
 
     const api = new API();
     const navigate = useNavigate();
@@ -42,6 +44,9 @@ const StockDetails = () => {
         fetchData();
     }, [partname]);
 
+   
+
+
     const columns = [
         { field: 'id', headerName: 'ID', width: 70 },
         { field: 'part_name', headerName: 'Part Name', width: 150 },
@@ -56,12 +61,57 @@ const StockDetails = () => {
     return (
         <div style={{ height: 268, width: '60%', marginLeft: '278px', marginTop: '29px' }}>
             <h6 style={{ marginRight: '822px' }}><b>Details for Part :</b> {decodeURIComponent(partname)}</h6>
-            <DataGrid
-                rows={rows}
+            <DataTable
+                title="Stock Report"
                 columns={columns}
                 loading={loading}
-                disableSelectionOnClick
-                hideFooter
+                pagination
+                paginationPerPage={pageSize}
+                onChangeRowsPerPage={(newPageSize) => setPageSize(newPageSize)}
+                highlightOnHover
+                striped
+                responsive
+                progressPending={loading}
+                customStyles={{
+                    headCells: {
+                        style: {
+                            backgroundColor: "#0b5ca0",
+                            color: '#ffffff',
+                            '&:hover': {
+                                backgroundColor: "#0b5ca0",
+                            },
+                        },
+                        activeSortStyle: {
+                            '&:hover': {
+                                color: 'white',
+                            },
+                        },
+                    },
+                    rows: {
+                        style: {
+                            border: '0.4px solid #e0e0e0',
+                        },
+                    },
+                    headCells: {
+                        style: {
+                            backgroundColor: "#0b5ca0",
+                            color: '#ffffff', fontSize: '15px',
+                            fontWeight: 'bold'
+                        },
+                    },
+                    cells: {
+                        style: {
+                            border: '0.4px solid #e0e0e0',
+                        },
+                    },
+                    pagination: {
+                        style: {
+                            fontSize: '12px',
+                            padding: '10px',
+                            justifyContent: 'flex-end', // Align pagination to the left
+                        },
+                    },
+                }}
             />
 
             <span style={{marginRight:'92px'}}>
