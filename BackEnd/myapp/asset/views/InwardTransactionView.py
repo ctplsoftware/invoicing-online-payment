@@ -11,7 +11,8 @@ def create_inwardTransaction(request):
     data = request.data.copy() 
     data['created_by'] = 1
     data['updated_by'] = 1
-    locationmaster = request.data.get('location_id')
+    location_id = data.get('location_id')
+    data['locationmaster'] = location_id
     serializer = InwardTransactionSerializer(data=data )
 
     if serializer.is_valid():

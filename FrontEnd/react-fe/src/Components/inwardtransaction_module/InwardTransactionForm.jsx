@@ -113,6 +113,23 @@ const InwardTransactionForm = () => {
                 </label>
 
                 <label>
+                    Location Name
+                    <select
+                        name="location_id" // Use location_id as the name
+                        value={formData.location_id}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="">Select Location Name</option>
+                        {locationnamefetch.map((row) => (
+                            <option key={row.id} value={row.id}>
+                                {row.name}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+
+                <label>
                     Inward Quantity
                     <input
                         type="text"
@@ -141,22 +158,7 @@ const InwardTransactionForm = () => {
                 </label>
 
 
-                <label>
-                    Location Name
-                    <select
-                        name="location_id" // Use location_id as the name
-                        value={formData.location_id}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="">Select Location Name</option>
-                        {locationnamefetch.map((row) => (
-                            <option key={row.id} value={row.id}>
-                                {row.name}
-                            </option>
-                        ))}
-                    </select>
-                </label>
+               
 
                 <label>
                     Comments

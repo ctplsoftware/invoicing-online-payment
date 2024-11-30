@@ -36,13 +36,13 @@ const LoginPage = () => {
                             refresh: refreshToken,
                         });
                         localStorage.setItem('accessToken', response.data.access);
-                        navigate('/login'); // Redirect if token refreshed successfully
+                        navigate('/'); // Redirect if token refreshed successfully
                     } catch {
                         localStorage.clear();
-                        navigate('/login');
+                        navigate('/');
                     }
                 } else {
-                    navigate('/login'); // No valid tokens, redirect to login
+                    navigate('/'); // No valid tokens, redirect to login
                 }
             }
         };

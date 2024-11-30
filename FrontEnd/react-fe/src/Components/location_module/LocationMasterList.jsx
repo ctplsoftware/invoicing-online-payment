@@ -25,29 +25,25 @@ function LocationMasterList() {
             selector: row => row.created_at,
             cell: row => {
                 const formattedDate = new Date(row.created_at).toLocaleString('en-IN', {
-                    dateStyle: 'full',
-                    timeStyle: 'medium',
+                    dateStyle: 'medium',
+                    timeStyle: 'short',
                     timeZone: 'Asia/Kolkata',
                 });
                 return formattedDate;
             },
-            width: '150px',
+            width: '180px',
         },
         {
             name: 'Updated At',
             selector: row => row.updated_at,
-            cell: row => {
-                if (!row.updated_at) {
-                    return 'No update';
-                }
-                const formattedDate = new Date(row.updated_at).toLocaleString('en-IN', {
-                    dateStyle: 'full',
-                    timeStyle: 'medium',
+            cell: row => row.updated_at
+                ? new Date(row.updated_at).toLocaleString('en-IN', {
+                    dateStyle: 'medium',
+                    timeStyle: 'short',
                     timeZone: 'Asia/Kolkata',
-                });
-                return formattedDate;
-            },
-            width: '140px',
+                })
+                : 'No update',
+            width: '180px',
         },
         {
             name: 'Actions',
@@ -143,8 +139,8 @@ function LocationMasterList() {
 
             {/* DataTable for displaying rows */}
             <DataTable
-                title="Stock Report"
                 columns={columns}
+                data={filteredRows}
                 loading={loading}
                 pagination
                 paginationPerPage={pageSize}

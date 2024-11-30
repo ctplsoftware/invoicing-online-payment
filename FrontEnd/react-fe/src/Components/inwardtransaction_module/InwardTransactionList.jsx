@@ -25,29 +25,13 @@ function InwardTransactionList() {
             selector: row => row.inward_date,
             cell: row => {
                 const formattedDate = new Date(row.inward_date).toLocaleString('en-IN', {
-                    dateStyle: 'full',
-                    timeStyle: 'medium',
+                    dateStyle: 'medium',
+                    timeStyle: 'short',
                     timeZone: 'Asia/Kolkata',
                 });
                 return formattedDate;
             },
-            width: '250px',
-        },
-        {
-            name: 'Updated At',
-            selector: row => row.updated_at,
-            cell: row => {
-                if (!row.updated_at) {
-                    return 'No update';
-                }
-                const formattedDate = new Date(row.updated_at).toLocaleString('en-IN', {
-                    dateStyle: 'full',
-                    timeStyle: 'medium',
-                    timeZone: 'Asia/Kolkata',
-                });
-                return formattedDate;
-            },
-            width: '170px',
+            width: '180px',
         },
         { name: 'Inward By ', selector: row => row.inward_by , width: '120px' },
         
