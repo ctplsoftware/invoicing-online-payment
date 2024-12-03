@@ -19,6 +19,7 @@ import CustomerMaster from "./customer_module/CustomerMaster.jsx";
 import LocationMaster from "./location_module/LocationMasterForm.jsx";
 import LocationMasterList from "./location_module/LocationMasterList.jsx";
 import LocationMasterEdit from "./location_module/LocationMasterEdit.jsx";
+import CustomerDashboard from "./customer_module/CustomerDashboard.jsx";
 
 const LandingPage = () => {
     return (
@@ -46,6 +47,8 @@ const LandingPage = () => {
                     <Route path="/locationmastercreate" element={<LocationMaster />} />
                     <Route path="/locationmasterlist" element={<LocationMasterList />} />
                     <Route path="/locationmasteredit/:id" element={<LocationMasterEdit />} />
+                    <Route path="/customerdashboard" element={<CustomerDashboard />} />
+
 
 
 
