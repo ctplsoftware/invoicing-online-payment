@@ -24,6 +24,7 @@ from ..serializers.AttachmentsSerializer import AttachmentsSerializer
 from ..serializers.OrderPlacedTransactionSerializer import OrderPlacedTransactionSerializer
 from django.utils.timezone import now
 import os
+from ..models.CustomerMasterModel import CustomerMaster
 
 
 
@@ -56,7 +57,7 @@ def get_partmaster_usermaster(request):
 
         customers = CustomerMaster.objects.filter(status='active', id=userid)
         
-        parts = PartMaster.objects.filter(status='active', part_description__icontains=part_desc)
+        parts = PartMaster.objects.filter(status='active', part_name__icontains=part_desc)
         
         if not customers.exists() or not parts.exists():
             return Response({
@@ -90,8 +91,8 @@ def get_partmaster_usermaster(request):
 
         # Calculate stock (total_quantity) from InwardTransaction
         total_quantity = (
-            InwardTransaction.objects.filter(part_description__icontains=part_desc)
-            .aggregate(total_quantity=Sum('quantity'))
+            InwardTransaction.objects.filter(part_name__icontains=part_desc)
+            .aggregate(total_quantity=Sum('inward_quantity'))
             .get('total_quantity', 0)
         )
 
@@ -112,8 +113,7 @@ def get_partmaster_usermaster(request):
             'message': f"An error occurred: {str(e)}",
             'data': None
         })
-        
-        
+
 @api_view(['POST'])
 def create_ordertransaction(request):
     try:
@@ -126,18 +126,18 @@ def create_ordertransaction(request):
             new_order_no = "000001"  # Start with "000001" if no orders exist
 
         # Fetch part details based on part_desc
-        part_desc = request.data.get('part_desc')  # Assume `part_desc` is sent in the request body
+        part_desc = request.data.get('part_desc')
         if not part_desc:
-            return Response({"error": "part_desc is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
+            raise ValueError("part_desc is required")
+
         part = PartMaster.objects.filter(part_name=part_desc).first()
         if not part:
-            return Response({"error": "Part not found"}, status=status.HTTP_404_NOT_FOUND)
-        
+            raise ValueError("Part not found")
+
         # Calculate tax and total amount
-        quantity = request.data.get("quantity")
+        quantity = request.data.get("qty")
         if not quantity or int(quantity) <= 0:
-            return Response({"error": "quantity must be a positive number"}, status=status.HTTP_400_BAD_REQUEST)
+            raise ValueError("quantity must be a positive number")
         
         quantity = int(quantity)
         unit_price = part.unit_price
@@ -145,11 +145,58 @@ def create_ordertransaction(request):
         tax_percentage = 18  # Hardcoded tax percentage
         tax_amount = (amount_for_qty * tax_percentage) / 100
         total_amount = amount_for_qty + tax_amount
+        
+        payment_type = request.data.get("payment_type")
+        user_id= request.data.get("user_id")
+        status = "pending"
+
+
+        if payment_type == 'credit':
+            try:
+                # Fetch the customer record
+                customer = CustomerMaster.objects.get(id=user_id)
+                
+                # Convert credit_limit to a numeric type
+                try:
+                    credit_limit = float(customer.credit_limit)  # Attempt to convert CharField to float
+                except ValueError:
+                    raise ValueError("Invalid credit limit value in database. Please check and update.")
+
+                # Ensure total_amount is a float or Decimal
+                total_amount = float(total_amount)  # Convert Decimal to float if needed
+
+                # Calculate the new credit limit
+                actual_creditlimit = credit_limit - total_amount
+
+                # Ensure the new credit limit is not negative
+                if actual_creditlimit < 0:
+                    raise ValueError("Insufficient credit limit for this transaction.")
+
+                # Update the credit limit in the database
+                customer.credit_limit = str(actual_creditlimit)  # Convert back to string for CharField
+                customer.save()
+
+                # Change status to verified for credit payment
+                status = "verified"
+        
+            except CustomerMaster.DoesNotExist:
+                return Response({
+                    'success': False,
+                    'message': "Customer not found."
+                }, )
+            except Exception as e:
+                return Response({
+                    'success': False,
+                    'message': f"An error occurred: {str(e)}"
+                }, )
+                    
+            
 
         # Populate fields for the order transaction
         data = {
             "order_no": new_order_no,
-            "part": part.id,  # Use the part ID
+            "part": part.id,
+            "uom": part.uom,
             "quantity": quantity,
             "unit_price": unit_price,
             "amount_for_qty": amount_for_qty,
@@ -158,23 +205,43 @@ def create_ordertransaction(request):
             "transaction_id": 1,
             "invoice_no": 1,
             "delivery_address": request.data.get("delivery_address"),
-            'created_by' : request.data.get("user_id"),
+            "created_by": request.data.get("user_id"),
+            "payment_type": request.data.get("payment_type"),
+            "status": status
         }
 
         serializer = OrderTransactionSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
+        # Return only the order number
+        return Response({
+            'success': True,
+            'message': "Valid",
+            'data': {
+                'order_no': new_order_no
+            }
+        })
+
+    except ValueError as ve:
+        return Response({
+            'success': False,
+            'message': str(ve),
+            'data': None
+        },)
     except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({
+            'success': False,
+            'message': f"An error occurred: {str(e)}",
+            'data': None
+        }, )
+
     
 
 @api_view(['GET'])
-def getOrderTransactionsForOrderNumber(request, order_no):
+def getOrderTransactionsForOrderNumber(request):
     try:
+        order_no = request.GET.get('order_no')
         order = OrderTransaction.objects.get(order_no=order_no)
         part = PartMaster.objects.get(id=order.part_id)
         return Response({
@@ -183,7 +250,9 @@ def getOrderTransactionsForOrderNumber(request, order_no):
             'data': {
                 "order_no": order.order_no,
                 "qty": order.quantity,
-                "unit_price": create_orderplace_transactionorder.unit_price,
+                "unit_price": order.unit_price,
+                'amount_qty':order.amount_for_qty,
+                'gst_percent':order.tax_percentage,
                 "total_amount": order.total_amount,
                 "uom": order.uom,
                 'part_desc': part.part_name
@@ -196,18 +265,21 @@ def getOrderTransactionsForOrderNumber(request, order_no):
             'data': None
         })  
         
-        
+    
 @api_view(['POST'])
 def create_orderplace_transaction(request):
     try:
         # Retrieve and validate the required fields
         order_no = request.data.get('order_no')
         transaction_id = request.data.get('transaction_id')
-        user_id = request.user.id  
+        user_id = request.data.get('user_id')
         
         if not order_no or not transaction_id:
             return Response(
-                {"error": "order_no and transaction_id are required fields."},
+                {
+                    'success': False,
+                    'message': "order_no and transaction_id are required fields."
+                },
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -215,22 +287,29 @@ def create_orderplace_transaction(request):
             "order_no": order_no,
             "transaction_id": transaction_id,
             "user_id": user_id,
-            "created_at": now(),  
-            "updated_at": None,  
-            "created_by": user_id,  
-            "updated_by": None,  
+            "created_at": now(),
+            "updated_at": None,
+            "created_by": user_id,
+            "updated_by": None,
         }
 
-        # Serialize the data
+        # Serialize and save the data
         serializer = OrderPlacedTransactionSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        # Return a success response
+        return Response({
+            'success': True,
+            'message': "Valid",
+        }, status=status.HTTP_201_CREATED)
 
     except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # Return an error response
+        return Response({
+            'success': False,
+            'message': f"An error occurred: {str(e)}",
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)    
     
     
 @api_view(['GET'])
@@ -266,31 +345,39 @@ def getOrderTransactions(request):
 @api_view(['GET'])
 def getPendingOrderTransactions(request):
     try:
-        # Fetch only pending orders
-        pending_orders = OrderTransaction.objects.filter(status='pending')
+        # Get the user_id from the request data
+        user_id = request.GET.get('user_id')  # Use GET if the user_id is passed as a query parameter
 
-        # Serialize the pending order data into a list of dictionaries
-        pending_order_data = [
+        if not user_id:
+            return Response({
+                'success': False,
+                'message': "user_id is required",
+                'data': None
+            }, status=400)
+
+        # Exclude records with statuses 'verified' and 'dispatched' and filter by user_id
+        orders = OrderTransaction.objects.exclude(status__in=['verified', 'dispatched']).filter(created_by=user_id)
+
+        # Serialize the filtered order data
+        order_data = [
             {
-                "unit_price": order.unit_price,
-                "qty": order.quantity,
-                "total_amount": order.total_amount,
-                "uom": order.uom,
+                "order_no": order.order_no,
+                "status": order.status,
             }
-            for order in pending_orders
+            for order in orders
         ]
 
         return Response({
             'success': True,
             'message': "Valid",
-            'data': pending_order_data
+            'data': order_data
         })
     except Exception as e:
         return Response({
             'success': False,
             'message': f"An error occurred: {str(e)}",
             'data': None
-        })        
+        }, status=500)  
            
     
 @api_view(['POST'])

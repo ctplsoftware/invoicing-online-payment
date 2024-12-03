@@ -13,10 +13,9 @@ urlpatterns = [
 
     path('get_user_permissions/', permissionscheckView.get_permissions, name='check_permission'),
     path('token/',authenticateView.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('refresh/',authenticateView.CustomTokenRefreshView.as_view(), name='token_refresh'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-
+        
     
     
     #customer-master
@@ -60,9 +59,10 @@ urlpatterns = [
     #android 
     path('android/generate-inv/get-part-list', AndroidAPIView.get_part_master),
     path('android/generate-inv/get-part-details', AndroidAPIView.get_partmaster_usermaster, name='get_partmaster_usermaster'),
-    path('create-ordertransaction',AndroidAPIView.create_ordertransaction),
-    path('getOrderTransactions/<str:order_no>', AndroidAPIView.getOrderTransactionsForOrderNumber),
-    path('create-order--transaction', AndroidAPIView.create_orderplace_transaction),
+    path('android/generate-inv/store',AndroidAPIView.create_ordertransaction),
+    path('android/pending-order/payment/get-order-details', AndroidAPIView.getOrderTransactionsForOrderNumber),
+    path('android/pending-order/payment/store-order', AndroidAPIView.create_orderplace_transaction),
+    path('android/pending-order/lists',AndroidAPIView.getPendingOrderTransactions),
     path('upload-attachments',AndroidAPIView.upload_attachment),
-
+    
 ]
