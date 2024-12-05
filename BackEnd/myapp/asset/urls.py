@@ -10,7 +10,6 @@ urlpatterns = [
     path('login/', UserView.login, name='login'),
     path('forgot_password/', UserView.forgot_password, name='forgot_password'),
     path('user_data/', UserView.user_data, name='user_Data'),
-
     path('get_user_permissions/', permissionscheckView.get_permissions, name='check_permission'),
     path('token/',authenticateView.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
