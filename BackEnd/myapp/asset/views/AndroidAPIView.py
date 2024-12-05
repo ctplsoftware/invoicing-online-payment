@@ -25,6 +25,8 @@ from ..serializers.OrderPlacedTransactionSerializer import OrderPlacedTransactio
 from django.utils.timezone import now
 import os
 from ..models.CustomerMasterModel import CustomerMaster
+from decimal import Decimal
+
 
 
 
@@ -78,8 +80,9 @@ def get_partmaster_usermaster(request):
                 ] if addr
             ]
             
-            credit_limit = customer.credit_limit
-            credit_limit_int = int(credit_limit.replace(",", ""))
+        credit_limit = customer.credit_limit  # e.g., "1,234.56"
+        credit_limit_float = float(credit_limit.replace(",", ""))
+        credit_limit_double = round(credit_limit_float, 2)  # Ensure 2 decimal places
 
         # Extract PartMaster and InwardTransaction data
         unit_price = None
@@ -101,7 +104,7 @@ def get_partmaster_usermaster(request):
             'message': "Valid",
             'data': {
                 "address": addresses,
-                "credit_prices": credit_limit_int,
+                "credit_prices": credit_limit_double,
                 "unit_prices": unit_price,
                 "stock": total_quantity,
                 "uom": uom
@@ -140,40 +143,33 @@ def create_ordertransaction(request):
             raise ValueError("quantity must be a positive number")
         
         quantity = int(quantity)
-        unit_price = part.unit_price
-        amount_for_qty = quantity * unit_price
-        tax_percentage = 18  # Hardcoded tax percentage
-        tax_amount = (amount_for_qty * tax_percentage) / 100
+        unit_price = Decimal(part.unit_price)  # Ensure Decimal type
+        amount_for_qty = Decimal(quantity) * unit_price
+        tax_percentage = Decimal(18)  # Hardcoded tax percentage as Decimal
+        tax_amount = (amount_for_qty * tax_percentage) / Decimal(100)
         total_amount = amount_for_qty + tax_amount
         
         payment_type = request.data.get("payment_type")
-        user_id= request.data.get("user_id")
+        user_id = request.data.get("user_id")
         status = "pending"
-
 
         if payment_type == 'credit':
             try:
                 # Fetch the customer record
                 customer = CustomerMaster.objects.get(id=user_id)
                 
-                # Convert credit_limit to a numeric type
-                try:
-                    credit_limit = float(customer.credit_limit)  # Attempt to convert CharField to float
-                except ValueError:
-                    raise ValueError("Invalid credit limit value in database. Please check and update.")
-
-                # Ensure total_amount is a float or Decimal
-                total_amount = float(total_amount)  # Convert Decimal to float if needed
-
+                # Ensure credit_limit is Decimal
+                credit_limit = customer.credit_limit
+                
                 # Calculate the new credit limit
                 actual_creditlimit = credit_limit - total_amount
 
                 # Ensure the new credit limit is not negative
-                if actual_creditlimit < 0:
+                if actual_creditlimit < Decimal(0):
                     raise ValueError("Insufficient credit limit for this transaction.")
 
                 # Update the credit limit in the database
-                customer.credit_limit = str(actual_creditlimit)  # Convert back to string for CharField
+                customer.credit_limit = actual_creditlimit
                 customer.save()
 
                 # Change status to verified for credit payment
@@ -183,14 +179,12 @@ def create_ordertransaction(request):
                 return Response({
                     'success': False,
                     'message': "Customer not found."
-                }, )
+                }, status=400)
             except Exception as e:
                 return Response({
                     'success': False,
                     'message': f"An error occurred: {str(e)}"
-                }, )
-                    
-            
+                }, status=400)
 
         # Populate fields for the order transaction
         data = {
@@ -228,13 +222,13 @@ def create_ordertransaction(request):
             'success': False,
             'message': str(ve),
             'data': None
-        },)
+        }, status=400)
     except Exception as e:
         return Response({
             'success': False,
             'message': f"An error occurred: {str(e)}",
             'data': None
-        }, )
+        }, status=500)
 
     
 
@@ -389,5 +383,7 @@ def upload_attachment(request):
     attachment = Attachment.objects.create(file=file)
     serializer = AttachmentsSerializer(attachment)
     
-    return Response(serializer.data, status=status.HTTP_201_CREATED)    
-
+    return Response({
+            'success': True,
+            'message': "Valid"
+    })

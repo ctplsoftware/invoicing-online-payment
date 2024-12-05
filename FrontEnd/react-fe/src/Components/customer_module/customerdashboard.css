@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+
+.dashboard-start{
+    display: flex;
+    justify-content: space-between;
+
+}
+
+
+
+.header-name {
+    text-align: left;
+    padding: 52px;
+        font-family: "Roboto Mono", monospace;
+        font-optical-sizing: auto;
+    
+      
+}
+
+.master-cards{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+/* From Uiverse.io by EmmaxPlay */
+.card {
+    width: 453px;
+    height: 254px;
+    /* margin: 0 auto; */
+    background-color:  #ffffff;;
+    border-radius: 8px;
+    z-index: 1;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+
+}
+
+.tools {
+    display: flex;
+    align-items: center;
+    padding: 9px;
+}
+
+.circle {
+    padding: 0 4px;
+}
+
+.box {
+    display: inline-block;
+    align-items: center;
+    width: 10px;
+    height: 10px;
+    padding: 1px;
+    border-radius: 50%;
+}
+
+.red {
+    background-color: #ff605c;
+}
+
+.yellow {
+    background-color: #ffbd44;
+}
+
+.green {
+    background-color: #00ca4e;
+}
+

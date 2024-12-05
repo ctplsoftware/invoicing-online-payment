@@ -48,12 +48,6 @@ const LandingPage = () => {
                     <Route path="/locationmasterlist" element={<LocationMasterList />} />
                     <Route path="/locationmasteredit/:id" element={<LocationMasterEdit />} />
                     <Route path="/customerdashboard" element={<CustomerDashboard />} />
-
-
-
-
-
-
                 </Routes>
             </div>
         </div>
