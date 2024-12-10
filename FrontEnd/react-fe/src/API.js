@@ -281,6 +281,16 @@ class API {
     }
 
 
+    // order_transaction data
+
+    async fetch_ordertransactiondata() {
+
+        const response = await axios.get(`${BaseURL}/order_transaction_get`)
+
+        return response.data;
+
+    }
+
 
 
 

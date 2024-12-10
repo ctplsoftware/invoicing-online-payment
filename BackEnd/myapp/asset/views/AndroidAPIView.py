@@ -24,8 +24,8 @@ from ..serializers.AttachmentsSerializer import AttachmentsSerializer
 from ..serializers.OrderPlacedTransactionSerializer import OrderPlacedTransactionSerializer
 from django.utils.timezone import now
 import os
-from ..models.CustomerMasterModel import CustomerMaster
 from decimal import Decimal
+from django.contrib.auth.models import User
 
 
 
@@ -152,7 +152,9 @@ def create_ordertransaction(request):
         payment_type = request.data.get("payment_type")
         user_id = request.data.get("user_id")
         status = "pending"
-
+        user_table = User.objects.get(id=user_id)
+        print("heloooooooooooooooo")
+        customer_table =CustomerMaster.objects.get(id=user_table.last_name)
         if payment_type == 'credit':
             try:
                 # Fetch the customer record
@@ -173,7 +175,7 @@ def create_ordertransaction(request):
                 customer.save()
 
                 # Change status to verified for credit payment
-                status = "verified"
+                status = "attached"
         
             except CustomerMaster.DoesNotExist:
                 return Response({
@@ -185,6 +187,12 @@ def create_ordertransaction(request):
                     'success': False,
                     'message': f"An error occurred: {str(e)}"
                 }, status=400)
+                
+            
+            
+            
+        
+                
 
         # Populate fields for the order transaction
         data = {
@@ -201,7 +209,8 @@ def create_ordertransaction(request):
             "delivery_address": request.data.get("delivery_address"),
             "created_by": request.data.get("user_id"),
             "payment_type": request.data.get("payment_type"),
-            "status": status
+            "status": status,
+             'customer_name': customer_table.name
         }
 
         serializer = OrderTransactionSerializer(data=data)
@@ -379,11 +388,62 @@ def upload_attachment(request):
     if 'file' not in request.FILES:
         return Response({"error": "No file provided."}, status=status.HTTP_400_BAD_REQUEST)
     
-    file = request.FILES['file']  # Get the uploaded file    
-    attachment = Attachment.objects.create(file=file)
+    file = request.FILES['file']  
+    order_no = request.data.get('order_no')  
+    
+    if not order_no:
+        return Response({"error": "Order number is required."}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        order_transaction = OrderTransaction.objects.get(order_no=order_no)
+    except OrderTransaction.DoesNotExist:
+        return Response({"error": "Order not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+    attachment = Attachment.objects.create(file=file, uploaded_by=order_no) 
     serializer = AttachmentsSerializer(attachment)
     
+    if order_transaction.payment_type == 'Advance':
+        order_transaction.status = 'Attached'  
+        order_transaction.save()  
+    
     return Response({
-            'success': True,
-            'message': "Valid"
+        'success': True,
+        'message': "File uploaded successfully.",
+        'attachment': serializer.data
     })
+    
+
+
+@api_view(['GET'])
+def fetch_pending_attachments(request):
+    try:
+        # Query orders with "Paid" status
+        paid_orders = OrderTransaction.objects.filter(status="paid")
+        
+        # Find orders with no attachments
+        orders_without_attachments = paid_orders.exclude(
+            order_no__in=Attachment.objects.values_list('uploaded_by', flat=True)
+        )
+        
+        # Serialize or prepare response data
+        response_data = [
+            {
+                "order_no": order.order_no,
+                "total_amount": order.total_amount,
+                "payment_type": order.payment_type,
+                "status": order.status,
+            }
+            for order in paid_orders
+        ]
+        
+        return Response({
+            "success": True,
+            "orders": response_data
+        }, status=status.HTTP_200_OK)
+    
+    except Exception as e:
+        return Response({
+            "success": False,
+            "error": str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    

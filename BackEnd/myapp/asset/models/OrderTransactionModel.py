@@ -5,6 +5,7 @@ from asset.models.PartMasterModel import PartMaster
 class OrderTransaction(models.Model):
     order_no = models.CharField(max_length=255,null=True, blank=True)
     status = models.CharField(max_length=255,null=True, blank=True)
+    customer_name = models.CharField(max_length=255,null=True, blank=True)
     payment_type = models.CharField(max_length=255,null=True, blank=True)
     part = models.ForeignKey(PartMaster, on_delete=models.CASCADE,null=True, blank=True)  # Updated `part_id` to `part` for better readability
     quantity = models.IntegerField(null=True, blank=True)
