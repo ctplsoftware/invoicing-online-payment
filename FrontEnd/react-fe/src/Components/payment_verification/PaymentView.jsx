@@ -1,22 +1,18 @@
 
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { API } from '../../API.js';
 import '../../Styles/CustomerMaster.css';
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
 
 const PaymentForm = () => {
 
     const api = new API();
     const navigate = useNavigate();
+    const { order_no } = useParams();
 
-    const [formData, setFormData] = useState({
-        customer_name: '',
-        part_name:'',
-        purchase_qty:'',
-        amount:'',
-        payment_status:''
-
-    });
+    const [formData, setFormData] = useState({});
     const [partdatafetch, setPartDataFetch] = useState([]);
 
     const [locationnamefetch, setLocationnamefetch] = useState([]);
@@ -32,27 +28,33 @@ const PaymentForm = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const inwardTransactioncreate = await api.get_part_master();
-                const locationnamefetch = await api.fetch_locationmasterdata();
-                console.log("Fetched Part Data:", inwardTransactioncreate);
-                const activeParts = inwardTransactioncreate.filter(
-                    (part) => part.status === "active"
-                );
-
-                const locationactive = locationnamefetch.filter(
-                    (locationget) => locationget.status === 'active'
-                );
-
-                setLocationnamefetch(locationactive || [])
-
-
-
-                setPartDataFetch(activeParts || []);
+                const ordermasterfetch = await api.fetch_ordertransactiondata();
+                const partmasterfetch = await api.get_part_master();
+    
+    
+                const order = ordermasterfetch.find(item => item.order_no === order_no);
+    
+                if (order) {
+                    const part = partmasterfetch.find(part => part.id === order.part);
+    
+                    setFormData({
+                        id: order.id,
+                        order_no: order.order_no,
+                        customer_name: order.customer_name,
+                        status: order.status,
+                        purchase_qty: order.quantity,
+                        amount: order.total_amount,
+                        payment_status:order.status,
+                        part_name: part ? part.part_name : 'Part not found', 
+                    });
+                } else {
+                    console.error(`Order with order_no ${order_no} not found`);
+                }
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
-        }
-
+        };
+    
         fetchData();
     }, []);
 
@@ -64,7 +66,7 @@ const PaymentForm = () => {
             if (response) {
                 alert("Payeer added");
                 navigate('/landingpage/payment-list')
-               
+
             } else {
                 alert("Failed to add part");
             }
@@ -75,8 +77,19 @@ const PaymentForm = () => {
 
     return (
         <div className="customer-master" style={{ marginLeft: '460px' }}>
-            <h2>Payeer Master</h2>
             <form onSubmit={handleSubmit}>
+                <label>
+                    Order Number                
+                        <input
+                        type="text"
+                        name="orden_no"
+                        placeholder='order Number'
+                        value={formData.order_no}
+                        onChange={handleChange}
+                        required
+                        autoFocus
+                    />
+                </label>
                 <label>
                     Customer Name
                     <input
@@ -90,22 +103,17 @@ const PaymentForm = () => {
                     />
                 </label>
 
-
                 <label>
                     Part Name
-                    <select
+                    <input
+                        type="text"
                         name="part_name"
+                        placeholder='Enter part_name'
                         value={formData.part_name}
                         onChange={handleChange}
                         required
-                    >
-                        <option value="">Select Part Name</option>
-                        {partdatafetch.map((row, index) => (
-                            <option key={index} value={row.part_name}>
-                                {row.part_name}
-                            </option>
-                        ))}
-                    </select>
+                        autoFocus
+                    />
                 </label>
 
 
@@ -147,11 +155,11 @@ const PaymentForm = () => {
                         autoFocus
                     />
                 </label>
-                <div style={{display:'flex',gap:'15px'}}>
-                <button style={{ marginLeft: '-40%', marginTop: '6%' }} className="btn-save2" onClick={() => navigate("/landingpage/payment-list")}>Back</button>
-                <button style={{ width:'50px', marginTop: '6%' }} className="btn-save" type="Save">Save</button>
+                <div style={{ display: 'flex', gap: '15px' }}>
+                    <button style={{ marginLeft: '-40%', marginTop: '6%' }} className="btn-save2" onClick={() => navigate("/landingpage/payment-list")}>Back</button>
+                    <button style={{ width: '50px', marginTop: '6%' }} className="btn-save" type="Save">Save</button>
                 </div>
-              
+
             </form>
         </div>
 

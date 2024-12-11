@@ -22,7 +22,23 @@ const PaymentList = () => {
 
     const columns = [
         { name: 'S No', selector: row => row.Sno, width: '70px' },
-        { name: 'Order Number', selector: row => row.order_no, width: '160px' },
+        { 
+            name: 'Order Number', 
+            cell: row => (
+                <span 
+                    style={{
+                        color: 'blue',
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                        fontSize:'17px'
+                    }} 
+                    onClick={() => handleQuantityClick(row.order_no)}
+                >
+                    {row.order_no}
+                </span>
+            ), 
+            width: '160px'
+        },
         { name: 'Customer Name', selector: row => row.customer_name, width: '165px' },
         { name: 'Part Name', selector: row => row.part_name, width: '130px' },
         { name: 'Purchase Qty', selector: row => row.quantity, width: '160px' },
@@ -31,41 +47,53 @@ const PaymentList = () => {
 
     ];
 
+    const handleQuantityClick = (order_no) => {
+        navigate(`/landingpage/payment-view/${encodeURIComponent(order_no)}`);
+    };
     useEffect(() => {
         const fetchData = async () => {
-            setLoading(true);
+            setLoading(true); // Set loading to true when fetching starts
             try {
                 const ordermasterfetch = await api.fetch_ordertransactiondata();
                 const partmasterfetch = await api.get_part_master();
 
-                const partLookup = partmasterfetch.reduce((lookup, part) => {
-                    lookup[part.part_id] = part.part_name;
-                    return lookup;
-                }, {});
+                console.log("ordermasterfetch...",ordermasterfetch);
                 
-                const fetchedData = ordermasterfetch.map((item, index) => ({
-                    id: item.id,
-                    Sno: index + 1,
-                    customer_name:item.customer_name,
-                    status :item.status,
-                    quantity:item.quantity,
-                    total_amount:item.total_amount,
-                    order_no:item.order_no,
-                    part_name: partLookup[item.part_id] || "Unknown Part",
+                // Create the fetchedData array by mapping over the ordermasterfetch array
+                const fetchedData = ordermasterfetch.map((item, index) => {
 
-                   
-                }));
+                    
+                    // Find the part from partmasterfetch based on part_id
+                    const part = partmasterfetch.find(part => part.id === item.part);
+
+                    console.log("part", part); // Debugging the found part
+                    
+                    return {
+                        id: item.id,
+                        Sno: index + 1,
+                        customer_name: item.customer_name,
+                        status: item.status,
+                        quantity: item.quantity,
+                        total_amount: item.total_amount,
+                        order_no: item.order_no,
+                        part_name: part ? part.part_name : 'Part not found', // Fallback in case part is not found
+                    };
+                });
+
+                console.log("fetchedData...",fetchedData);
                 
+
+                // Set the fetched data into the state
                 setRows(fetchedData);
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Error fetching data:", error); // Log the error if fetch fails
             } finally {
-                setLoading(false);
+                setLoading(false); // Set loading to false after fetching is done
             }
         };
 
         fetchData();
-    }, []);
+    }, []); // Empty dependency array to run the effect only once
 
     const handleVerify = () => {
         alert("helooo verified")
@@ -85,25 +113,10 @@ const PaymentList = () => {
     return (
 
         <div style={{ width: '62%', margin: '40px auto', fontFamily: 'Arial, sans-serif' }}>
-            <div style={{ justifyContent: 'flex-end', marginBottom: '10px' ,marginRight:'59px' }}>
-                <button
-                    onClick={() => navigate("/landingpage/payment-form")}
-                    style={{
-                        padding: '10px 20px',
-                        backgroundColor: '#1976d2',
-                        color: '#fff',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                    }}
-                >
-                    Create Payeer
-                </button>
-            </div>
+          
 
             {/* DataTable */}
             <DataTable
-                title="Payment Master List"
                 columns={columns}
                 data={filteredRows}
                 pagination
