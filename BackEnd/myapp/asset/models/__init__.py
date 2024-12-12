@@ -2,10 +2,11 @@
 
 from .CustomerMasterModel import CustomerMaster
 from .InwardTransactionModel import InwardTransaction
-from .OrderTransactionImageModel import OrderTransactionImage
 from .OrderTransactionModel import OrderTransaction
 from .PartMasterModel import PartMaster
 from .UserMasterModel import UserMaster
-from .OrderPlacedTransactionModel import OrderPlacedTransaction
+from .OrderHeaderModel import OrderHeader
+from .OrderTransactionModel import OrderTransaction
+from .OrderAttachmentTransactionModel import OrderAttachmentTransaction
 from .AttachmentsModel import Attachment
 from .LocationMasterModel import LoactionMaster

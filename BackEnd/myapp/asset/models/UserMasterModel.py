@@ -15,6 +15,10 @@ class UserMaster(models.Model):
     created_by = models.IntegerField()
     updated_by = models.IntegerField()
 
+    class Meta:
+        db_table = 'user_master'
+        ordering = ['id']
+
     def save(self, *args, **kwargs):
         # Ensure password is hashed before saving
         if not self.pk and not self.password.startswith('pbkdf2_'):  # Check if it's already hashed

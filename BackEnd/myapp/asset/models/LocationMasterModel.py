@@ -9,3 +9,7 @@ class LoactionMaster(models.Model):
     created_by = models.IntegerField()
     updated_by = models.IntegerField()
 
+    class Meta:
+        db_table = 'location_master'
+        ordering = ['id']
+
