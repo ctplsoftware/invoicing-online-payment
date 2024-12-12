@@ -14,8 +14,8 @@ def get_generate_order(request):
     try:
         response_data = {}
 
-        customer_id = 2
-        # customer_id = request.query_paramas.get('customer_id')
+        # customer_id = 2
+        customer_id = request.query_paramas.get('customer_id')
         part_master = PartMaster.objects.values('id', 'part_name', 'uom', 'unit_price', 'stock', 'allocated_stock')
         total_addresses = list(CustomerMaster.objects.filter(id = customer_id).values_list('delivery_address', 'additional_address1', 'additional_address2').first())
         addresses = [address for address in total_addresses if address != '' and address is not None]
@@ -91,6 +91,7 @@ def create_order(request):
                             'order_number': order_number,
                             'payment_type': payment_type,
                             'part_name': part_master.part_name,
+                            'delivery_address': request.data.get('delivery_address'),
                             'uom': part_master.uom,
                             'quantity': quantity,
                             'unit_price': part_master.unit_price,
@@ -129,6 +130,7 @@ def create_order(request):
                         'order_number': order_number,
                         'payment_type': payment_type,
                         'part_name': part_master.part_name,
+                        'delivery_address': request.data.get('delivery_address'),
                         'uom': part_master.uom,
                         'quantity': quantity,
                         'unit_price': part_master.unit_price,

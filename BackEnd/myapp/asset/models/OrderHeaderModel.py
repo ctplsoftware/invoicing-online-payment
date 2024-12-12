@@ -9,6 +9,7 @@ class OrderHeader(models.Model):
     order_number = models.CharField(max_length = 100, null = True, blank = True)
     payment_type = models.CharField(max_length = 20, null = True, blank = True)
     part_name = models.CharField(max_length = 200, null = True, blank = True)
+    delivery_address = models.CharField(max_length = 200, null = True, blank = True)
     uom = models.CharField(max_length = 200, null = True, blank = True)
     quantity = models.FloatField()
     unit_price = models.FloatField()
