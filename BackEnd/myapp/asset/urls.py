@@ -58,11 +58,11 @@ urlpatterns = [
 
 
     #android 
-    path('get-generate-order', AndroidAPIView.get_generate_order),
-    path('create-order', AndroidAPIView.create_order),
-    path('get-order', AndroidAPIView.get_order),
-    path('get-order-list', AndroidAPIView.get_order_list),
-    path('create-order-attachment', AndroidAPIView.create_order_attachment),
+    path('android/get-generate-order', AndroidAPIView.get_generate_order),
+    path('android/create-order', AndroidAPIView.create_order),
+    path('android/get-order', AndroidAPIView.get_order),
+    path('android/get-order-list', AndroidAPIView.get_order_list),
+    path('android/create-order-attachment', AndroidAPIView.create_order_attachment),
 
     # path('android/generate-inv/get-part-list', AndroidAPIView.get_part_master),
     # path('android/generate-inv/get-part-details', AndroidAPIView.get_partmaster_usermaster, name='get_partmaster_usermaster'),
