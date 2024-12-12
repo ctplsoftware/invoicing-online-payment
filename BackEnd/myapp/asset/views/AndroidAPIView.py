@@ -16,10 +16,10 @@ def get_generate_order(request):
 
         customer_id = 2
         # customer_id = request.query_paramas.get('customer_id')
-        part_master = PartMaster.objects.values('id', 'part_name', 'uom', 'stock', 'allocated_stock')
+        part_master = PartMaster.objects.values('id', 'part_name', 'uom', 'unit_price', 'stock', 'allocated_stock')
         total_addresses = list(CustomerMaster.objects.filter(id = customer_id).values_list('delivery_address', 'additional_address1', 'additional_address2').first())
         addresses = [address for address in total_addresses if address != '' and address is not None]
-        part_details = [{'part_id': part['id'], 'part_name': part['part_name'], 'stock': float(part['stock']) - float(part['allocated_stock']), 'uom': part['uom']} for part in part_master]
+        part_details = [{'part_id': part['id'], 'part_name': part['part_name'], 'unit_price': part['unit_price'], 'stock': float(part['stock']) - float(part['allocated_stock']), 'uom': part['uom']} for part in part_master]
 
 
         response_data = {
