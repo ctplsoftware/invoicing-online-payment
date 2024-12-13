@@ -22,11 +22,3 @@ class UserRolePermission(models.Model):
         return f"{self.user.username} - {self.role.name} - {self.permission.name}"
 
 
-class SampleForm(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField(max_length=200)
-    date = models.DateField()
-    age = models.IntegerField()
-
-    def ___str___(self):
-        return self.name
