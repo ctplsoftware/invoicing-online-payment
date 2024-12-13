@@ -260,6 +260,7 @@ def create_order_attachment(request):
                 }
 
                 OrderAttachmentTransaction.objects.create(**order_attachment_transaction)
+                OrderHeader.objects.filter(id = order_header_id).update(attached_status = 'partial')
 
                 response_data = {
                     'data': None,
