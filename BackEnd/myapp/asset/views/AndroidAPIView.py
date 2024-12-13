@@ -12,26 +12,32 @@ from asset.utils import *
 @api_view(['GET'])
 def get_generate_order(request):
     try:
-        response_data = {}
+        with transaction.atomic():
 
-        # customer_id = 2
-        customer_id = request.query_paramas.get('customer_id')
-        part_master = PartMaster.objects.values('id', 'part_name', 'uom', 'unit_price', 'stock', 'allocated_stock')
-        total_addresses = list(CustomerMaster.objects.filter(id = customer_id).values_list('delivery_address', 'additional_address1', 'additional_address2').first())
-        addresses = [address for address in total_addresses if address != '' and address is not None]
-        part_details = [{'part_id': part['id'], 'part_name': part['part_name'], 'unit_price': part['unit_price'], 'stock': float(part['stock']) - float(part['allocated_stock']), 'uom': part['uom']} for part in part_master]
+            response_data = {}
+
+            customer_id = request.query_params.get('customer_id')
+            part_master = PartMaster.objects.values('id', 'part_name', 'uom', 'unit_price', 'stock', 'allocated_stock')
+            total_addresses = list(CustomerMaster.objects.filter(id = customer_id).values_list('delivery_address', 'additional_address1', 'additional_address2').first())
+
+            limits = CustomerMaster.objects.filter(id = customer_id).first()
+            credit_limit = float(limits.credit_limit) - float(limits.used_limit)
+
+            addresses = [address for address in total_addresses if address != '' and address is not None]
+            part_details = [{'part_id': part['id'], 'part_name': part['part_name'], 'unit_price': part['unit_price'], 'stock': float(part['stock']) - float(part['allocated_stock']), 'uom': part['uom']} for part in part_master]
 
 
-        response_data = {
-            'data': {
-                'part_details': part_details,
-                'addresses': addresses
-            },
-            'message': 'Valid',
-            'success': True
-        }
+            response_data = {
+                'data': {
+                    'part_details': part_details,
+                    'addresses': addresses,
+                    'credit_limit': credit_limit
+                },
+                'message': 'Valid',
+                'success': True
+            }
 
-        return Response(response_data)
+            return Response(response_data)
 
     except Exception as e:
         response_data = {
@@ -260,6 +266,7 @@ def create_order_attachment(request):
                 }
 
                 OrderAttachmentTransaction.objects.create(**order_attachment_transaction)
+                OrderHeader.objects.filter(id = order_header_id).update(attached_status = 'partial')
 
                 response_data = {
                     'data': None,
