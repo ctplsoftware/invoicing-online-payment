@@ -12,30 +12,32 @@ from asset.utils import *
 @api_view(['GET'])
 def get_generate_order(request):
     try:
-        response_data = {}
+        with transaction.atomic():
 
-        customer_id = request.query_params.get('customer_id')
-        part_master = PartMaster.objects.values('id', 'part_name', 'uom', 'unit_price', 'stock', 'allocated_stock')
-        total_addresses = list(CustomerMaster.objects.filter(id = customer_id).values_list('delivery_address', 'additional_address1', 'additional_address2').first())
+            response_data = {}
 
-        limits = CustomerMaster.objects.filter(id = customer_id).values('credit_limit', 'used_limit').first()
-        credit_limit = float(limits.credit_limit) - float(limits.used_limit)
+            customer_id = request.query_params.get('customer_id')
+            part_master = PartMaster.objects.values('id', 'part_name', 'uom', 'unit_price', 'stock', 'allocated_stock')
+            total_addresses = list(CustomerMaster.objects.filter(id = customer_id).values_list('delivery_address', 'additional_address1', 'additional_address2').first())
 
-        addresses = [address for address in total_addresses if address != '' and address is not None]
-        part_details = [{'part_id': part['id'], 'part_name': part['part_name'], 'unit_price': part['unit_price'], 'stock': float(part['stock']) - float(part['allocated_stock']), 'uom': part['uom']} for part in part_master]
+            limits = CustomerMaster.objects.filter(id = customer_id).first()
+            credit_limit = float(limits.credit_limit) - float(limits.used_limit)
+
+            addresses = [address for address in total_addresses if address != '' and address is not None]
+            part_details = [{'part_id': part['id'], 'part_name': part['part_name'], 'unit_price': part['unit_price'], 'stock': float(part['stock']) - float(part['allocated_stock']), 'uom': part['uom']} for part in part_master]
 
 
-        response_data = {
-            'data': {
-                'part_details': part_details,
-                'addresses': addresses,
-                'credit_limit': credit_limit
-            },
-            'message': 'Valid',
-            'success': True
-        }
+            response_data = {
+                'data': {
+                    'part_details': part_details,
+                    'addresses': addresses,
+                    'credit_limit': credit_limit
+                },
+                'message': 'Valid',
+                'success': True
+            }
 
-        return Response(response_data)
+            return Response(response_data)
 
     except Exception as e:
         response_data = {
