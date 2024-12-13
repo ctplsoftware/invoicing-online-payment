@@ -22,6 +22,8 @@ import LocationMasterEdit from "./location_module/LocationMasterEdit.jsx";
 import CustomerDashboard from "./customer_module/CustomerDashboard.jsx";
 import PaymentList from "./payment_verification/PaymentList.jsx";
 import PaymentView from "./payment_verification/PaymentView.jsx";
+import DispatchDashboard from "./payment_verification/DispatchDashboard.jsx";
+import DispatchDashboards from "./payment_verification/testport.jsx";
 
 const LandingPage = () => {
     return (
@@ -52,6 +54,10 @@ const LandingPage = () => {
                     <Route path="/customerdashboard" element={<CustomerDashboard />} />
                     <Route path="/payment-list" element={<PaymentList />} />
                     <Route path="/payment-view/:order_no" element={<PaymentView />} />
+                    <Route path="/dispatch" element={<DispatchDashboard />} />
+                    <Route path="/dispatchs" element={<DispatchDashboards />} />
+
+
                 </Routes>
             </div>
         </div>
