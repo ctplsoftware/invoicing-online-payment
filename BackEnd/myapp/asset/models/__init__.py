@@ -8,5 +8,4 @@ from .UserMasterModel import UserMaster
 from .OrderHeaderModel import OrderHeader
 from .OrderTransactionModel import OrderTransaction
 from .OrderAttachmentTransactionModel import OrderAttachmentTransaction
-from .AttachmentsModel import Attachment
 from .LocationMasterModel import LoactionMaster

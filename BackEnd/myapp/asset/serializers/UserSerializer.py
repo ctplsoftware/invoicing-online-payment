@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from asset.models.UserModel import UserRolePermission, SampleForm
+from asset.models.UserModel import UserRolePermission
 from django.contrib.auth.models import User, Group, Permission
 
 class UserSerializer(serializers.ModelSerializer):
@@ -25,7 +25,4 @@ class UserRolePermissionSerializer(serializers.ModelSerializer):
         model = UserRolePermission
         fields = ['id', 'role', 'permission', 'can_create', 'can_read', 'can_update']
 
-class SampleFormSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SampleForm
-        fields = ['id', 'name', 'email', 'date', 'age']
+
