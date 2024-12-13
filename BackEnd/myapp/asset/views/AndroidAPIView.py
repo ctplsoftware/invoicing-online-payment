@@ -75,7 +75,7 @@ def create_order(request):
                 amount_inr = part_master.unit_price * quantity
                 amount_inr_tax = amount_inr + float(amount_inr * 0.18)
 
-                if payment_type == 'credit':
+                if payment_type == 'Credit':
                     
                     available_credit = customer_master.credit_limit - customer_master.used_limit
 
@@ -95,7 +95,7 @@ def create_order(request):
 
                         order_header = {
                             'order_number': order_number,
-                            'payment_type': payment_type,
+                            'payment_type': 'credit',
                             'part_name': part_master.part_name,
                             'delivery_address': request.data.get('delivery_address'),
                             'uom': part_master.uom,
@@ -120,13 +120,15 @@ def create_order(request):
                         customer_master.save()
 
                         response_data = {
-                            'data': order_number,
+                            'data': {
+                                'order_no': order_number
+                            },
                             'message': 'Order placed successfully.',
                             'success': True
                         }
                         return Response(response_data)
 
-                elif payment_type == 'advanced':
+                elif payment_type == 'Advance':
                     order_header = {}
 
                     last_order = get_count(OrderHeader)
@@ -134,7 +136,7 @@ def create_order(request):
 
                     order_header = {
                         'order_number': order_number,
-                        'payment_type': payment_type,
+                        'payment_type': 'advance',
                         'part_name': part_master.part_name,
                         'delivery_address': request.data.get('delivery_address'),
                         'uom': part_master.uom,
@@ -156,7 +158,9 @@ def create_order(request):
                     part_master.save()
 
                     response_data = {
-                        'data': order_number,
+                        'data': {
+                            'order_no': order_number
+                        },
                         'message': 'Order placed successfully.',
                         'success': True
                     }
