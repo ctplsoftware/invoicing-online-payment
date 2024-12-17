@@ -263,30 +263,55 @@ def create_order_attachment(request):
     try:
         with transaction.atomic():
             file = request.FILES['file']
-            order_header_id = OrderHeader.objects.filter(order_number = request.data.get('order_no')).first().id
+            order_header = OrderHeader.objects.filter(order_number = request.data.get('order_no')).first()
             attached_by = request.data.get('user_id')
             
-            if order_header_id:
-                order_attachment_transaction = {
-                    'attached_image': file,
-                    'order_header_id': order_header_id,
-                    'attached_by': attached_by
-                }
+            if order_header:
+                if order_header.payment_type == 'credit':
+                    if order_header.dispatched_status == 'yes':
 
-                OrderAttachmentTransaction.objects.create(**order_attachment_transaction)
-                OrderHeader.objects.filter(id = order_header_id).update(attached_status = 'partial')
+                        order_attachment_transaction = {
+                            'attached_image': file,
+                            'order_header_id': order_header.id,
+                            'attached_by': attached_by
+                        }
 
-                response_data = {
-                    'data': None,
-                    'message': 'Proof attached successfully.',
-                    'success': True
-                }
+                        OrderAttachmentTransaction.objects.create(**order_attachment_transaction)
+                        OrderHeader.objects.filter(id = order_header.id).update(attached_status = 'partial')
 
-                return Response(response_data)
+                        response_data = {
+                            'message': 'Proof attached successfully.',
+                            'success': True
+                        }
+
+                        return Response(response_data)
+                    
+                    else:
+                        response_data = {
+                            'message': 'Not yet dispatched.',
+                            'success': False
+                        }
+
+                else:
+                    order_attachment_transaction = {
+                            'attached_image': file,
+                            'order_header_id': order_header.id,
+                            'attached_by': attached_by
+                        }
+
+                    OrderAttachmentTransaction.objects.create(**order_attachment_transaction)
+                    OrderHeader.objects.filter(id = order_header.id).update(attached_status = 'partial')
+
+                    response_data = {
+                        'message': 'Proof attached successfully.',
+                        'success': True
+                    }
+
+                    return Response(response_data)
+
             
             else:
                 response_data = {
-                    'data': None,
                     'message': 'Order Number not found.',
                     'success': True
                 }
@@ -295,7 +320,6 @@ def create_order_attachment(request):
     except Exception as e:
         print(e)
         response_data = {
-            'data': None,
             'message': 'Error while creating data',
             'success': False,
         }

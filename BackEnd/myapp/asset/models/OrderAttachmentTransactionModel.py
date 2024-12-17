@@ -7,7 +7,7 @@ class OrderAttachmentTransaction(models.Model):
     attached_at = models.DateTimeField(auto_now_add = True, null = True)
     attached_by = models.IntegerField()
     verified_at = models.DateTimeField(null = True)
-    verified_by = models.IntegerField()
+    verified_by = models.IntegerField(null = True)
 
     class Meta:
         db_table = 'order_attachment_transaction'  # Set custom table name if needed
