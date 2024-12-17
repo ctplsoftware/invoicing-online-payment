@@ -3,7 +3,7 @@ from asset.models.OrderHeaderModel import OrderHeader
 
 
 class OrderTransaction(models.Model):
-    order_header = models.ForeignKey(OrderHeader, on_delete = models.CASCADE)
+    order_header = models.ForeignKey(OrderHeader, on_delete = models.CASCADE, related_name = 'transactions')
     payment_amount = models.FloatField()
     payment_date = models.CharField(max_length = 200, null = True)
     payment_comments = models.CharField(max_length = 200, null = True)

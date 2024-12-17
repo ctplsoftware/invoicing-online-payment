@@ -3,6 +3,7 @@ from rest_framework.response import Response
 
 
 from django.db import transaction
+from django.db.models import F
 
 from asset.models import *
 from asset.utils import *
@@ -75,7 +76,7 @@ def create_order(request):
                 amount_inr = part_master.unit_price * quantity
                 amount_inr_tax = amount_inr + float(amount_inr * 0.18)
 
-                if payment_type == 'credit':
+                if payment_type == 'Credit':
                     
                     available_credit = customer_master.credit_limit - customer_master.used_limit
 
@@ -95,7 +96,7 @@ def create_order(request):
 
                         order_header = {
                             'order_number': order_number,
-                            'payment_type': payment_type,
+                            'payment_type': 'credit',
                             'part_name': part_master.part_name,
                             'delivery_address': request.data.get('delivery_address'),
                             'uom': part_master.uom,
@@ -120,13 +121,15 @@ def create_order(request):
                         customer_master.save()
 
                         response_data = {
-                            'data': order_number,
+                            'data': {
+                                'order_no': order_number
+                            },
                             'message': 'Order placed successfully.',
                             'success': True
                         }
                         return Response(response_data)
 
-                elif payment_type == 'advanced':
+                elif payment_type == 'Advance':
                     order_header = {}
 
                     last_order = get_count(OrderHeader)
@@ -134,7 +137,7 @@ def create_order(request):
 
                     order_header = {
                         'order_number': order_number,
-                        'payment_type': payment_type,
+                        'payment_type': 'advance',
                         'part_name': part_master.part_name,
                         'delivery_address': request.data.get('delivery_address'),
                         'uom': part_master.uom,
@@ -156,7 +159,9 @@ def create_order(request):
                     part_master.save()
 
                     response_data = {
-                        'data': order_number,
+                        'data': {
+                            'order_no': order_number
+                        },
                         'message': 'Order placed successfully.',
                         'success': True
                     }
@@ -190,7 +195,10 @@ def get_order_list(request):
             status = request.query_params.get('status')
             completed_status = 'no' if status == 'pending' else 'yes'
             customer_id = request.query_params.get('customer_id')
-            order_list = list(OrderHeader.objects.filter(completed_status = completed_status, customer_master_id = customer_id).values())
+            order_list= list(OrderHeader.objects.filter(completed_status = completed_status, customer_master_id = customer_id).annotate(order_no = F('order_number')).values('order_no'))
+
+            
+        
 
             response_data = {
                 'data': order_list,
@@ -219,13 +227,13 @@ def get_order(request):
         with transaction.atomic():
 
             order_number = request.query_params.get('order_no')
-            order_details = list(OrderHeader.objects.filter(order_number = order_number).values())
+            order_details = OrderHeader.objects.filter(order_number = order_number).values('order_number', 'irn_invoice_number', 'delivery_address', 'payment_type', 'part_name', 'uom', 'quantity', 'unit_price', 'tax_percentage', 'amount_for_quantity', 'total_amount', 'paid_amount', 'attached_status', 'verified_status', 'invoice_generated_status', 'paid_status', 'dispatched_status', 'completed_status').first()
 
             if order_details:
                 response_data = {
                     'data': order_details,
                     'message': 'Valid',
-                    'success': False,
+                    'success': True,
                 }
 
                 return Response(response_data)
@@ -255,30 +263,55 @@ def create_order_attachment(request):
     try:
         with transaction.atomic():
             file = request.FILES['file']
-            order_header_id = OrderHeader.objects.filter(order_number = request.data.get('order_no')).first().id
+            order_header = OrderHeader.objects.filter(order_number = request.data.get('order_no')).first()
             attached_by = request.data.get('user_id')
             
-            if order_header_id:
-                order_attachment_transaction = {
-                    'attached_image': file,
-                    'order_header_id': order_header_id,
-                    'attached_by': attached_by
-                }
+            if order_header:
+                if order_header.payment_type == 'credit':
+                    if order_header.dispatched_status == 'yes':
 
-                OrderAttachmentTransaction.objects.create(**order_attachment_transaction)
-                OrderHeader.objects.filter(id = order_header_id).update(attached_status = 'partial')
+                        order_attachment_transaction = {
+                            'attached_image': file,
+                            'order_header_id': order_header.id,
+                            'attached_by': attached_by
+                        }
 
-                response_data = {
-                    'data': None,
-                    'message': 'Proof attached successfully.',
-                    'success': True
-                }
+                        OrderAttachmentTransaction.objects.create(**order_attachment_transaction)
+                        OrderHeader.objects.filter(id = order_header.id).update(attached_status = 'partial')
 
-                return Response(response_data)
+                        response_data = {
+                            'message': 'Proof attached successfully.',
+                            'success': True
+                        }
+
+                        return Response(response_data)
+                    
+                    else:
+                        response_data = {
+                            'message': 'Not yet dispatched.',
+                            'success': False
+                        }
+
+                else:
+                    order_attachment_transaction = {
+                            'attached_image': file,
+                            'order_header_id': order_header.id,
+                            'attached_by': attached_by
+                        }
+
+                    OrderAttachmentTransaction.objects.create(**order_attachment_transaction)
+                    OrderHeader.objects.filter(id = order_header.id).update(attached_status = 'partial')
+
+                    response_data = {
+                        'message': 'Proof attached successfully.',
+                        'success': True
+                    }
+
+                    return Response(response_data)
+
             
             else:
                 response_data = {
-                    'data': None,
                     'message': 'Order Number not found.',
                     'success': True
                 }
@@ -287,9 +320,10 @@ def create_order_attachment(request):
     except Exception as e:
         print(e)
         response_data = {
-            'data': None,
             'message': 'Error while creating data',
             'success': False,
         }
 
         return Response(response_data)
+
+
