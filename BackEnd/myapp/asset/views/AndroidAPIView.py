@@ -3,6 +3,7 @@ from rest_framework.response import Response
 
 
 from django.db import transaction
+from django.db.models import F
 
 from asset.models import *
 from asset.utils import *
@@ -194,7 +195,10 @@ def get_order_list(request):
             status = request.query_params.get('status')
             completed_status = 'no' if status == 'pending' else 'yes'
             customer_id = request.query_params.get('customer_id')
-            order_list = list(OrderHeader.objects.filter(completed_status = completed_status, customer_master_id = customer_id).values())
+            order_list= list(OrderHeader.objects.filter(completed_status = completed_status, customer_master_id = customer_id).annotate(order_no = F('order_number')).values('order_no'))
+
+            
+        
 
             response_data = {
                 'data': order_list,
@@ -223,13 +227,13 @@ def get_order(request):
         with transaction.atomic():
 
             order_number = request.query_params.get('order_no')
-            order_details = list(OrderHeader.objects.filter(order_number = order_number).values())
+            order_details = OrderHeader.objects.filter(order_number = order_number).values('order_number', 'irn_invoice_number', 'delivery_address', 'payment_type', 'part_name', 'uom', 'quantity', 'unit_price', 'tax_percentage', 'amount_for_quantity', 'total_amount', 'paid_amount', 'attached_status', 'verified_status', 'invoice_generated_status', 'paid_status', 'dispatched_status', 'completed_status').first()
 
             if order_details:
                 response_data = {
                     'data': order_details,
                     'message': 'Valid',
-                    'success': False,
+                    'success': True,
                 }
 
                 return Response(response_data)
@@ -297,3 +301,5 @@ def create_order_attachment(request):
         }
 
         return Response(response_data)
+
+
