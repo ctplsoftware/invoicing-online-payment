@@ -80,7 +80,7 @@ def update_dispatched_completed(request):
 
 
 @api_view(['PUT'])
-def update_verified(request):
+def update_verified_completed(request):
     try:
         with transaction.atomic():
             order_header = OrderHeader.objects.filter(id = request.data.get('order_header_id')).first()
