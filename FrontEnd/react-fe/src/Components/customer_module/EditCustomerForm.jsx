@@ -72,9 +72,14 @@ const EditCustomerForm = ({ }) => {
     };
 
     const handleEditSubmit = async (event) => {
+
+        const userDetails = localStorage.getItem("userDetails");
+
+        const parsedDetails = JSON.parse(userDetails); 
+
         event.preventDefault();
         try {
-            const updatedCustomer = { ...currentCustomer, additional_addresses: additionalAddresses };
+            const updatedCustomer = { ...currentCustomer, additional_addresses: additionalAddresses ,user_id :parsedDetails.user.id };
             console.log("updatedCustomer", updatedCustomer);
 
             await api.customermaster_update(

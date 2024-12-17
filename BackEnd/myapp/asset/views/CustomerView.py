@@ -8,6 +8,7 @@ from django.utils import timezone
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_customer(request):
 
     additional_addresses = request.data.get('additional_addresses', [])
@@ -27,10 +28,9 @@ def create_customer(request):
             'credit_days': request.data.get('credit_days', '').strip(),
             'contact_person': request.data.get('contact_person', '').strip(),
             'contact_number': request.data.get('contact_number', '').strip(),
-            'status': 'active',  # Set default status to 'active'
-            'created_by': '1',
-            'updated_by': '1',
-        }.items() if value  # Only include fields with non-empty values
+            'status': 'active',  
+            'created_by': request.data.get('user_id'),
+        }.items() if value  
     }
 
     serializer = CustomerSerializer(data=validated_data)
@@ -45,6 +45,7 @@ def create_customer(request):
     
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_customer_data(request, id=None):
     if id is not None:
         try:
@@ -60,6 +61,7 @@ def get_customer_data(request, id=None):
     
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_customer_editdata(request, id):
     try:
         customer = CustomerMaster.objects.get(id=id)
@@ -70,6 +72,7 @@ def get_customer_editdata(request, id):
 
 
 @api_view(['PUT'])  
+@permission_classes([IsAuthenticated])
 def update_customer(request, id):
     try:
         customer = CustomerMaster.objects.get(id=id)
@@ -92,7 +95,7 @@ def update_customer(request, id):
         'contact_person': request.data.get('contact_person', customer.contact_person).strip(),
         'contact_number': request.data.get('contact_number', customer.contact_number).strip(),
         'status': request.data.get('status', customer.status).strip(),
-        'updated_by': '1',  
+        'updated_by': request.data.get('user_id'),  
         'updated_at':timezone.now()
 
     }

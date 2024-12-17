@@ -94,7 +94,7 @@ const Useredit = () => {
             id: formData.id,
             username: formData.username,
             password: formData.password,
-            mail: formData.email,
+            email: formData.email,
             status: formData.status,
             role_id: formData.role_id,
             customer_id: formData.customer_id,
@@ -109,7 +109,7 @@ const Useredit = () => {
                     console.log("response in handleSubmit", response.data);
                     if (response.data.success) {
                         alert("User updated successfully!");
-                        navigate('/landingpage/admincreatelist');
+                        navigate('/landingpage/userlist');
                     } else {
                         alert("Failed to edit part. Backend returned a failure.");
                     }
@@ -182,7 +182,7 @@ const Useredit = () => {
                         Email
                         <input
                             type="email"
-                            name="mail"
+                            name="email"
                             placeholder="Enter Email"
                             value={formData.email}
                             onChange={handleChange}

@@ -1,5 +1,7 @@
 import axios from "axios";
-import { BaseURL } from "./utils";
+import { BaseURL } from "./utils.js";
+import apiClient from './AxiosInterceptor/interceptor.js'; // Import your interceptor
+
 
 class API {
 
@@ -7,13 +9,13 @@ class API {
 
     async save_customer(data) {
 
-        const response = await axios.post(`${BaseURL}/save-customer`, data)
+        const response = await apiClient.post(`${BaseURL}/save-customer`, data)
         return response.data;
     }
 
     async customermaster_fetch() {
 
-        const response = await axios.get(`${BaseURL}/customermaster_fetch`)
+        const response = await apiClient.get(`${BaseURL}/customermaster_fetch`)
 
         return response.data;
     }
@@ -21,7 +23,7 @@ class API {
 
     async customerMasterEditFetch(id) {
         try {
-            const response = await axios.get(`${BaseURL}/customerMasterEditFetch/${id}`);
+            const response = await apiClient.get(`${BaseURL}/customerMasterEditFetch/${id}`);
             return response.data;
 
         }
@@ -36,9 +38,8 @@ class API {
 
     async customermaster_update(currentCustomer, onSuccess, onFailure) {
         try {
-            console.log("currentCustomer.id", currentCustomer.id);
 
-            await axios.put(`${BaseURL}/customermaster_update/${currentCustomer.id}`, currentCustomer)
+            await apiClient.put(`${BaseURL}/customermaster_update/${currentCustomer.id}`, currentCustomer)
                 .then((response) => {
                     onSuccess(response);
                 })
@@ -51,18 +52,17 @@ class API {
         }
     }
 
-    // Part_master
 
     async part_master_Create(data) {
 
-        const response = await axios.post(`${BaseURL}/part_master_Create`, data)
+        const response = await apiClient.post(`${BaseURL}/part_master_Create`, data)
         return response.data;
     }
 
 
     async get_part_master() {
 
-        const response = await axios.get(`${BaseURL}/get_part_master`)
+        const response = await apiClient.get(`${BaseURL}/get_part_master`)
 
         return response.data;
     }
@@ -70,7 +70,7 @@ class API {
 
     async editGet_part_master(id) {
         try {
-            const response = await axios.get(`${BaseURL}/editGet_part_master/${id}`);
+            const response = await apiClient.get(`${BaseURL}/editGet_part_master/${id}`);
             return response.data;
 
         }
@@ -86,7 +86,7 @@ class API {
     async update_part_master(part_master, onSuccess, onFailure) {
         try {
 
-            await axios.put(`${BaseURL}/update_part_master/${part_master.id}`, part_master)
+            await apiClient.put(`${BaseURL}/update_part_master/${part_master.id}`, part_master)
                 .then((response) => {
                     onSuccess(response);
                 })
@@ -105,7 +105,7 @@ class API {
     async inwardTransactioncreate(data) {
         try {
 
-            const response = await axios.post(`${BaseURL}/create_inwardTransaction`, data)
+            const response = await apiClient.post(`${BaseURL}/create_inwardTransaction`, data)
 
             return response.data;
 
@@ -119,7 +119,7 @@ class API {
 
     async fetch_inward_transaction() {
 
-        const response = await axios.get(`${BaseURL}/fetch_inward_transaction`)
+        const response = await apiClient.get(`${BaseURL}/fetch_inward_transaction`)
 
         return response.data;
     }
@@ -127,7 +127,7 @@ class API {
 
     async edit_inward_transaction(id) {
         try {
-            const response = await axios.get(`${BaseURL}/edit_inward_transaction/${id}`);
+            const response = await apiClient.get(`${BaseURL}/edit_inward_transaction/${id}`);
             return response.data;
 
         }
@@ -143,7 +143,7 @@ class API {
     async update_inwardtransaction(inward_master, onSuccess, onFailure) {
         try {
 
-            await axios.put(`${BaseURL}/update_inwardtransaction/${inward_master.id}`, inward_master)
+            await apiClient.put(`${BaseURL}/update_inwardtransaction/${inward_master.id}`, inward_master)
                 .then((response) => {
                     onSuccess(response);
                 })
@@ -163,7 +163,7 @@ class API {
         try {
             console.log("datasss in api", data);
 
-            const response = await axios.post(`${BaseURL}/user_create`, data)
+            const response = await apiClient.post(`${BaseURL}/user_create`, data)
 
             return response.data;
 
@@ -176,7 +176,7 @@ class API {
 
     async fetch_rolesdata() {
 
-        const response = await axios.get(`${BaseURL}/rolesfetch`)
+        const response = await apiClient.get(`${BaseURL}/rolesfetch`)
 
         return response.data;
 
@@ -184,7 +184,7 @@ class API {
 
     async fetch_usermasterdata() {
 
-        const response = await axios.get(`${BaseURL}/user-master-get`)
+        const response = await apiClient.get(`${BaseURL}/user-master-get`)
 
         return response.data;
 
@@ -193,7 +193,7 @@ class API {
 
     async edit_usermaster_fetch(id) {
         try {
-            const response = await axios.get(`${BaseURL}/edit_usermaster/${id}`);
+            const response = await apiClient.get(`${BaseURL}/edit_usermaster/${id}`);
             return response.data;
 
         }
@@ -210,8 +210,7 @@ class API {
 
     async update_usermaster(user_master, onSuccess = () => { }, onFailure = () => { }) {
         try {
-            const response = await axios.put(`${BaseURL}/edit_usermaster_update/${user_master.id}`, user_master);
-            console.log("response...api",response.data);
+            const response = await apiClient.put(`${BaseURL}/edit_usermaster_update/${user_master.id}`, user_master);
 
             if (typeof onSuccess === 'function') {
                 onSuccess(response); // Safely call onSuccess
@@ -226,17 +225,13 @@ class API {
 
     //Location master
 
-    async locationmaster_create(data) {
+    async createLocationMaster(data) {
         try {
 
-            const response = await axios.post(`${BaseURL}/locationmaster_create`, data)
-
+            const response = await axios.post(`${BaseURL}/location-create`, data)
             return response.data;
-
-
         } catch (error) {
             console.error('Error updating customer:', error);
-
         }
     }
 

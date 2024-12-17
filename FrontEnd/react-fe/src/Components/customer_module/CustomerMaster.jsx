@@ -53,6 +53,12 @@ const CustomerMaster = () => {
     };
 
     const handleSubmit = async (e) => {
+
+        const userDetails = localStorage.getItem("userDetails");
+
+        const parsedDetails = JSON.parse(userDetails);                
+
+
         
         e.preventDefault();
         try {
@@ -61,6 +67,7 @@ const CustomerMaster = () => {
             const completeFormData = {
                 ...formData,
                 additional_addresses: additionalAddresses,
+                user_id :parsedDetails.user.id
             };
 
             const response = await api.save_customer(completeFormData);

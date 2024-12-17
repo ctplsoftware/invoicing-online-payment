@@ -8,11 +8,12 @@ from django.utils import timezone
 from ..models.PartMasterModel import PartMaster
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_inwardTransaction(request):
     data = request.data.copy()
     data['created_by'] = 1  # Defaulting created_by
     data['updated_by'] = 1  # Defaulting updated_by
-
+     
     location_id = data.get('location_id')
     part_name = data.get('part_name')
     quantity = data.get('inward_quantity', 0)  # Get the inward_quantity from the request
@@ -51,6 +52,7 @@ def create_inwardTransaction(request):
     
     
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def edit_inward_transaction(request, id):
     try:
         inwardtransaction = InwardTransaction.objects.get(id=id)
@@ -61,6 +63,7 @@ def edit_inward_transaction(request, id):
     return Response(serializer.data, status=status.HTTP_200_OK)   
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def fetch_inward_transaction(request):
         
         inwardtransaction_data = InwardTransaction.objects.all()
@@ -68,6 +71,7 @@ def fetch_inward_transaction(request):
         return Response(serializer.data)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_inwardtransaction(request, id):
     try:
         inwardupdate = InwardTransaction.objects.get(id=id)

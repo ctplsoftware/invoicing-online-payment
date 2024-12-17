@@ -44,8 +44,16 @@ const PartMasterEdit = () => {
 
     const handleEditSubmit = async (event) => {
         event.preventDefault();
+        const userDetails = localStorage.getItem("userDetails");
+        const parsedDetails = JSON.parse(userDetails);   
+        
+        const partmasterdatas ={
+            ...formData,
+            user_id :parsedDetails.user.id
+        }
+
         try {
-            await api.update_part_master(formData); 
+            await api.update_part_master(partmasterdatas); 
             alert("Update successful");
             navigate('/landingpage/partmaster-fecthList');  
         } catch (error) {

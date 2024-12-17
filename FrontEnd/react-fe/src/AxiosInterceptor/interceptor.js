@@ -1,10 +1,11 @@
 import axios from 'axios';
-import { BaseURL } from "./utils"; // Import the BaseURL from your utils file
+import { BaseURL } from "../utils" // Import the BaseURL from your utils file
 
 const apiClient = axios.create({
     baseURL: BaseURL, // Use the BaseURL from utils
     headers: { 'Content-Type': 'application/json' },
 });
+
 
 apiClient.interceptors.request.use((config) => {
     const accessToken = localStorage.getItem('accessToken');
@@ -13,6 +14,7 @@ apiClient.interceptors.request.use((config) => {
     }
     return config;
 });
+
 
 apiClient.interceptors.response.use(
     (response) => response,

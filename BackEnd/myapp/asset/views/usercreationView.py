@@ -7,10 +7,15 @@ from asset.models.UserModel import UserRolePermission
 from ..serializers.UserSerializer import UserSerializer, UserRolePermissionSerializer, GroupSerializer, PermissionSerializer
 from django.shortcuts import get_object_or_404
 from ..models.CustomerMasterModel import CustomerMaster
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+
+
 
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def admincreates(request):
 
     data = request.data
@@ -49,6 +54,7 @@ def rolesget(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def usermaster_get(request):   
     users = User.objects.all()
 
@@ -68,7 +74,8 @@ def usermaster_get(request):
     return Response(user_data, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])    
 def edit_usermaster_fetch(request,id):
     user = get_object_or_404(User, id=id)
     
@@ -101,6 +108,7 @@ def edit_usermaster_fetch(request,id):
 
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def create_update_user(request, id=None):
     try:
         data = request.data

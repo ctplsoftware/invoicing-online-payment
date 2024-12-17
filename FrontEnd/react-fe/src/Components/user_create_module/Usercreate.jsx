@@ -11,7 +11,7 @@ const Usercreate = () => {
         username: '',
         password: '',
         confirm_password: '',
-        mail: '',
+        email: '',
         customer: '',
         status: 'Active',
         role: '',
@@ -90,13 +90,12 @@ const Usercreate = () => {
         const submitData = {
             username: formData.username,
             password: formData.password,
-            mail: formData.mail,
+            email: formData.email,
             status: formData.status,
-            role_id: formData.role_id,   // Send role_id
-            customer_id: formData.customer_id,  // Send customer_id
+            role_id: formData.role_id,   
+            customer_id: formData.customer_id,  
         };
 
-        console.log("submitData..",submitData);
         
 
         try {
@@ -170,9 +169,9 @@ const Usercreate = () => {
                         Email
                         <input
                             type="email"
-                            name="mail"
+                            name="email"
                             placeholder="Enter Email"
-                            value={formData.mail}
+                            value={formData.email}
                             onChange={handleChange}
                             required
                         />

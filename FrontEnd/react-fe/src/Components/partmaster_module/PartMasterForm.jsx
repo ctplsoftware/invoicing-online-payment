@@ -30,17 +30,21 @@ const PartMaster = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const userDetails = localStorage.getItem("userDetails");
+
+        const parsedDetails = JSON.parse(userDetails);                
+
         try {
-            const response = await api.part_master_Create(formData);
+            const partmasterdatas = {
+                ...formData,
+                user_id:parsedDetails.user.id
+            }
+            const response = await api.part_master_Create(partmasterdatas);
             if (response) {
                 alert("Part Added");
                 navigate('/landingpage/partmaster-fecthList')
-                setFormData({
-                    part_name: '',
-                    status: 'active',  
-                    unit_price: '',
-                    uom:''
-                });
+               
             } else {
                 alert("Failed to add part");
             }

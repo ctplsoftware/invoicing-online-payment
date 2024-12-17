@@ -46,7 +46,7 @@ urlpatterns = [
     path('edit_usermaster_update/<int:id>',usercreationView.create_update_user),
     
     #location master
-     path('locationmaster_create',LocationMasterViews.create_locationmaster),
+     path('location-create',LocationMasterViews.create_locationmaster),
      path('locationmaster_list',LocationMasterViews.get_locationmaster),
      path('locationmaster_edit/<int:id>',LocationMasterViews.editGet_locationmaster),
      path('edit_locationmaster_update/<int:id>',LocationMasterViews.update_locationmaster),

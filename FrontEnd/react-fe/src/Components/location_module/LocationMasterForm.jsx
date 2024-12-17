@@ -28,8 +28,15 @@ const LocationMaster = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const userDetails = localStorage.getItem("userDetails");
+        const parsedDetails = JSON.parse(userDetails); 
+        
+        const locationdetails ={
+            ...formData,
+            user_id:parsedDetails.user.id
+        }
         try {
-            const response = await api.locationmaster_create(formData);
+            const response = await api.createLocationMaster(locationdetails);
             if (response) {
                 alert("Location Added");
                 navigate('/landingpage/locationmasterlist')

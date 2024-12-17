@@ -21,8 +21,8 @@ class CustomerMaster(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)  
     updated_at = models.DateTimeField(null=True, blank=True)
-    created_by = models.IntegerField()
-    updated_by = models.IntegerField()
+    created_by = models.IntegerField(blank=True, null=True)
+    updated_by = models.IntegerField(blank=True, null=True)
 
     class Meta:
         db_table = 'customer_master'

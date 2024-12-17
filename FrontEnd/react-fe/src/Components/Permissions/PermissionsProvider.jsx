@@ -5,9 +5,7 @@ import { BaseURL } from '../../utils';
 
 export async function fetchAndStorePermissions() {
     try {
-        const accessToken = localStorage.getItem('accessToken'); // Get token from localStorage
-        console.log("accessToken..in fetchandstore",accessToken);
-        
+        const accessToken = localStorage.getItem('accessToken'); 
         const response = await axios.get(`${BaseURL}/get_user_permissions/`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`, // Add token to header

@@ -6,8 +6,8 @@ class LoactionMaster(models.Model):
     location_address = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)  
     updated_at = models.DateTimeField(null=True, blank=True)
-    created_by = models.IntegerField()
-    updated_by = models.IntegerField()
+    created_by = models.IntegerField(null=True,blank=True)
+    updated_by = models.IntegerField(null=True,blank=True)
 
     class Meta:
         db_table = 'location_master'

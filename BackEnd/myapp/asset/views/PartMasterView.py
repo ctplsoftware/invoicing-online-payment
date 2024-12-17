@@ -8,10 +8,10 @@ from django.utils import timezone
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_part_master(request):
     data = request.data.copy() 
-    data['created_by'] = 1
-    data['updated_by'] = 1
+    data['created_by'] = request.data.get("user_id")
     serializer = PartMasterSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
@@ -19,6 +19,7 @@ def create_part_master(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def editGet_part_master(request, id):
     try:
         part_master = PartMaster.objects.get(id=id)
@@ -29,6 +30,7 @@ def editGet_part_master(request, id):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_part_master(request):
         
         customerMaster_data = PartMaster.objects.all()
@@ -36,11 +38,14 @@ def get_part_master(request):
         return Response(serializer.data)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_part_master(request, id):
     try:
         part_master = PartMaster.objects.get(id=id)
     except PartMaster.DoesNotExist:
         return Response({'error': 'PartMaster not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    part_master.updated_by =request.data.get("user_id")
     
     serializer = PartMasterSerializer(part_master, data=request.data, partial=True)
     if serializer.is_valid():
