@@ -100,6 +100,7 @@ def update_verified_completed(request):
     try:
         with transaction.atomic():
             order_header = OrderHeader.objects.filter(id = request.data.get('order_header_id')).first()
+            print(request.data)
 
             if order_header:
                 order_transaction = {
@@ -108,7 +109,7 @@ def update_verified_completed(request):
                     'payment_date': request.data.get('payment_date'),
                     'payment_comments': request.data.get('payment_comments'),
                     'created_by': 1,
-                    'updated_by': request.data.get('updated_by')
+                    'updated_by': 1
                 }
 
                 OrderTransaction.objects.create(**order_transaction)
@@ -125,7 +126,8 @@ def update_verified_completed(request):
 
                 
 
-                order_header.save() 
+                order_header.save()
+                return Response('success')
 
 
 
