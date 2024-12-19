@@ -10,7 +10,7 @@ const PaymentForm = () => {
 
     const api = new API();
     const navigate = useNavigate();
-    const { order_no } = useParams();
+    const { order_header_id } = useParams();
 
     const [formData, setFormData] = useState({});
     const [partdatafetch, setPartDataFetch] = useState([]);
@@ -28,28 +28,11 @@ const PaymentForm = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const ordermasterfetch = await api.fetch_ordertransactiondata();
-                const partmasterfetch = await api.get_part_master();
-    
-    
-                const order = ordermasterfetch.find(item => item.order_no === order_no);
-    
-                if (order) {
-                    const part = partmasterfetch.find(part => part.id === order.part);
-    
-                    setFormData({
-                        id: order.id,
-                        order_no: order.order_no,
-                        customer_name: order.customer_name,
-                        status: order.status,
-                        purchase_qty: order.quantity,
-                        amount: order.total_amount,
-                        payment_status:order.status,
-                        part_name: part ? part.part_name : 'Part not found', 
-                    });
-                } else {
-                    console.error(`Order with order_no ${order_no} not found`);
-                }
+               
+                
+                
+                
+                
             } catch (error) {
                 console.error("Error fetching data:", error);
             }

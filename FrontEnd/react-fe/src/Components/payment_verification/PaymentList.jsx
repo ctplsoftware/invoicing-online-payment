@@ -32,23 +32,22 @@ const PaymentList = () => {
                         cursor: 'pointer',
                         fontSize:'17px'
                     }} 
-                    onClick={() => handleQuantityClick(row.order_no)}
+                    onClick={() => handleQuantityClick(row.id)}
                 >
-                    {row.order_no}
+                    {row.order_number}
                 </span>
             ), 
             width: '160px'
         },
         { name: 'Customer Name', selector: row => row.customer_name, width: '165px' },
-        { name: 'Part Name', selector: row => row.part_name, width: '130px' },
+        { name: 'Payment Type', selector: row => row.payment_type, width: '130px' },
         { name: 'Purchase Qty', selector: row => row.quantity, width: '160px' },
         { name: 'Amount', selector: row => row.total_amount, width: '185px' },
-        { name: 'Payment Status', selector: row => row.status, width: '185px' },
 
     ];
 
-    const handleQuantityClick = (order_no) => {
-        navigate(`/landingpage/payment-view/${encodeURIComponent(order_no)}`);
+    const handleQuantityClick = (order_header_id) => {
+        navigate(`/landingpage/dispatch/${encodeURIComponent(order_header_id)}`);
     };
     useEffect(() => {
         const fetchData = async () => {
@@ -75,8 +74,8 @@ const PaymentList = () => {
                         status: item.status,
                         quantity: item.quantity,
                         total_amount: item.total_amount,
-                        order_no: item.order_no,
-                        part_name: part ? part.part_name : 'Part not found', // Fallback in case part is not found
+                        order_number: item.order_number,
+                        payment_type:item.payment_type
                     };
                 });
 
@@ -112,7 +111,7 @@ const PaymentList = () => {
 
     return (
 
-        <div style={{ width: '62%', margin: '40px auto', fontFamily: 'Arial, sans-serif' }}>
+        <div style={{ width: '51.1%', margin: '40px auto', fontFamily: 'Arial, sans-serif' }}>
           
 
             {/* DataTable */}

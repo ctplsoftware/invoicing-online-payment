@@ -1,10 +1,19 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
-
 from asset.models import *
 from django.db import transaction
+from asset.serializers.OrderheaderSerializer import OrderheaderSerializer
+from asset.serializers.OrderAttachementTransactionSerializer import OrderAttachmentTransactionSerializer
+from asset.serializers.OrderTransactionSerializer import OrderTransactionSerializer
 
+
+
+@api_view(['GET'])
+def get_order_details_all(request):
+        orderheader_data = OrderHeader.objects.all()
+        serializer = OrderheaderSerializer(orderheader_data, many=True)
+        return Response(serializer.data)
+    
 
 
 @api_view(['GET'])
@@ -14,18 +23,25 @@ def get_order_details(request):
         with transaction.atomic():
 
             order_header_id = request.query_params.get('order_header_id')
+            print("order_id",order_header_id)
 
             order_header = OrderHeader.objects.filter(id = order_header_id).prefetch_related('attachments', 'transaction').first()
 
             if order_header:
-                order_attachment_images = order_header.attachments.all()
-                order_transaction = order_header.transaction.all()
+                # Serialize the order header
+                order_header_data = OrderheaderSerializer(order_header).data
+
+                # Serialize the related attachments
+                order_attachment_images_data = OrderAttachmentTransactionSerializer(order_header.attachments.all(), many=True).data
+
+                # Serialize the related transactions
+                order_transaction_data = OrderTransactionSerializer(order_header.transaction.all(), many=True).data
 
 
                 response_data = {
-                    'order_header': order_header,
-                    'order_attachment_images': order_attachment_images,
-                    'order_transaction': order_transaction
+                    'order_header': order_header_data,
+                    'order_attachment_images': order_attachment_images_data,
+                    'order_transaction': order_transaction_data
                 }
 
                 return Response(response_data)
@@ -92,7 +108,7 @@ def update_verified_completed(request):
                     'payment_date': request.data.get('payment_date'),
                     'payment_comments': request.data.get('payment_comments'),
                     'created_by': 1,
-                    'updated_by': 1 
+                    'updated_by': request.data.get('updated_by')
                 }
 
                 OrderTransaction.objects.create(**order_transaction)

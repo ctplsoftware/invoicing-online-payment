@@ -262,7 +262,7 @@ class API {
     async update_locationmaster(location_master, onSuccess = () => { }, onFailure = () => { }) {
         try {
             const response = await axios.put(`${BaseURL}/edit_locationmaster_update/${location_master.id}`, location_master);
-            console.log("response...api",response.data);
+            console.log("response...api", response.data);
 
             if (typeof onSuccess === 'function') {
                 onSuccess(response); // Safely call onSuccess
@@ -276,15 +276,56 @@ class API {
     }
 
 
-    // order_transaction data
+    // order_transaction data and header also
 
     async fetch_ordertransactiondata() {
 
-        const response = await axios.get(`${BaseURL}/order_transaction_get`)
+        const response = await axios.get(`${BaseURL}/order-details-all`)
 
         return response.data;
 
     }
+
+    async fetch_dispatchById(id) {
+        try {
+            const response = await axios.get(`${BaseURL}/order-details-get`,{
+                params:{order_header_id:id},
+            });
+            return response.data;
+
+        }
+        catch (error) {
+
+            console.error('Error fetching assets data:', error);
+            throw error; // Re-throw the error to be caught by the caller
+
+        }
+
+    }
+
+    async updateOrderHeaderDispatchStatus(data) {
+        try {
+
+            const response = await axios.put(`${BaseURL}/disptach-completed-update`, data)
+            return response.data;
+        } catch (error) {
+            console.error('Error updating customer:', error);
+        }
+    }
+
+    async updateOrderHeaderVerifyStatus(data) {
+        try {
+
+            const response = await axios.put(`${BaseURL}/verified-completed-update`, data)
+            return response.data;
+        } catch (error) {
+            console.error('Error updating customer:', error);
+        }
+    }
+
+
+
+
 
 
 

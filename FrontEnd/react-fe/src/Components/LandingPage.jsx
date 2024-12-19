@@ -54,7 +54,7 @@ const LandingPage = () => {
                     <Route path="/customerdashboard" element={<CustomerDashboard />} />
                     <Route path="/payment-list" element={<PaymentList />} />
                     <Route path="/payment-view/:order_no" element={<PaymentView />} />
-                    <Route path="/dispatch" element={<DispatchDashboard />} />
+                    <Route path="/dispatch/:order_header_id" element={<DispatchDashboard />} />
                     <Route path="/dispatchs" element={<DispatchDashboards />} />
 
 

@@ -53,7 +53,9 @@ urlpatterns = [
      
     #order_Tranction master
     path('order_transaction_get',OrderTransactionView.get_order_transaction),
-
+    
+    #order_header master
+    path('order-details-all', TransactionView.get_order_details_all),
     path('order-details-get', TransactionView.get_order_details),
     path('disptach-completed-update', TransactionView.update_dispatched_completed),
     path('verified-completed-update', TransactionView.update_verified_completed),

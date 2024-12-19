@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import axios from 'axios';
+import { BaseURL } from '../../utils';
 
 const ProtectedRoute = () => {
     const accessToken = localStorage.getItem("accessToken");
@@ -31,7 +32,7 @@ const ProtectedRoute = () => {
 
             try {
                 // Make an API request to validate the token
-                const response = await axios.get("http://localhost:8000/user_data/", {
+                const response = await axios.get(`${BaseURL}/user_data`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}` // Set the Bearer token here
                     }
