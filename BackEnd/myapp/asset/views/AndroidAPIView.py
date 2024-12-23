@@ -76,8 +76,8 @@ def create_order(request):
                 return Response(response_data)
             
             else:
-                amount_inr = part_master.unit_price * quantity
-                amount_inr_tax = amount_inr + float(amount_inr * 0.18)
+                amount_inr = round(part_master.unit_price * quantity, 2)
+                amount_inr_tax = round(amount_inr + float(amount_inr * 0.18), 2)
 
                 if payment_type == 'Credit':
                     

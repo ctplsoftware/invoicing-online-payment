@@ -16,7 +16,6 @@ def get_order_details_all(request):
         return Response(serializer.data)
     
 
-
 @api_view(['GET'])
 def get_order_details(request):
     response_data = {}
@@ -108,7 +107,7 @@ def update_verified_completed(request):
             if order_header:
                 order_transaction = {
                     'order_header_id': order_header.id,
-                    'payment_amount': request.data.get('payment_amount'),
+                    'payment_amount': round(float(request.data.get('payment_amount')), 2),
                     'payment_date': request.data.get('payment_date'),
                     'payment_comments': request.data.get('payment_comments'),
                     'created_by': 1,
@@ -117,7 +116,7 @@ def update_verified_completed(request):
 
                 OrderTransaction.objects.create(**order_transaction)
 
-                order_header.paid_amount = float(order_header.paid_amount) + float(request.data.get('payment_amount'))
+                order_header.paid_amount = round(float(order_header.paid_amount), 2) + round(float(request.data.get('payment_amount')), 2)
                 
                 order_header.verified_status = 'yes' if float(order_header.paid_amount) == float(order_header.total_amount) else 'no'
                 order_header.attached_status = 'yes' if order_header.verified_status == 'yes' else 'partial'
