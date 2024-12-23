@@ -23,9 +23,12 @@ def get_generate_order(request):
 
             limits = CustomerMaster.objects.filter(id = customer_id).first()
             credit_limit = float(limits.credit_limit) - float(limits.used_limit)
+            print("credit_limits checks",credit_limit)
 
             addresses = [address for address in total_addresses if address != '' and address is not None]
+            print("adressssss...",addresses)
             part_details = [{'part_id': part['id'], 'part_name': part['part_name'], 'unit_price': part['unit_price'], 'stock': float(part['stock']) - float(part['allocated_stock']), 'uom': part['uom']} for part in part_master]
+            print("part details...",part_details)
 
 
             response_data = {
@@ -61,7 +64,7 @@ def create_order(request):
             customer_master = CustomerMaster.objects.filter(id = request.data.get('customer_id')).first()
             quantity = float(request.data.get('qty'))
             payment_type = request.data.get('payment_type')
-
+            
             available_stock = float(part_master.stock) - float(part_master.allocated_stock)
 
             if quantity > available_stock:
@@ -93,7 +96,7 @@ def create_order(request):
 
                         last_order = get_count(OrderHeader)
                         order_number = f"{customer_master.name}{last_order + 1}"
-
+                        
                         order_header = {
                             'order_number': order_number,
                             'payment_type': 'credit',
@@ -298,7 +301,7 @@ def create_order_attachment(request):
                             'order_header_id': order_header.id,
                             'attached_by': attached_by
                         }
-
+                    
                     OrderAttachmentTransaction.objects.create(**order_attachment_transaction)
                     OrderHeader.objects.filter(id = order_header.id).update(attached_status = 'partial')
 

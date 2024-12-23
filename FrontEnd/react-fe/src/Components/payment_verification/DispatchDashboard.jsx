@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import vickyimg from '../payment_verification/screeshot.png';
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
-import { Button, Card, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Container } from '@mui/material';
+import { Button, Card, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Container, getBottomNavigationUtilityClass } from '@mui/material';
 import { display, styled } from '@mui/system';
 import { API } from '../../API.js';
 import { useParams } from "react-router-dom";
@@ -27,7 +27,10 @@ function DispatchDashboard() {
     const [dispatchStatus, setDispatchStatus] = useState(false);
     const [verifyStatus, setVerifyStatus] = useState(false);
     const [generateStatus, setGenerateStatus] = useState(false);
-    const [paymentTable, setPaymentTable] = useState({})
+    const [paymentTable, setPaymentTable] = useState({});
+    const [balanceLimit ,setBalanceLimit] =useState(null);
+    const [remainingAmount ,setRemainingAmount] =useState(null);
+    const [isAttachVerifiying,setIsAttachVerifying] =useState(false);
 
 
 
@@ -44,9 +47,12 @@ function DispatchDashboard() {
                 setDispatchStatus(ordermasterfetch?.order_header?.dispatched_status === "yes");
                 setVerifyStatus(ordermasterfetch?.order_header?.verified_status === "yes");
                 setGenerateStatus(ordermasterfetch?.order_header?.invoice_generated_status === 'yes')
+                setIsAttachVerifying(ordermasterfetch?.order_header?.attached_status ==='no')
 
-
-
+                const balance_limit_calculate = ordermasterfetch?.customer_data?.credit_limit - ordermasterfetch?.order_header?.total_amount                
+                setBalanceLimit(balance_limit_calculate)
+                const reaming_balance = ordermasterfetch?.order_header?.total_amount -ordermasterfetch?.order_header?.paid_amount
+                setRemainingAmount(reaming_balance)
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -56,7 +62,7 @@ function DispatchDashboard() {
     }, [order_header_id]);
 
     function formatToLocalTime(dateString) {
-        return moment(dateString).format('LLLL'); // Example format: "Sunday, December 15, 2024 3:00 PM"
+        return moment(dateString).format('LLLL'); 
     }
 
     const handleDispatch = async (e) => {
@@ -150,11 +156,6 @@ function DispatchDashboard() {
             if (response) {
                 alert("Working good");
                 setVerifyStatus(true);
-                // setPaymentTable({
-                //     payment_amount: '',
-                //     payment_date: '',
-                //     payment_comments: ''
-                // })
                 window.location.reload();
 
 
@@ -183,8 +184,6 @@ function DispatchDashboard() {
 
     return (
         <div style={{ height: '753px', overflow: 'scroll' }}>
-
-
             <div className="head-conatiner">
 
                 <div className="invoice-button">
@@ -238,8 +237,16 @@ function DispatchDashboard() {
                                 <span className="orderDetailValue">{formData.order_header?.delivery_address}</span>
                             </div>
                             <div className="orderDetailRow">
-                                <span className="orderDetailKey">Total Amount:</span>
+                                <span className="orderDetailKey">Purchase Amount:</span>
                                 <span className="orderDetailValue">{formData.order_header?.total_amount}</span>
+                            </div>
+                            <div className="orderDetailRow">
+                                <span className="orderDetailKey">Credit Limit:</span>
+                                <span className="orderDetailValue">{formData.customer_data?.credit_limit}</span>
+                            </div>
+                            <div className="orderDetailRow">
+                                <span className="orderDetailKey">Balance Limit:</span>
+                                <span className="orderDetailValue">{balanceLimit}</span>
                             </div>
                         </div>
                     </div>
@@ -282,6 +289,13 @@ function DispatchDashboard() {
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
+                                <Typography variant="h6" align="right" sx={{ marginTop: 2 }}>
+                                    Total Paid Amount: ${formData.order_header?.paid_amount}
+                                </Typography>
+                                <Typography variant="h6" align="right" sx={{ marginTop: 2 }}>
+                                    Remaining Paid Amount: ${remainingAmount}
+                                </Typography>
+                                
                             </Card>
 
                         </div>
@@ -339,9 +353,7 @@ function DispatchDashboard() {
                                     </Table>
                                 </TableContainer>
 
-                                <Typography variant="h6" align="right" sx={{ marginTop: 2 }}>
-                                    Total Paid Amount: ${formData.order_header?.paid_amount}
-                                </Typography>
+                               
                             </Card>
 
                         </div>
@@ -351,14 +363,50 @@ function DispatchDashboard() {
 
 
                     </div>
-
-
-
-
-
                 </div>
 
-                {dispatchStatus && !verifyStatus && (
+                {formData?.order_header?.payment_type === "credit" && dispatchStatus && !verifyStatus && (
+                    <Card sx={{ marginBottom: 3, width: '50%', margin: '0 auto', padding: 2, marginRight: '12%' }}>
+                        <form onSubmit={handleVerify}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={4}>
+                                    <TextField
+                                        name="payment_amount"
+                                        placeholder="Payment Amount"
+                                        onChange={handleChange}
+                                        value={paymentTable.payment_amount || ''}
+                                        sx={{ width: '60%' }}
+                                        required
+                                    />
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <TextField
+                                        name="payment_date"
+                                        placeholder="Date"
+                                        type="date"
+                                        InputLabelProps={{ shrink: true }}
+                                        onChange={handleChange}
+                                        value={paymentTable.payment_date || ''}
+                                        required
+                                    />
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <TextField
+                                        name="payment_comments"
+                                        placeholder="Comments"
+                                        variant="outlined"
+                                        onChange={handleChange}
+                                        value={paymentTable.payment_comments || ''}
+                                        sx={{ width: '60%' }}
+                                        required
+                                    />
+                                </Grid>
+                            </Grid>
+                        </form>
+                    </Card>
+                )}
+
+                {formData?.order_header?.payment_type === "advance" && !verifyStatus && (
                     <Card sx={{ marginBottom: 3, width: '50%', margin: '0 auto', padding: 2, marginRight: '12%' }}>
                         <form onSubmit={handleVerify}>
                             <Grid container spacing={2}>
@@ -434,7 +482,7 @@ function DispatchDashboard() {
                                             variant="contained"
                                             color="error"
                                             onClick={() => {
-                                                setGenerateStatus(true); // Update generateStatus to true
+                                        
                                             }}
                                         >
                                             GENERATE
@@ -445,7 +493,7 @@ function DispatchDashboard() {
                                 {/* Show Verify button if dispatchStatus is true */}
                                 {dispatchStatus && !verifyStatus && (
                                     <Grid item>
-                                        <Button variant="contained" color="primary" onClick={() => {
+                                        <Button variant="contained" color="primary" disabled ={isAttachVerifiying} onClick={() => {
                                             handleVerify()
                                         }} >
                                             VERIFY
@@ -458,20 +506,19 @@ function DispatchDashboard() {
                         {/* For Advance Payment Type */}
                         {formData?.order_header?.payment_type === "advance" && (
                             <>
-                                {!dispatchStatus && (
+                                {console.log("checkingg advance")
+                                }
+
+                                {!verifyStatus && (
                                     <Grid item>
-                                        <Button
-                                            variant="contained"
-                                            color="warning"
-                                            onClick={() => {
-                                                handleDispatch();
-                                                setDispatchStatus(true); // Update dispatchStatus to true
-                                            }}
-                                        >
-                                            DISPATCH
+                                        <Button variant="contained" color="primary" disabled ={isAttachVerifiying}  onClick={() => {
+                                            handleVerify();
+                                        }}>
+                                            VERIFY
                                         </Button>
                                     </Grid>
                                 )}
+
 
                                 {!generateStatus && (
                                     <Grid item>
@@ -479,7 +526,6 @@ function DispatchDashboard() {
                                             variant="contained"
                                             color="error"
                                             onClick={() => {
-                                                setGenerateStatus(true); // Update generateStatus to true
                                             }}
                                         >
                                             GENERATE
@@ -487,13 +533,21 @@ function DispatchDashboard() {
                                     </Grid>
                                 )}
 
-                                {dispatchStatus && (
+                                {verifyStatus && !dispatchStatus && (
                                     <Grid item>
-                                        <Button variant="contained" color="primary">
-                                            VERIFY
+                                        <Button
+                                            variant="contained"
+                                            color="warning"
+                                            onClick={() => {
+                                                handleDispatch();
+                                            }}
+                                        >
+                                            DISPATCH
                                         </Button>
                                     </Grid>
                                 )}
+
+
 
                             </>
                         )}

@@ -14,7 +14,7 @@ class CustomerMaster(models.Model):
     additional_address2 = models.CharField(max_length=255, null=True, blank=True)
     billing_address = models.CharField(max_length=255, null=True, blank=True)
     credit_limit = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True)
-    used_limit = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True)
+    used_limit = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True ,default=0)
     credit_days = models.CharField(max_length=50, blank=True, null=True)
     contact_person = models.CharField(max_length=255)
     contact_number = models.CharField(max_length=50)

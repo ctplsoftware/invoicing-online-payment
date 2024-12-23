@@ -5,6 +5,7 @@ from django.db import transaction
 from asset.serializers.OrderheaderSerializer import OrderheaderSerializer
 from asset.serializers.OrderAttachementTransactionSerializer import OrderAttachmentTransactionSerializer
 from asset.serializers.OrderTransactionSerializer import OrderTransactionSerializer
+from asset.serializers.CustomerSerializer import CustomerSerializer
 
 
 
@@ -26,6 +27,7 @@ def get_order_details(request):
             print("order_id",order_header_id)
 
             order_header = OrderHeader.objects.filter(id = order_header_id).prefetch_related('attachments', 'transaction').first()
+            customer_data = CustomerMaster.objects.filter(id = order_header.customer_master_id).first()
 
             if order_header:
                 # Serialize the order header
@@ -36,12 +38,13 @@ def get_order_details(request):
 
                 # Serialize the related transactions
                 order_transaction_data = OrderTransactionSerializer(order_header.transaction.all(), many=True).data
-
-
+                 
+                customer_data_serial = CustomerSerializer(customer_data).data
                 response_data = {
                     'order_header': order_header_data,
                     'order_attachment_images': order_attachment_images_data,
-                    'order_transaction': order_transaction_data
+                    'order_transaction': order_transaction_data,
+                    'customer_data': customer_data_serial
                 }
 
                 return Response(response_data)
@@ -71,7 +74,7 @@ def update_dispatched_completed(request):
                     order_header.completed_status = final_status
                     order_header.save()
 
-                else:
+                elif order_header.payment_type == "advance":
                     if order_header.verified_status == 'yes':
                         final_status = 'yes'  if order_header.invoice_generated_status == 'yes' else 'no'
 

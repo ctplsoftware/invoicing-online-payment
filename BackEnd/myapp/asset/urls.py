@@ -70,13 +70,5 @@ urlpatterns = [
     path('android/get-order-list', AndroidAPIView.get_order_list),
     path('android/create-order-attachment', AndroidAPIView.create_order_attachment),
 
-    # path('android/generate-inv/get-part-list', AndroidAPIView.get_part_master),
-    # path('android/generate-inv/get-part-details', AndroidAPIView.get_partmaster_usermaster, name='get_partmaster_usermaster'),
-    # path('android/generate-inv/store',AndroidAPIView.create_ordertransaction),
-    # path('android/pending-order/payment/get-order-details', AndroidAPIView.getOrderTransactionsForOrderNumber),
-    # path('android/pending-order/payment/store-order', AndroidAPIView.create_orderplace_transaction),
-    # path('android/pending-order/lists',AndroidAPIView.getPendingOrderTransactions),
-    # path('android/pending-order/proof/upload',AndroidAPIView.upload_attachment),
-    # path('android/pending-order/proof/upload-fetching_pending-attachments',AndroidAPIView.fetch_pending_attachments),
-
+    
 ]

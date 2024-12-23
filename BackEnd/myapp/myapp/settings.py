@@ -101,7 +101,7 @@ WSGI_APPLICATION = 'myapp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'online_invoice_paymentp', #define your database name here
+        'NAME': 'invoice_online_payment', #define your database name here
         'USER': 'root', #change your mysql user name here
         'PASSWORD': '',  # change your mysql password here
         'HOST': 'localhost',

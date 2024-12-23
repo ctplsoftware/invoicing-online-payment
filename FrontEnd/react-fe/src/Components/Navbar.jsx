@@ -128,7 +128,12 @@ const Navbar1 = () => {
         <NavDropdown.Item href="/landingpage/usercreate">User</NavDropdown.Item>
         
     ): title === 'Process' ? (
-        <NavDropdown.Item href="/landingpage/inwardtransactionlist">Inward Process </NavDropdown.Item>
+        <>
+                <NavDropdown.Item href="/landingpage/inwardtransactionlist">Inward Process </NavDropdown.Item>
+                <NavDropdown.Item href="/landingpage/payment-list">Payment List Process </NavDropdown.Item>
+        
+        </>
+        
         
     )
     
