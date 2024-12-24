@@ -111,14 +111,14 @@ def update_verified_completed(request):
                     'payment_date': request.data.get('payment_date'),
                     'payment_comments': request.data.get('payment_comments'),
                     'created_by': 1,
-                    'updated_by': 1
-                }
+                    'updated_by': request.data.get('updated_by')
+                }   
 
                 OrderTransaction.objects.create(**order_transaction)
 
                 order_header.paid_amount = round(float(order_header.paid_amount), 2) + round(float(request.data.get('payment_amount')), 2)
                 
-                order_header.verified_status = 'yes' if float(order_header.paid_amount) == float(order_header.total_amount) else 'no'
+                order_header.verified_status = 'yes' if float(order_header.paid_amount) >= float(order_header.total_amount) else 'no'
                 order_header.attached_status = 'yes' if order_header.verified_status == 'yes' else 'partial'
 
                 status = 'yes' if order_header.verified_status == 'yes' and order_header.dispatched_status == 'yes' else 'no'

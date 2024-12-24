@@ -18,7 +18,7 @@ import { BaseURL } from '../../utils.js';
 
 
 function DispatchDashboard() {
-    const [selectedImage, setSelectedImage] = useState(vickyimg);
+    //const [selectedImage, setSelectedImage] = useState(vickyimg);
 
     const api = new API();
     const navigate = useNavigate();
@@ -28,9 +28,10 @@ function DispatchDashboard() {
     const [verifyStatus, setVerifyStatus] = useState(false);
     const [generateStatus, setGenerateStatus] = useState(false);
     const [paymentTable, setPaymentTable] = useState({});
-    const [balanceLimit ,setBalanceLimit] =useState(null);
-    const [remainingAmount ,setRemainingAmount] =useState(null);
-    const [isAttachVerifiying,setIsAttachVerifying] =useState(false);
+    const [balanceLimit, setBalanceLimit] = useState(null);
+    const [remainingAmount, setRemainingAmount] = useState(null);
+    const [isAttachVerifiying, setIsAttachVerifying] = useState(false);
+    const [isusedLimit, setUsedLimit] = useState(null);
 
 
 
@@ -40,19 +41,19 @@ function DispatchDashboard() {
             try {
 
                 const ordermasterfetch = await api.fetch_dispatchById(order_header_id);
-
-                console.log("ordermasterfetch", ordermasterfetch);
                 setFormData(ordermasterfetch)
-
                 setDispatchStatus(ordermasterfetch?.order_header?.dispatched_status === "yes");
                 setVerifyStatus(ordermasterfetch?.order_header?.verified_status === "yes");
                 setGenerateStatus(ordermasterfetch?.order_header?.invoice_generated_status === 'yes')
-                setIsAttachVerifying(ordermasterfetch?.order_header?.attached_status ==='no')
-
-                const balance_limit_calculate = ordermasterfetch?.customer_data?.credit_limit - ordermasterfetch?.order_header?.total_amount                
+                setIsAttachVerifying(ordermasterfetch?.order_header?.attached_status === 'no')
+                const balance_limit_calculate = ordermasterfetch?.customer_data?.credit_limit - ordermasterfetch?.customer_data?.used_limit
                 setBalanceLimit(balance_limit_calculate)
-                const reaming_balance = ordermasterfetch?.order_header?.total_amount -ordermasterfetch?.order_header?.paid_amount
+                const reaming_balance = ordermasterfetch?.order_header?.total_amount - ordermasterfetch?.order_header?.paid_amount
                 setRemainingAmount(reaming_balance)
+                console.log("reaming_balance..", reaming_balance);
+
+                const used_limit_balance = ordermasterfetch?.customer_data?.used_limit
+                setUsedLimit(used_limit_balance)
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -62,7 +63,7 @@ function DispatchDashboard() {
     }, [order_header_id]);
 
     function formatToLocalTime(dateString) {
-        return moment(dateString).format('LLLL'); 
+        return moment(dateString).format('LLLL');
     }
 
     const handleDispatch = async (e) => {
@@ -122,9 +123,6 @@ function DispatchDashboard() {
 
     const handleVerify = async (e) => {
 
-        console.log("paymentTable.....", paymentTable);
-
-
         const userDetails = localStorage.getItem("userDetails");
 
         const parsedDetails = JSON.parse(userDetails);
@@ -136,19 +134,24 @@ function DispatchDashboard() {
             return;
         }
 
-        const newPaidAmount = paidAmount + paymentAmount;
-        if (newPaidAmount > formData.order_header?.total_amount) {
-            alert(
-                `Payment exceeds the total amount. You are trying to pay ${newPaidAmount}, but the total amount is ${formData.order_header?.total_amount}.`
-            );
-            return;
-        }
+
+
+
+
+
+        // const newPaidAmount = paidAmount + paymentAmount;
+        // if (newPaidAmount > formData.order_header?.total_amount) {
+        //     alert(
+        //         `Payment exceeds the total amount. You are trying to pay ${newPaidAmount}, but the total amount is ${formData.order_header?.total_amount}.`
+        //     );
+        //     return;
+        // }
 
         try {
             const orderheadedata = {
                 ...paymentTable,
                 order_header_id: formData.order_header.id,
-                updated_by: parsedDetails.id
+                updated_by: parsedDetails.user.id
 
             }
 
@@ -248,6 +251,10 @@ function DispatchDashboard() {
                                 <span className="orderDetailKey">Balance Limit:</span>
                                 <span className="orderDetailValue">{balanceLimit}</span>
                             </div>
+                            <div className="orderDetailRow">
+                                <span className="orderDetailKey">Used Limit:</span>
+                                <span className="orderDetailValue">{isusedLimit}</span>
+                            </div>
                         </div>
                     </div>
 
@@ -293,13 +300,17 @@ function DispatchDashboard() {
                                     Total Paid Amount: ${formData.order_header?.paid_amount}
                                 </Typography>
                                 <Typography variant="h6" align="right" sx={{ marginTop: 2 }}>
-                                    Remaining Paid Amount: ${remainingAmount}
+                                    {remainingAmount != null && !isNaN(remainingAmount)
+                                        ? (remainingAmount >= 0
+                                            ? `Remaining Paid Amount: $${remainingAmount.toFixed(2)}`
+                                            : `Extra Paid Amount: $${Math.abs(remainingAmount).toFixed(2)}`
+                                        )
+                                        : 'Invalid Amount'}
                                 </Typography>
-                                
+
                             </Card>
 
                         </div>
-
 
                         <div>
 
@@ -353,14 +364,10 @@ function DispatchDashboard() {
                                     </Table>
                                 </TableContainer>
 
-                               
+
                             </Card>
 
                         </div>
-
-
-
-
 
                     </div>
                 </div>
@@ -447,112 +454,124 @@ function DispatchDashboard() {
                     </Card>
                 )}
 
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
 
-                <div
-                    style={{
-                        position: 'relative',
-                        right: '0%',
-                        display: 'flex',
-                        marginTop: '5%',
-                    }}
-                >
-                    <Grid container spacing={2} justifyContent="flex-end" marginLeft="-135px" marginTop="-60px">
-                        {/* For Credit Payment Type */}
-                        {formData?.order_header?.payment_type === "credit" && (
-                            <>
-                                {/* Show Dispatch button only if dispatchStatus is false */}
-                                {!dispatchStatus && (
-                                    <Grid item>
-                                        <Button
-                                            variant="contained"
-                                            color="warning"
-                                            onClick={() => {
-                                                handleDispatch();
-                                            }}
-                                        >
-                                            DISPATCH
-                                        </Button>
-                                    </Grid>
-                                )}
+                    <div>
 
-                                {/* Show Generate button if generateStatus is false */}
-                                {!generateStatus && (
-                                    <Grid item>
-                                        <Button
-                                            variant="contained"
-                                            color="error"
-                                            onClick={() => {
-                                        
-                                            }}
-                                        >
-                                            GENERATE
-                                        </Button>
-                                    </Grid>
-                                )}
-
-                                {/* Show Verify button if dispatchStatus is true */}
-                                {dispatchStatus && !verifyStatus && (
-                                    <Grid item>
-                                        <Button variant="contained" color="primary" disabled ={isAttachVerifiying} onClick={() => {
-                                            handleVerify()
-                                        }} >
-                                            VERIFY
-                                        </Button>
-                                    </Grid>
-                                )}
-                            </>
-                        )}
-
-                        {/* For Advance Payment Type */}
-                        {formData?.order_header?.payment_type === "advance" && (
-                            <>
-                                {console.log("checkingg advance")
-                                }
-
-                                {!verifyStatus && (
-                                    <Grid item>
-                                        <Button variant="contained" color="primary" disabled ={isAttachVerifiying}  onClick={() => {
-                                            handleVerify();
-                                        }}>
-                                            VERIFY
-                                        </Button>
-                                    </Grid>
-                                )}
+                        <button style={{ marginLeft: '-40%', marginTop: '6%' }} className="btn-save2" onClick={() => navigate("/landingpage/payment-list")}>Back</button>
+                    </div>
 
 
-                                {!generateStatus && (
-                                    <Grid item>
-                                        <Button
-                                            variant="contained"
-                                            color="error"
-                                            onClick={() => {
-                                            }}
-                                        >
-                                            GENERATE
-                                        </Button>
-                                    </Grid>
-                                )}
+                    <div
+                        style={{
+                            position: 'relative',
+                            right: '0%',
+                            display: 'flex',
+                            marginTop: '5%',
+                        }}
+                    >
 
-                                {verifyStatus && !dispatchStatus && (
-                                    <Grid item>
-                                        <Button
-                                            variant="contained"
-                                            color="warning"
-                                            onClick={() => {
-                                                handleDispatch();
-                                            }}
-                                        >
-                                            DISPATCH
-                                        </Button>
-                                    </Grid>
-                                )}
+                        <Grid container spacing={2} justifyContent="flex-end" marginLeft="-135px" marginTop="-60px">
+                            {/* For Credit Payment Type */}
+                            {formData?.order_header?.payment_type === "credit" && (
+                                <>
+                                    {/* Show Dispatch button only if dispatchStatus is false */}
+                                    {!dispatchStatus && (
+                                        <Grid item>
+                                            <Button
+                                                variant="contained"
+                                                color="warning"
+                                                onClick={() => {
+                                                    handleDispatch();
+                                                }}
+                                            >
+                                                DISPATCH
+                                            </Button>
+                                        </Grid>
+                                    )}
+
+                                    {/* Show Generate button if generateStatus is false */}
+                                    {!generateStatus && (
+                                        <Grid item>
+                                            <Button
+                                                variant="contained"
+                                                color="error"
+                                                onClick={() => {
+
+                                                }}
+                                            >
+                                                GENERATE
+                                            </Button>
+                                        </Grid>
+                                    )}
+
+                                    {/* Show Verify button if dispatchStatus is true */}
+                                    {dispatchStatus && !verifyStatus && (
+                                        <Grid item>
+                                            <Button variant="contained" color="primary" disabled={isAttachVerifiying} onClick={() => {
+                                                handleVerify()
+                                            }} >
+                                                VERIFY
+                                            </Button>
+                                        </Grid>
+                                    )}
+                                </>
+                            )}
+
+                            {/* For Advance Payment Type */}
+                            {formData?.order_header?.payment_type === "advance" && (
+                                <>
+                                    {console.log("checkingg advance")
+                                    }
+
+                                    {!verifyStatus && (
+                                        <Grid item>
+                                            <Button variant="contained" color="primary" disabled={isAttachVerifiying} onClick={() => {
+                                                handleVerify();
+                                            }}>
+                                                VERIFY
+                                            </Button>
+                                        </Grid>
+                                    )}
+
+
+                                    {!generateStatus && (
+                                        <Grid item>
+                                            <Button
+                                                variant="contained"
+                                                color="error"
+                                                onClick={() => {
+                                                }}
+                                            >
+                                                GENERATE
+                                            </Button>
+                                        </Grid>
+                                    )}
+
+                                    {verifyStatus && !dispatchStatus && (
+                                        <Grid item>
+                                            <Button
+                                                variant="contained"
+                                                color="warning"
+                                                onClick={() => {
+                                                    handleDispatch();
+                                                }}
+                                            >
+                                                DISPATCH
+                                            </Button>
+                                        </Grid>
+                                    )}
 
 
 
-                            </>
-                        )}
-                    </Grid>
+                                </>
+                            )}
+                        </Grid>
+
+
+                    </div>
                 </div>
+
 
 
 
