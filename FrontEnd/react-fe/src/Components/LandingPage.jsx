@@ -1,9 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import Navbar1 from "./Navbar";
-import Dashboard from "./Dashboard";
 import '../Styles/LandingPage.css'
-import CustomerMasterdashboard from "./customer_module/CustomerMasterdashboard.jsx";
-import EditCustomerForm from './customer_module/EditCustomerForm.jsx'
+import CustomerMasterdashboard from "./customer_module/CustomerMasterList.jsx";
+import EditCustomerForm from './customer_module/CustomerMasterEdit.jsx'
 import PartMaster from "./partmaster_module/PartMasterForm.jsx";
 import PartMasterList from './partmaster_module/PartMasterList.jsx'
 import PartMasterEdit from "./partmaster_module/PartMasterEdit.jsx";
@@ -15,7 +14,7 @@ import Usercreate from "./user_create_module/Usercreate.jsx";
 import Userlist from "./user_create_module/Userlist.jsx";
 import Useredit from "./user_create_module/Useredit.jsx";
 import StockDetails from './stock_report/StockDetails.jsx'
-import CustomerMaster from "./customer_module/CustomerMaster.jsx";
+import CustomerMaster from "./customer_module/CustomerMasterForm.jsx";
 import LocationMaster from "./location_module/LocationMasterForm.jsx";
 import LocationMasterList from "./location_module/LocationMasterList.jsx";
 import LocationMasterEdit from "./location_module/LocationMasterEdit.jsx";
@@ -33,7 +32,6 @@ const LandingPage = () => {
             </div>
             <div className="components">
                 <Routes>
-                    <Route path="/*" element={<Dashboard />} />
                     <Route path='/customermastercreate' element={<CustomerMaster />} />
                     <Route path='/customermasterdashboard' element={<CustomerMasterdashboard />} />
                     <Route path="/editcustomer-form/:id" element={<EditCustomerForm />} />

@@ -98,8 +98,6 @@ const CustomerMaster = () => {
 
 
 
-
-
                 <div className="customer-master" style={{ marginLeft: '460px' }}>
 
                     <u><h3 className='headingfont-bold'>Customer Master</h3></u>

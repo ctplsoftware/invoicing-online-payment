@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import LoginPage from './Components/user_module/Loginpage';
 import LandingPage from './Components/LandingPage';
 import ProtectPage from './Components/protectpage_module/ProtectPage';
-import CustomerMasterdashboard from './Components/customer_module/CustomerMasterdashboard';
+import CustomerMasterdashboard from './Components/customer_module/CustomerMasterList';
 import ProtectedRoute from './Components/protectpage_module/ProtectedRoute';
 
 function App() {
