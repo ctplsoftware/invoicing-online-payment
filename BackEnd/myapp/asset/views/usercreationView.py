@@ -23,7 +23,7 @@ def admincreates(request):
     id_fetch =data.get('id')
     username = data.get('username')
     password = data.get('password')
-    email = data.get('mail')
+    email = data.get('email')
     customer_id = data.get('customer_id')  
     status = data.get('status')  
     role_id = data.get('role_id') 
@@ -114,7 +114,7 @@ def create_update_user(request, id=None):
         data = request.data
         username = data.get('username')
         password = data.get('password')
-        email = data.get('mail')
+        email = data.get('email')
         customer_id = data.get('customer_id')
         status_value = data.get('status')
         role_id = data.get('role_id')

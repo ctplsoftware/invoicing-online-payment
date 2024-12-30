@@ -16,6 +16,8 @@ const EditCustomerForm = ({ }) => {
     const [additionalAddresses, setAdditionalAddresses] = useState([""]);
     const [editMode, setEditMode] = useState(false);
     const [customerData, setCustomerData] = useState([]);
+    const [errors, setErrors] = useState({});
+    
 
     const api = new API();
 
@@ -71,17 +73,35 @@ const EditCustomerForm = ({ }) => {
         setAdditionalAddresses(updatedAddresses);
     };
 
+    const validateForm = () => {
+        const newErrors = {};
+        if (!currentCustomer.name.trim()) newErrors.name = 'Customer name is required';
+        if (!currentCustomer.delivery_address.trim()) newErrors.delivery_address = 'Delivery address is required';
+        if (!currentCustomer.billing_address.trim()) newErrors.billing_address = 'Billing address is required';
+        if (!/^\d{15}$/.test(currentCustomer.gstin_number)) newErrors.gstin_number = 'GSTIN should be 15 digits';
+        if (!currentCustomer.credit_limit || isNaN(currentCustomer.credit_limit))
+            newErrors.credit_limit = 'Credit limit must be a valid number';
+        if (!currentCustomer.contact_person.trim()) newErrors.contact_person = 'Contact person is required';
+        if (!/^\d{10}$/.test(currentCustomer.contact_number))
+            newErrors.contact_number = 'Contact number must be a 10-digit number';
+        return newErrors;
+    };
+
     const handleEditSubmit = async (event) => {
-
         const userDetails = localStorage.getItem("userDetails");
-
         const parsedDetails = JSON.parse(userDetails); 
-
         event.preventDefault();
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);     
+            Object.values(validationErrors).forEach(erroMessage =>{
+                   alert(erroMessage);
+            });
+            return;
+        }
         try {
             const updatedCustomer = { ...currentCustomer, additional_addresses: additionalAddresses ,user_id :parsedDetails.user.id };
             console.log("updatedCustomer", updatedCustomer);
-
             await api.customermaster_update(
                 updatedCustomer,
                 (response) => {
@@ -101,7 +121,7 @@ const EditCustomerForm = ({ }) => {
     };
 
     const hasAdditionalAddresses = additionalAddresses.some(address => address.trim() !== "");
-
+    
 
     return (
 

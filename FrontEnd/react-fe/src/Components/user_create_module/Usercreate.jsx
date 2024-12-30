@@ -27,20 +27,20 @@ const Usercreate = () => {
             setFormData({
                 ...formData,
                 role: value,
-                role_id: selectedRole ? selectedRole.id : '',  
+                role_id: selectedRole ? selectedRole.id : '',
             });
         } else if (name === 'customer') {
             const selectedCustomer = customerName.find(customer => customer.name === value);
             setFormData({
                 ...formData,
                 customer: value,
-                customer_id: selectedCustomer ? selectedCustomer.id : '', 
+                customer_id: selectedCustomer ? selectedCustomer.id : '',
             });
         } else {
             setFormData({
                 ...formData,
                 [name]: value,
-                customer_id :''
+                customer_id: ''
             });
         }
     };
@@ -79,24 +79,42 @@ const Usercreate = () => {
         fetchData();
     }, []);
 
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)) {
+            newErrors.email = 'Invalid email address';
+        }
+
+        return newErrors;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (formData.password !== formData.confirm_password) {
             alert('Passwords do not match');
             return;
         }
-        console.log("data", formData);
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
 
+            Object.values(validationErrors).forEach(erroMessage => {
+                alert(erroMessage);
+            });
+
+            return;
+
+        }
         const submitData = {
             username: formData.username,
             password: formData.password,
             email: formData.email,
             status: formData.status,
-            role_id: formData.role_id,   
-            customer_id: formData.customer_id,  
+            role_id: formData.role_id,
+            customer_id: formData.customer_id,
         };
 
-        
+
 
         try {
             const response = await api.user_create(submitData);
@@ -232,16 +250,16 @@ const Usercreate = () => {
 
 
                 <div style={{ display: 'flex', gap: '10%', marginTop: "3%" }}>
-                        <div className="pm-button-container" style={{ gap: "10px" }}>
-                            <button className="btn-save2" onClick={() => navigate("/landingpage/userlist")}>
-                                Go to User
-                            </button>
-                        </div>
-
-                        <div className="pm-button-container" style={{ gap: "10px" }}>
-                            <button className='btn-save' type="Save">Save</button>
-                        </div>
+                    <div className="pm-button-container" style={{ gap: "10px" }}>
+                        <button className="btn-save2" onClick={() => navigate("/landingpage/userlist")}>
+                            Go to User
+                        </button>
                     </div>
+
+                    <div className="pm-button-container" style={{ gap: "10px" }}>
+                        <button className='btn-save' type="Save">Save</button>
+                    </div>
+                </div>
 
             </form>
         </div>

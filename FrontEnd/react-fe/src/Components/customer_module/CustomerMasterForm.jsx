@@ -67,8 +67,14 @@ const CustomerMaster = () => {
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
-            window.alert('Please correct the errors in the form.');
+                        
+            Object.values(validationErrors).forEach(erroMessage =>{
+                   alert(erroMessage);
+            });
+
+           // window.alert('Please correct the errors in the form.');
             return;
+
         }
 
         try {
