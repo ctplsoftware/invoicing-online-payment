@@ -1,8 +1,8 @@
 from django.urls import path
 from .views import UserView, CustomerView ,PartMasterView,InwardTransactionView,permissionscheckView,authenticateView ,AndroidAPIView, usercreationView,AndroidAPIView ,LocationMasterViews,OrderTransactionView, TransactionView
-from rest_framework_simplejwt.views import (
-    TokenRefreshView,
-)
+
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 
 urlpatterns = [
 
@@ -64,6 +64,10 @@ urlpatterns = [
 
 
     #android 
+    path('android/login/',AndroidAPIView.android_login),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/logout/', AndroidAPIView.logout, name='token_logout'),
     path('android/get-generate-order', AndroidAPIView.get_generate_order),
     path('android/create-order', AndroidAPIView.create_order),
     path('android/get-order', AndroidAPIView.get_order),

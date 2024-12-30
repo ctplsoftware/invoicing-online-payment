@@ -1,13 +1,60 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
-
 from django.db import transaction
 from django.db.models import F
-
 from asset.models import *
 from asset.utils import *
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import User, Group, Permission
+from rest_framework.response import Response
+from django.contrib.auth import authenticate, login as auth_login
+from ..serializers.UserSerializer import UserSerializer, UserRolePermissionSerializer, GroupSerializer, PermissionSerializer
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from datetime import timedelta
 
+
+
+@api_view(['POST'])
+def android_login(request):
+    # Get username and password from the request body
+    username = request.data.get('username')
+    password = request.data.get('password')
+
+    # Authenticate the user
+    user = authenticate(username=username, password=password) 
+
+    if user is not None:
+        access_token_lifetime =timedelta(hours=1)
+        refresh_token_lifetime =timedelta(days=3650)
+        refresh = RefreshToken.for_user(user)
+        refresh.set_exp(lifetime=refresh_token_lifetime)
+        access_token = refresh.access_token
+        access_token.set_exp(lifetime=access_token_lifetime)
+        serializer = UserSerializer(user)        # Return the response
+        return Response({
+            'user': serializer.data,  # Basic user information
+            'refresh': str(refresh),  # Long-lived refresh token
+            'access': str(refresh.access_token),  # Short-lived access token
+        }, status=status.HTTP_200_OK)
+
+    # If authentication fails, return error response
+    return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['POST'])
+def logout(request):
+    try:
+        # Get the refresh token from the request body
+        refresh_token = request.data.get("refresh")
+        token = RefreshToken(refresh_token)
+        token.blacklist()  # Blacklist the refresh token
+
+        return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": "Invalid token or already blacklisted"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])

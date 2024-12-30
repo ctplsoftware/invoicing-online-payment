@@ -39,7 +39,6 @@ def create_customer(request):
         serializer.save()  # Save the validated data
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
-    
         print(serializer.errors)  # Log errors for debugging
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     

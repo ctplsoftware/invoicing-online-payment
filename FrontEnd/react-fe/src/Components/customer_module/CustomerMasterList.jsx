@@ -48,7 +48,7 @@ const CustomerMasterdashboard = () => {
         { name: 'Contact Person', selector: row => row.contact_person, width: '150px' },
         { name: 'Contact Number', selector: row => row.contact_number, width: '150px' },
         {
-            name: 'Created At',
+            name: 'Created at',
             selector: row => row.created_at,
             cell: row => {
                 const formattedDate = new Date(row.created_at).toLocaleString('en-IN', {
@@ -61,7 +61,7 @@ const CustomerMasterdashboard = () => {
             width: '180px',
         },
         {
-            name: 'Updated At',
+            name: 'Updated at',
             selector: row => row.updated_at,
             cell: row => row.updated_at
                 ? new Date(row.updated_at).toLocaleString('en-IN', {

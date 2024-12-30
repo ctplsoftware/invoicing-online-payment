@@ -246,7 +246,7 @@ const EditCustomerForm = ({ }) => {
 
 
 
-                <div style={{ display: 'flex', gap: '30%', marginTop: "3%" }}>
+                <div style={{ display: 'flex', gap: '14%', marginTop: "3%" }}>
                     <div className="pm-button-container" style={{ gap: "10px" }}>
                         <button className="btn-save2" onClick={() => navigate("/landingpage/customermasterdashboard")}>
                             Go to Customers

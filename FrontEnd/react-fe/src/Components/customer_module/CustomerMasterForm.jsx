@@ -1,22 +1,17 @@
 import React, { useEffect, useState } from 'react';
-
 import '../../Styles/CustomerMaster.css';
 import { API } from '../../API.js';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
 import permissionList from '../../permission.js';
+import { TextField, Select, MenuItem, Button, Box, Typography, IconButton, Alert } from '@mui/material';
 
 
 const CustomerMaster = () => {
     const api = new API();
     const navigate = useNavigate();
-
-
     const permissions = permissionList();
-
-
     const [formData, setFormData] = useState({
         name: '',
         delivery_address: '',
@@ -29,8 +24,7 @@ const CustomerMaster = () => {
         contact_number: '',
     });
     const [additionalAddresses, setAdditionalAddresses] = useState([]);
-
-
+    const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -52,22 +46,39 @@ const CustomerMaster = () => {
         setAdditionalAddresses(newAddresses);
     };
 
+    const validateForm = () => {
+        const newErrors = {};
+        if (!formData.name.trim()) newErrors.name = 'Customer name is required';
+        if (!formData.delivery_address.trim()) newErrors.delivery_address = 'Delivery address is required';
+        if (!formData.billing_address.trim()) newErrors.billing_address = 'Billing address is required';
+        if (!/^\d{15}$/.test(formData.gstin_number)) newErrors.gstin_number = 'GSTIN should be 15 digits';
+        if (!formData.credit_limit || isNaN(formData.credit_limit))
+            newErrors.credit_limit = 'Credit limit must be a valid number';
+        if (!formData.contact_person.trim()) newErrors.contact_person = 'Contact person is required';
+        if (!/^\d{10}$/.test(formData.contact_number))
+            newErrors.contact_number = 'Contact number must be a 10-digit number';
+        return newErrors;
+    };
+
     const handleSubmit = async (e) => {
 
-        const userDetails = localStorage.getItem("userDetails");
 
-        const parsedDetails = JSON.parse(userDetails);                
-
-
-        
         e.preventDefault();
-        try {
-            console.log(formData);
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            window.alert('Please correct the errors in the form.');
+            return;
+        }
 
+        try {
+
+            const userDetails = localStorage.getItem("userDetails");
+            const parsedDetails = JSON.parse(userDetails);
             const completeFormData = {
                 ...formData,
                 additional_addresses: additionalAddresses,
-                user_id :parsedDetails.user.id
+                user_id: parsedDetails.user.id
             };
 
             const response = await api.save_customer(completeFormData);
@@ -87,7 +98,6 @@ const CustomerMaster = () => {
     };
 
     return (
-
         <>
             {permissions.includes('asset.view_sampleform') ? (
                 <div className="empty-state">
@@ -95,11 +105,7 @@ const CustomerMaster = () => {
                     {/* Optionally add more details or links */}
                 </div>
             ) : (
-
-
-
                 <div className="customer-master" style={{ marginLeft: '460px' }}>
-
                     <u><h3 className='headingfont-bold'>Customer Master</h3></u>
                     <form style={{ marginLeft: '6%' }} onSubmit={handleSubmit}>
                         <label>
@@ -111,7 +117,9 @@ const CustomerMaster = () => {
                                 value={formData.name}
                                 onChange={handleChange}
                                 required
-                                autoFocus
+                                error={!!errors.name}
+                                helperText={errors.name}
+
                             />
                         </label>
                         <label>
@@ -122,6 +130,7 @@ const CustomerMaster = () => {
                                 placeholder='Enter GSTIN Number'
                                 value={formData.gstin_number}
                                 onChange={handleChange}
+                                required
                             />
                         </label>
 
@@ -140,7 +149,6 @@ const CustomerMaster = () => {
                         <label>
                             Credit Days
                             <div className='credit_days'>
-
                                 <select
                                     name="credit_days"
                                     value={formData.credit_days}
@@ -186,6 +194,7 @@ const CustomerMaster = () => {
                                 placeholder='Enter Company Address'
                                 value={formData.billing_address}
                                 onChange={handleChange}
+                                required
                             />
                         </label>
                         <label>
@@ -215,6 +224,7 @@ const CustomerMaster = () => {
                                         placeholder={`Enter Additional Address ${index + 1}`}
                                         value={address}
                                         onChange={(e) => handleAdditionalAddressChange(index, e.target.value)}
+                                        required
                                     />
                                     <span style={{ marginLeft: '5%' }} className="icon-tag" onClick={() => removeAdditionalAddress(index)}>
                                         <FaMinus /> {/* Minus icon */}
@@ -223,25 +233,17 @@ const CustomerMaster = () => {
                             </div>
                         ))}
 
+                        <div style={{ display: 'flex', gap: '14%', marginTop: "3%" }}>
+                            <div className="pm-button-container" style={{ gap: "10px" }}>
+                                <button className="btn-save2" onClick={() => navigate("/landingpage/customermasterdashboard")}>
+                                    Go to Customers
+                                </button>
+                            </div>
 
-
-
-
-
-
-
-
-                    <div style={{ display: 'flex', gap: '30%', marginTop: "3%" }}>
-                        <div className="pm-button-container" style={{ gap: "10px" }}>
-                            <button className="btn-save2" onClick={() => navigate("/landingpage/customermasterdashboard")}>
-                                Go to Customers
-                            </button>
+                            <div className="pm-button-container" style={{ gap: "10px" }}>
+                                <button className='btn-save' type="Save">Save</button>
+                            </div>
                         </div>
-
-                        <div className="pm-button-container" style={{ gap: "10px" }}>
-                            <button className='btn-save' type="Save">Save</button>
-                        </div>
-                    </div>
 
                     </form>
 
