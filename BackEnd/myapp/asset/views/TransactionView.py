@@ -127,8 +127,8 @@ def update_verified_completed(request):
                 order_header.completed_status = completed_status
 
                 
-
                 order_header.save()
+                
                 return Response('success')
 
 

@@ -75,7 +75,7 @@ function DispatchDashboard() {
 
             const response = await api.updateOrderHeaderDispatchStatus(orderheadedata);
             if (response) {
-                alert("Working good");
+                alert("Succesfully Submitted");
                 setDispatchStatus(true);
                 window.location.reload();
 
@@ -157,7 +157,7 @@ function DispatchDashboard() {
 
             const response = await api.updateOrderHeaderVerifyStatus(orderheadedata);
             if (response) {
-                alert("Working good");
+                alert("Successfully submitted");
                 setVerifyStatus(true);
                 window.location.reload();
 
