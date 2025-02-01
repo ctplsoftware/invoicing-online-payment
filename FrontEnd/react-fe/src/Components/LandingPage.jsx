@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Navbar1 from "./Navbar";
 import '../Styles/LandingPage.css'
 import CustomerMasterdashboard from "./customer_module/CustomerMasterList.jsx";
@@ -23,13 +24,23 @@ import PaymentList from "./payment_verification/PaymentList.jsx";
 import PaymentView from "./payment_verification/PaymentView.jsx";
 import DispatchDashboard from "./payment_verification/DispatchDashboard.jsx";
 import DispatchDashboards from "./payment_verification/testport.jsx";
+import Invoice from "./payment_verification/Invoice.jsx";
 
 const LandingPage = () => {
+
+    const location = useLocation();
+    const excludedPaths = ["/landingpage/invoice-print"];
+    
+
     return (
         <div className="landingpage">
-            <div id="navbar">
-                <Navbar1 />
-            </div>
+             {!excludedPaths.includes(location.pathname) && (
+                <div id="navbar">
+                    <Navbar1 />
+                </div>
+            )}
+
+            
             <div className="components">
                 <Routes>
                     <Route path='/customermastercreate' element={<CustomerMaster />} />
@@ -54,6 +65,7 @@ const LandingPage = () => {
                     <Route path="/payment-view/:order_no" element={<PaymentView />} />
                     <Route path="/dispatch/:order_header_id" element={<DispatchDashboard />} />
                     <Route path="/dispatchs" element={<DispatchDashboards />} />
+                    <Route path="/invoice-print" element={<Invoice />} />
                 </Routes>
             </div>
         </div>

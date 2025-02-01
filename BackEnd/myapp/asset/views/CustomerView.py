@@ -15,6 +15,9 @@ def create_customer(request):
     additional_address1 = additional_addresses[0].strip() if len(additional_addresses) > 0 else ''
     additional_address2 = additional_addresses[1].strip() if len(additional_addresses) > 1 else ''
 
+    print(request.data.get('gstin_number', '').strip(), 'gstin')
+
+
 
     validated_data = {
         key: value for key, value in {

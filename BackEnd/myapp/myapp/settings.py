@@ -35,6 +35,18 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+CLIENT_ID = 'A0DC1ADAB83E4F3397943F246B36B880'
+CLIENT_SECRET = '5531F90CG6414G44E8GA274GD48DFA3EDDCE'
+
+
+AUTHENTICATION_URL = 'https://gsp.adaequare.com/gsp/authenticate?action=GSP&grant_type=token'
+GENERATE_IRN_URL = 'https://gsp.adaequare.com/test/enriched/ei/api/invoice'
+CANCEL_IRN_URL = 'https://gsp.adaequare.com/test/enriched/ei/api/invoice/cancel'
+
+GSTIN = '02AMBPG7773M002'
+USERNAME = 'adqgsphpusr1'
+PASSWORD = 'Gsp@1234'
+
 
 # Application definition
 

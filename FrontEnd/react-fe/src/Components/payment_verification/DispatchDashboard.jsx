@@ -94,32 +94,32 @@ function DispatchDashboard() {
     };
 
     const handleGenerate = async (e) => {
+        
+        try {
+            
+            const orderheadedata = {
+                order_header_id: formData.order_header.id
+            }
 
-        // try {
-        //     const orderheadedata = {
-        //         order_header_id: formData.order_header.id
-        //     }
-
-        //     const response = await api.updateOrderHeaderDispatchStatus(orderheadedata);
-        //     if (response) {
-        //         alert("Working good");
-        //         setDispatchStatus(true);
-
-
-        //     } else {
-        //         alert("Failed occurs");
-        //     }
+            const response = await api.generateEInvoice(orderheadedata);
+            if (response == 'success') {
+                alert("Working good");
+                setGenerateStatus(true);
+                window.location.reload();
 
 
-        // } catch (error) {
-        //     console.error("Error adding part:", error);
+            } else {
+                alert("Failed occurs");
+            }
 
-        // }
+
+        } catch (error) {
+            console.error("Error adding part:", error);
+
+        }
 
 
     };
-
-
 
     const handleVerify = async (e) => {
 
@@ -181,8 +181,6 @@ function DispatchDashboard() {
             [name]: value
         });
     };
-
-
 
 
     return (
@@ -476,7 +474,7 @@ function DispatchDashboard() {
                             {formData?.order_header?.payment_type === "credit" && (
                                 <>
                                     {/* Show Dispatch button only if dispatchStatus is false */}
-                                    {!dispatchStatus && (
+                                    {!dispatchStatus && generateStatus && (
                                         <Grid item>
                                             <Button
                                                 variant="contained"
@@ -497,10 +495,26 @@ function DispatchDashboard() {
                                                 variant="contained"
                                                 color="error"
                                                 onClick={() => {
-
+                                                    handleGenerate()
                                                 }}
+                                                
                                             >
                                                 GENERATE
+                                            </Button>
+                                        </Grid>
+                                    )}
+
+                                    {generateStatus && (
+                                        <Grid item>
+                                            <Button
+                                                variant="contained"
+                                                color="error"
+                                                onClick={() => {
+                                                    handleGenerate()
+                                                }}
+                                                
+                                            >
+                                                CANCEL
                                             </Button>
                                         </Grid>
                                     )}
@@ -535,12 +549,13 @@ function DispatchDashboard() {
                                     )}
 
 
-                                    {!generateStatus && (
+                                    {!generateStatus && verifyStatus && (
                                         <Grid item>
                                             <Button
                                                 variant="contained"
                                                 color="error"
                                                 onClick={() => {
+                                                    handleGenerate()
                                                 }}
                                             >
                                                 GENERATE
@@ -548,7 +563,7 @@ function DispatchDashboard() {
                                         </Grid>
                                     )}
 
-                                    {verifyStatus && !dispatchStatus && (
+                                    {verifyStatus && generateStatus && !dispatchStatus && (
                                         <Grid item>
                                             <Button
                                                 variant="contained"

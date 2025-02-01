@@ -323,6 +323,31 @@ class API {
         }
     }
 
+    // Generate E Invoice
+
+    async generateEInvoice(data) {
+        try {
+
+            const response = await axios.post(`${BaseURL}/einvoice-create`, data)
+            return response.data;
+        } catch (error) {
+            console.error('Error updating customer:', error);
+        }
+    }
+
+    // Cancel E Invoice
+
+    async cancelEInvoice(data) {
+        try {
+
+            const response = await axios.post(`${BaseURL}/einvoice-cancel`, data)
+            return response.data;
+        } catch (error) {
+            console.error('Error updating customer:', error);
+        }
+    }
+    
+
 
 
 

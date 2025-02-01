@@ -70,12 +70,9 @@ def get_generate_order(request):
 
             limits = CustomerMaster.objects.filter(id = customer_id).first()
             credit_limit = float(limits.credit_limit) - float(limits.used_limit)
-            print("credit_limits checks",credit_limit)
 
             addresses = [address for address in total_addresses if address != '' and address is not None]
-            print("adressssss...",addresses)
             part_details = [{'part_id': part['id'], 'part_name': part['part_name'], 'unit_price': part['unit_price'], 'stock': float(part['stock']) - float(part['allocated_stock']), 'uom': part['uom']} for part in part_master]
-            print("part details...",part_details)
 
 
             response_data = {
@@ -142,7 +139,9 @@ def create_order(request):
                         order_header = {}
 
                         last_order = get_count(OrderHeader)
-                        order_number = f"{customer_master.name}{last_order + 1}"
+                        julian_date = base33()
+                        current_year = str(datetime.datetime.now().year)[-2:]
+                        order_number = f"OR{julian_date}{current_year}{last_order+1:04}"
                         
                         order_header = {
                             'order_number': order_number,
@@ -183,7 +182,9 @@ def create_order(request):
                     order_header = {}
 
                     last_order = get_count(OrderHeader)
-                    order_number = f"{customer_master.name}{last_order + 1}"
+                    julian_date = base33()
+                    current_year = str(datetime.datetime.now().year)[-2:]
+                    order_number = f"OR{julian_date}{current_year}{last_order+1:04}"
 
                     order_header = {
                         'order_number': order_number,

@@ -21,7 +21,7 @@ const PaymentList = () => {
 
 
     const columns = [
-        { name: 'S No', selector: row => row.Sno, width: '70px' },
+        { name: 'S No', selector: row => row.Sno, },
         { 
             name: 'Order Number', 
             cell: row => (
@@ -37,12 +37,12 @@ const PaymentList = () => {
                     {row.order_number}
                 </span>
             ), 
-            width: '160px'
+            
         },
-        { name: 'Customer Name', selector: row => row.customer_name, width: '165px' },
-        { name: 'Payment Type', selector: row => row.payment_type, width: '130px' },
-        { name: 'Purchase Qty', selector: row => row.quantity, width: '160px' },
-        { name: 'Amount', selector: row => row.total_amount, width: '185px' },
+        { name: 'Customer Name', selector: row => row.customer_name,  },
+        { name: 'Payment Type', selector: row => row.payment_type,  },
+        { name: 'Purchase Qty', selector: row => row.quantity,  },
+        { name: 'Amount', selector: row => row.total_amount,  },
 
     ];
 

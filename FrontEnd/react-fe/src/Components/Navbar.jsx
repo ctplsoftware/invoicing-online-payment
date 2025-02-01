@@ -62,7 +62,7 @@ const Navbar1 = () => {
                     />
                     <h4 style={{ fontWeight: '600' }}>
                         <Link to='/landingpage' className="text-decoration-none" style={{ color: '#ffffff' }}>
-                            Codentrix - Application
+                            Invoicing and Payment - Application
                         </Link>
                     </h4>
 

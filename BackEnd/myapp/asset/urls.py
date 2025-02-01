@@ -59,8 +59,9 @@ urlpatterns = [
     path('order-details-get', TransactionView.get_order_details),
     path('disptach-completed-update', TransactionView.update_dispatched_completed),
     path('verified-completed-update', TransactionView.update_verified_completed),
+    path('einvoice-create', TransactionView.create_e_invoice),
+    path('einvoice-cancel', TransactionView.cancel_e_invoice),
  
-
 
 
     #android 

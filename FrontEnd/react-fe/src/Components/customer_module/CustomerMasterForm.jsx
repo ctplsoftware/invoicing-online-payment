@@ -48,10 +48,13 @@ const CustomerMaster = () => {
 
     const validateForm = () => {
         const newErrors = {};
+        console.log(formData.gstin_number, 'gstin');
+        
+
         if (!formData.name.trim()) newErrors.name = 'Customer name is required';
         if (!formData.delivery_address.trim()) newErrors.delivery_address = 'Delivery address is required';
         if (!formData.billing_address.trim()) newErrors.billing_address = 'Billing address is required';
-        if (!/^\d{15}$/.test(formData.gstin_number)) newErrors.gstin_number = 'GSTIN should be 15 digits';
+        if (!/^[0-9A-Za-z]{15}$/.test(formData.gstin_number)) newErrors.gstin_number = 'GSTIN should be 15 characters';
         if (!formData.credit_limit || isNaN(formData.credit_limit))
             newErrors.credit_limit = 'Credit limit must be a valid number';
         if (!formData.contact_person.trim()) newErrors.contact_person = 'Contact person is required';
