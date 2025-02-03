@@ -117,15 +117,25 @@ const PartMaster = () => {
                 </Col>
               </Row>
 
-              <button
-                style={{ marginTop: "20px", marginRight: "200px" }}
-                className="btn-save"
-                type="Save"
-                onClick={handleSubmit}
-              >
-                {" "}
-                Save{" "}
-              </button>
+              <div>
+                <button
+                  onClick={handleSubmit}
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "#1976d2",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    marginTop: "20px",
+                    marginRight: "200px"
+                  }}
+                >
+                  Save
+                </button>
+
+                
+              </div>
             </Form>
           </Container>
         </>

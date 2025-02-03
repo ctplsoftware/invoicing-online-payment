@@ -84,6 +84,13 @@ function InwardTransactionList() {
     };
 
     return (
+
+        
+
+
+
+
+
         <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
             {/* Button to create new Inward Transaction */}
             <div style={{ marginRight: '48px', marginBottom: '-45px' }}>
@@ -98,7 +105,7 @@ function InwardTransactionList() {
                         cursor: 'pointer',
                     }}
                 >
-                    Inward Create
+                    Create
                 </button>
             </div>
 
@@ -117,7 +124,6 @@ function InwardTransactionList() {
 
             {/* DataTable for displaying rows */}
             <DataTable
-                title="Inward Transaction List"
                 columns={columns}
                 data={filteredRows}
                 pagination
