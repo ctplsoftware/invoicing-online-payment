@@ -44,6 +44,7 @@ def android_login(request):
     # If authentication fails, return error response
     return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
+
 @api_view(['POST'])
 def logout(request):
     try:

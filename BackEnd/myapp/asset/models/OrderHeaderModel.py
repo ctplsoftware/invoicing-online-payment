@@ -14,8 +14,19 @@ class OrderHeader(models.Model):
     quantity = models.FloatField()
     unit_price = models.FloatField()
     tax_percentage = models.FloatField()
+
+    # igst_percentage = models.FloatField(null = True)
+    # cgst_percentage = models.FloatField(null = True)
+    # sgst_percentage = models.FloatField(null = True)
+
     customer_name = models.CharField(max_length = 200, null = True, blank = True)
     amount_for_quantity = models.FloatField()
+
+    # total_tax_amount = models.FloatField()
+    # igst_amount = models.FloatField()
+    # cgst_amount = models.FloatField()
+    # sgst_amount = models.FloatField()
+    
     total_amount = models.FloatField()
     paid_amount = models.FloatField()
     irn_invoice_number = models.CharField(max_length = 255, null = True, blank = True)

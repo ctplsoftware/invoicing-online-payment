@@ -6,6 +6,10 @@
 
 }
 
+.input-border{
+    border: 1px solid #81878d !important;
+}
+
 
 
 .header-name {
@@ -64,5 +68,9 @@
 
 .green {
     background-color: #00ca4e;
+}
+
+body, html {
+    overflow-y: auto !important;
 }
 

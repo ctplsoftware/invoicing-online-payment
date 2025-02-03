@@ -1,273 +1,425 @@
-import React, { useEffect, useState } from 'react';
-import '../../Styles/CustomerMaster.css';
-import { API } from '../../API.js';
-import { FaPlus, FaMinus } from 'react-icons/fa';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import permissionList from '../../permission.js';
-import { TextField, Select, MenuItem, Button, Box, Typography, IconButton, Alert } from '@mui/material';
-
+import React, { useState } from "react";
+import "../../Styles/CustomerMaster.css";
+import { API } from "../../API.js";
+import { useNavigate } from "react-router-dom";
+import Container from "react-bootstrap/Container";
+import permissionList from "../../permission.js";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
 
 const CustomerMaster = () => {
-    const api = new API();
-    const navigate = useNavigate();
-    const permissions = permissionList();
-    const [formData, setFormData] = useState({
-        name: '',
-        delivery_address: '',
-        additional_addresses: [],
-        billing_address: '',
-        gstin_number: '',
-        credit_limit: '',
-        credit_days: '30',
-        contact_person: '',
-        contact_number: '',
-    });
-    const [additionalAddresses, setAdditionalAddresses] = useState([]);
-    const [errors, setErrors] = useState({});
+  const api = new API();
+  const navigate = useNavigate();
+  const permissions = permissionList();
+  const [formData, setFormData] = useState({
+    name: "",
+    gstin_number: "",
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
+    credit_limit: "",
+    credit_days: "30",
 
-    const handleAdditionalAddressChange = (index, value) => {
-        const newAddresses = [...additionalAddresses];
-        newAddresses[index] = value;
-        setAdditionalAddresses(newAddresses);
-    };
+    contact_person: "",
+    contact_number: "",
 
-    const addAdditionalAddress = () => {
-        setAdditionalAddresses([...additionalAddresses, '']);
-    };
+    billing_address: "",
+    billing_address_city: "",
+    billing_address_state: "",
+    billing_address_state_code: "",
 
-    const removeAdditionalAddress = (index) => {
-        const newAddresses = additionalAddresses.filter((_, i) => i !== index);
-        setAdditionalAddresses(newAddresses);
-    };
+    delivery_address: "",
+    delivery_address_city: "",
+    delivery_address_state: "",
+    delivery_address_state_code: "",
 
-    const validateForm = () => {
-        const newErrors = {};
-        console.log(formData.gstin_number, 'gstin');
-        
+    additional_address1: "",
+    additional_address1_city: "",
+    additional_address1_state: "",
+    additional_address1_state_code: "",
 
-        if (!formData.name.trim()) newErrors.name = 'Customer name is required';
-        if (!formData.delivery_address.trim()) newErrors.delivery_address = 'Delivery address is required';
-        if (!formData.billing_address.trim()) newErrors.billing_address = 'Billing address is required';
-        if (!/^[0-9A-Za-z]{15}$/.test(formData.gstin_number)) newErrors.gstin_number = 'GSTIN should be 15 characters';
-        if (!formData.credit_limit || isNaN(formData.credit_limit))
-            newErrors.credit_limit = 'Credit limit must be a valid number';
-        if (!formData.contact_person.trim()) newErrors.contact_person = 'Contact person is required';
-        if (!/^\d{10}$/.test(formData.contact_number))
-            newErrors.contact_number = 'Contact number must be a 10-digit number';
-        return newErrors;
-    };
+    additional_address2: "",
+    additional_address2_city: "",
+    additional_address2_state: "",
+    additional_address2_state_code: "",
+  });
 
-    const handleSubmit = async (e) => {
+  const [additionalAddresses, setAdditionalAddresses] = useState([]);
+  const [errors, setErrors] = useState({});
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-        e.preventDefault();
-        const validationErrors = validateForm();
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
-                        
-            Object.values(validationErrors).forEach(erroMessage =>{
-                   alert(erroMessage);
-            });
+  const validateForm = () => {
+    const newErrors = {};
 
-           // window.alert('Please correct the errors in the form.');
-            return;
+    if (!formData.name.trim()) newErrors.name = "Customer name is required";
+    if (!formData.delivery_address.trim())
+      newErrors.delivery_address = "Delivery address is required";
+    if (!formData.billing_address.trim())
+      newErrors.billing_address = "Billing address is required";
+    if (!/^[0-9A-Za-z]{15}$/.test(formData.gstin_number))
+      newErrors.gstin_number = "GSTIN should be 15 characters";
+    if (!formData.credit_limit || isNaN(formData.credit_limit))
+      newErrors.credit_limit = "Credit limit must be a valid number";
+    if (!formData.contact_person.trim())
+      newErrors.contact_person = "Contact person is required";
+    if (!/^\d{10}$/.test(formData.contact_number))
+      newErrors.contact_number = "Contact number must be a 10-digit number";
+    return newErrors;
+  };
 
-        }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validationErrors = validateForm();
 
-        try {
+    console.log("innnn");
 
-            const userDetails = localStorage.getItem("userDetails");
-            const parsedDetails = JSON.parse(userDetails);
-            const completeFormData = {
-                ...formData,
-                additional_addresses: additionalAddresses,
-                user_id: parsedDetails.user.id
-            };
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
 
-            const response = await api.save_customer(completeFormData);
-            if (response) {
-                console.log('Customer added:', response);
-                alert("Customer Added");
-                navigate('/landingpage/customermasterdashboard');
-                setAdditionalAddresses([]);
-            } else {
-                console.error('Error adding customer:', response.statusText);
-                alert("Couldn't add customer");
-            }
-        } catch (error) {
-            alert("Couldn't add customer");
-            console.error('Error:', error);
-        }
-    };
+      Object.values(validationErrors).forEach((erroMessage) => {
+        alert(erroMessage);
+      });
 
-    return (
+      return;
+    }
+
+    try {
+      const userDetails = localStorage.getItem("userDetails");
+      const parsedDetails = JSON.parse(userDetails);
+      const completeFormData = {
+        ...formData,
+        additional_addresses: additionalAddresses,
+        user_id: parsedDetails.user.id,
+      };
+
+      const response = await api.save_customer(completeFormData);
+      if (response) {
+        console.log("Customer added:", response);
+        alert("Customer Added");
+        navigate("/landingpage/customermasterdashboard");
+        setAdditionalAddresses([]);
+      } else {
+        console.error("Error adding customer:", response.statusText);
+        alert("Couldn't add customer");
+      }
+    } catch (error) {
+      alert("Couldn't add customer");
+      console.error("Error:", error);
+    }
+  };
+
+  return (
+    <>
+      {permissions.includes("asset.view_sampleform") ? (
+        <div className="empty-state">
+          <h3 style={{ marginTop: "15%" }}>No access to this page</h3>
+          {/* Optionally add more details or links */}
+        </div>
+      ) : (
         <>
-            {permissions.includes('asset.view_sampleform') ? (
-                <div className="empty-state">
-                    <h3 style={{ marginTop: "15%" }}>No access to this page</h3>
-                    {/* Optionally add more details or links */}
-                </div>
-            ) : (
-                <div className="customer-master" style={{ marginLeft: '460px' }}>
-                    <u><h3 className='headingfont-bold'>Customer Master</h3></u>
-                    <form style={{ marginLeft: '6%' }} onSubmit={handleSubmit}>
-                        <label>
-                            Customer Name
-                            <input
-                                type="text"
-                                name="name"
-                                placeholder='Enter Customer name'
-                                value={formData.name}
-                                onChange={handleChange}
-                                required
-                                error={!!errors.name}
-                                helperText={errors.name}
+          <Container fluid>
+            <Form onSubmit={handleSubmit}>
+              <div>
+                <button
+                  onClick={handleSubmit}
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "#1976d2",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    marginTop: "20px",
+                    marginRight: "200px"
+                  }}
+                >
+                  Save
+                </button>
 
-                            />
-                        </label>
-                        <label>
-                            GSTIN Number
-                            <input
-                                type="text"
-                                name="gstin_number"
-                                placeholder='Enter GSTIN Number'
-                                value={formData.gstin_number}
-                                onChange={handleChange}
-                                required
-                            />
-                        </label>
+                
+              </div>
 
-                        <label>
-                            Credit Limit
-                            <input
-                                type="text"
-                                name="credit_limit"
-                                placeholder='Enter Credit Limit'
-                                value={formData.credit_limit}
-                                onChange={handleChange}
-                                required
-                            />
-                        </label>
+              <Row>
+                <Col md={6} style={{ marginTop: "20px" }}>
+                  <Form.Label>Company Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="input-border"
+                    autoFocus
+                  />
+                </Col>
 
-                        <label>
-                            Credit Days
-                            <div className='credit_days'>
-                                <select
-                                    name="credit_days"
-                                    value={formData.credit_days}
-                                    onChange={handleChange}
-                                    required
-                                >
-                                    <option value="0">0 days</option>
-                                    <option value="30">30 days</option>
-                                    <option value="60">60 days</option>
-                                    <option value="90">90 days</option>
-                                </select>
-                            </div>
+                <Col md={6} style={{ marginTop: "20px" }}>
+                  <Form.Label>GSTIN</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="gstin_number"
+                    value={formData.gstin_number}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                  />
+                </Col>
+              </Row>
 
-                        </label>
-                        <label>
-                            Contact Person
-                            <input
-                                type="text"
-                                name="contact_person"
-                                placeholder='Enter Contact Person'
-                                value={formData.contact_person}
-                                onChange={handleChange}
-                                required
-                            />
-                        </label>
-                        <label>
-                            Contact Number
-                            <input
-                                type="text"
-                                name="contact_number"
-                                placeholder='Enter Contact Number'
-                                value={formData.contact_number}
-                                onChange={handleChange}
-                                required
-                            />
-                        </label>
+              <Row>
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Credit Limit</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="credit_limit"
+                    value={formData.credit_limit}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                  />
+                </Col>
 
-                        <label>
-                            Billing Address
-                            <input
-                                type="text"
-                                name="billing_address"
-                                placeholder='Enter Company Address'
-                                value={formData.billing_address}
-                                onChange={handleChange}
-                                required
-                            />
-                        </label>
-                        <label>
-                            Delivery Address
-                            <div className="billing-address-container">
-                                <input
-                                    type="text"
-                                    name="delivery_address"
-                                    placeholder="Enter Primary Address"
-                                    value={formData.delivery_address}
-                                    onChange={handleChange}
-                                    required
-                                />
-                                <span style={{ marginLeft: '5%' }} className="icon-tag" onClick={addAdditionalAddress}>
-                                    <FaPlus /> {/* Plus icon */}
-                                </span>
-                            </div>
-                        </label>
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Credit Days</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="credit_days"
+                    value={formData.credit_days}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                  />
+                </Col>
 
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Contact Person</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="contact_person"
+                    value={formData.contact_person}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                  />
+                </Col>
 
-                        {additionalAddresses.map((address, index) => (
-                            <div key={index} className="additional-address">
-                                <label>
-                                    Additional Address {index + 1}
-                                    <input
-                                        type="text"
-                                        placeholder={`Enter Additional Address ${index + 1}`}
-                                        value={address}
-                                        onChange={(e) => handleAdditionalAddressChange(index, e.target.value)}
-                                        required
-                                    />
-                                    <span style={{ marginLeft: '5%' }} className="icon-tag" onClick={() => removeAdditionalAddress(index)}>
-                                        <FaMinus /> {/* Minus icon */}
-                                    </span>
-                                </label>
-                            </div>
-                        ))}
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Contact Number</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="contact_number"
+                    value={formData.contact_number}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                  />
+                </Col>
+              </Row>
 
-                        <div style={{ display: 'flex', gap: '14%', marginTop: "3%" }}>
-                            <div className="pm-button-container" style={{ gap: "10px" }}>
-                                <button className="btn-save2" onClick={() => navigate("/landingpage/customermasterdashboard")}>
-                                    Go to Customers
-                                </button>
-                            </div>
+              <Row>
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Billing Address</Form.Label>
+                  <Form.Control
+                    className="input-border"
+                    name="billing_address"
+                    value={formData.billing_address}
+                    onChange={handleChange}
+                    as="textarea"
+                  />
+                </Col>
 
-                            <div className="pm-button-container" style={{ gap: "10px" }}>
-                                <button className='btn-save' type="Save">Save</button>
-                            </div>
-                        </div>
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Billing Address City</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="billing_address_city"
+                    value={formData.billing_address_city}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                  />
+                </Col>
 
-                    </form>
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Billing Address State</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="billing_address_state"
+                    value={formData.billing_address_state}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                  />
+                </Col>
 
-                </div>
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Billing Address State Pin Code</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="billing_address_state_code"
+                    value={formData.billing_address_state_code}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                  />
+                </Col>
+              </Row>
 
+              <Row>
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Delivery Address</Form.Label>
+                  <Form.Control
+                    className="input-border"
+                    name="delivery_address"
+                    value={formData.delivery_address}
+                    as="textarea"
+                    onChange={handleChange}
+                  />
+                </Col>
 
-            )
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Delivery Address City</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="delivery_address_city"
+                    value={formData.delivery_address_city}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                  />
+                </Col>
 
-            }
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Delivery Address State</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="delivery_address_state"
+                    value={formData.delivery_address_state}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                  />
+                </Col>
 
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Delivery Address Pin Code</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="delivery_address_state_code"
+                    value={formData.delivery_address_state_code}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                  />
+                </Col>
+              </Row>
 
+              <Row>
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Additional Address (Optional)</Form.Label>
+                  <Form.Control
+                    className="input-border"
+                    name="additional_address1"
+                    value={formData.additional_address1}
+                    as="textarea"
+                    onChange={handleChange}
+                  />
+                </Col>
+
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Additional Address City</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="additional_address1_city"
+                    value={formData.additional_address1_city}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                  />
+                </Col>
+
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Additional Address State</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="additional_address1_state"
+                    value={formData.additional_address1_state}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                  />
+                </Col>
+
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Additional Address Pin Code</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="additional_address1_state_code"
+                    value={formData.additional_address1_state_code}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                  />
+                </Col>
+              </Row>
+
+              <Row>
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Additional Address (Optional)</Form.Label>
+                  <Form.Control
+                    className="input-border"
+                    name="additional_address2"
+                    value={formData.additional_address2}
+                    as="textarea"
+                    onChange={handleChange}
+                  />
+                </Col>
+
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Additional Address City</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="additional_address2_city"
+                    value={formData.additional_address2_city}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                  />
+                </Col>
+
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Additional Address State</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="additional_address2_state"
+                    value={formData.additional_address2_state}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                  />
+                </Col>
+
+                <Col md={3} style={{ marginTop: "20px" }}>
+                  <Form.Label>Additional Address Pin Code</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="additional_address2_state_code"
+                    value={formData.additional_address2_state_code}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                  />
+                </Col>
+              </Row>
+            </Form>
+          </Container>
         </>
-
-
-    );
+      )}
+    </>
+  );
 };
 
 export default CustomerMaster;

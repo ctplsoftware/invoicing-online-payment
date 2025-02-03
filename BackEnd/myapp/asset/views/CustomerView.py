@@ -11,26 +11,40 @@ from django.utils import timezone
 @permission_classes([IsAuthenticated])
 def create_customer(request):
 
-    additional_addresses = request.data.get('additional_addresses', [])
-    additional_address1 = additional_addresses[0].strip() if len(additional_addresses) > 0 else ''
-    additional_address2 = additional_addresses[1].strip() if len(additional_addresses) > 1 else ''
-
-    print(request.data.get('gstin_number', '').strip(), 'gstin')
-
-
-
     validated_data = {
         key: value for key, value in {
             'name': request.data.get('name', '').strip(),
-            'delivery_address': request.data.get('delivery_address', '').strip(),
-            'additional_address1':additional_address1,
-            'additional_address2':additional_address2,
-            'billing_address': request.data.get('billing_address', '').strip(),
             'gstin_number': request.data.get('gstin_number', '').strip(),
+
             'credit_limit': request.data.get('credit_limit', '').strip(),
             'credit_days': request.data.get('credit_days', '').strip(),
+
             'contact_person': request.data.get('contact_person', '').strip(),
             'contact_number': request.data.get('contact_number', '').strip(),
+
+            'billing_address': request.data.get('billing_address', '').strip(),
+            'billing_address_city': request.data.get('billing_address_city', '').strip(),
+            'billing_address_state': request.data.get('billing_address_state', '').strip(),
+            'billing_address_state_code': request.data.get('billing_address_state_code', '').strip(),
+            
+            'delivery_address': request.data.get('delivery_address', '').strip(),
+            'delivery_address_city': request.data.get('delivery_address_city', '').strip(),
+            'delivery_address_state': request.data.get('delivery_address_state', '').strip(),
+            'delivery_address_state_code': request.data.get('delivery_address_state_code', '').strip(),
+            
+            'additional_address1': request.data.get('additional_address1', '').strip(),
+            'additional_address1_city': request.data.get('additional_address1_city', '').strip(),
+            'additional_address1_state': request.data.get('additional_address1_state', '').strip(),
+            'additional_address1_state_code': request.data.get('additional_address1_state_code', '').strip(),
+
+            'additional_address2': request.data.get('additional_address2', '').strip(),
+            'additional_address2_city': request.data.get('additional_address2_city', '').strip(),
+            'additional_address2_state': request.data.get('additional_address2_state', '').strip(),
+            'additional_address2_state_code': request.data.get('additional_address2_pin_code', '').strip(),
+
+
+           
+            
             'status': 'active',  
             'created_by': request.data.get('user_id'),
         }.items() if value  
@@ -81,28 +95,47 @@ def update_customer(request, id):
     except CustomerMaster.DoesNotExist:
         return Response({"error": "Customer not found"}, status=status.HTTP_404_NOT_FOUND)
     
-    additional_addresses = request.data.get('additional_addresses', [])
-    additional_address1 = additional_addresses[0].strip() if len(additional_addresses) > 0 else None
-    additional_address2 = additional_addresses[1].strip() if len(additional_addresses) > 1 else None
-
+    print(request.data)
+    
     validated_data = {
-        'name': request.data.get('name', customer.name).strip(),
-        'delivery_address': request.data.get('delivery_address', customer.delivery_address).strip(),
-        'additional_address1': additional_address1,
-        'additional_address2': additional_address2,
-        'billing_address': request.data.get('billing_address', customer.billing_address).strip(),
-        'gstin_number': request.data.get('gstin_number', customer.gstin_number).strip(),
-        'credit_limit': request.data.get('credit_limit', customer.credit_limit).strip(),
-        'credit_days': request.data.get('credit_days', customer.credit_days).strip(),
-        'contact_person': request.data.get('contact_person', customer.contact_person).strip(),
-        'contact_number': request.data.get('contact_number', customer.contact_number).strip(),
-        'status': request.data.get('status', customer.status).strip(),
-        'updated_by': request.data.get('user_id'),  
-        'updated_at':timezone.now()
+        key: value for key, value in {
+            'name': request.data.get('name', '').strip(),
+            'gstin_number': request.data.get('gstin_number', '').strip(),
 
+            'credit_limit': request.data.get('credit_limit', '').strip(),
+            'credit_days': request.data.get('credit_days', '').strip(),
+
+            'contact_person': request.data.get('contact_person', '').strip(),
+            'contact_number': request.data.get('contact_number', '').strip(),
+
+            'billing_address': request.data.get('billing_address', '').strip(),
+            'billing_address_city': request.data.get('billing_address_city', '').strip(),
+            'billing_address_state': request.data.get('billing_address_state', '').strip(),
+            'billing_address_state_code': request.data.get('billing_address_state_code', '').strip(),
+            
+            'delivery_address': request.data.get('delivery_address', '').strip(),
+            'delivery_address_city': request.data.get('delivery_address_city', '').strip(),
+            'delivery_address_state': request.data.get('delivery_address_state', '').strip(),
+            'delivery_address_state_code': request.data.get('delivery_address_state_code', '').strip(),
+            
+            
+            'additional_address1': request.data.get('additional_address1', '').strip() if request.data.get('additional_address1') != None  else None,
+            'additional_address1': request.data.get('additional_address1_city', '').strip() if request.data.get('additional_address1_city') != None  else None,
+            'additional_address1': request.data.get('additional_address1_state', '').strip() if request.data.get('additional_address1_state') != None  else None,
+            'additional_address1': request.data.get('additional_address1_state_code', '').strip() if request.data.get('additional_address1_state_code') != None  else None,
+
+            'additional_address2': request.data.get('additional_address2', '').strip() if request.data.get('additional_address2') != None  else None,
+            'additional_address2': request.data.get('additional_address2_city', '').strip() if request.data.get('additional_address2_city') != None  else None,
+            'additional_address2': request.data.get('additional_address2_state', '').strip() if request.data.get('additional_address2_state') != None  else None,
+            'additional_address2': request.data.get('additional_address2_state_code', '').strip() if request.data.get('additional_address2_state_code') != None  else None,
+            
+            
+            'status': 'active',  
+            'created_by': request.data.get('user_id'),
+        }.items() if value  
     }
 
-    
+
 
 
     serializer = CustomerSerializer(customer, data=validated_data, partial=True) 

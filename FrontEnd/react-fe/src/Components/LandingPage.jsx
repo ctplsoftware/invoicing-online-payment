@@ -25,18 +25,59 @@ import PaymentView from "./payment_verification/PaymentView.jsx";
 import DispatchDashboard from "./payment_verification/DispatchDashboard.jsx";
 import DispatchDashboards from "./payment_verification/testport.jsx";
 import Invoice from "./payment_verification/Invoice.jsx";
+import { LocationSearching } from "@mui/icons-material";
 
 const LandingPage = () => {
 
     const location = useLocation();
     const excludedPaths = ["/landingpage/invoice-print"];
+
+    const routeTitles = {
+        '/landingpage': 'Chakravarthy Commercials',
+        '/landingpage/customermastercreate': 'Create Customer ',
+        '/landingpage/customermasterdashboard': 'Customer Master',
+        '/landingpage/editcustomer-form/': 'Edit Customer',
+        '/landingpage/partmaster-form': 'Create Part',
+        '/landingpage/partmaster-fecthList': 'Part Master',
+        '/landingpage/partmaster-edit/': 'Edit Part',
+        '/landingpage/inwardtransactionform': 'Create Inward Transaction',
+        '/landingpage/inwardtransactionlist': 'Inward Transaction',
+        '/landingpage/inwardtransactionedit/': 'Edit Inward Transaction',
+        '/landingpage/stockreport': 'Stock Report',
+        '/landingpage/usercreate': 'Create User',
+        '/landingpage/userlist': 'User Master',
+        '/landingpage/useredit/': 'Edit User',
+        '/landingpage/stock-part-details/:partname': 'Stock Part Details',
+        '/landingpage/locationmastercreate': 'Create Location',
+        '/landingpage/locationmasterlist': 'Location Master',
+        '/landingpage/locationmasteredit/': 'Edit Location',
+        '/landingpage/customerdashboard': 'Customer Dashboard',
+        '/landingpage/payment-list': 'Order Transaction',
+        '/landingpage/payment-view/:order_no': 'Payment View',
+        '/landingpage/dispatch/': 'Order Transaction - Verify/Dispatch/Generate',
+        // '/landingpage/dispatchs': 'Dispatch Dashboards',
+        '/landingpage/invoice-print': 'Invoice Print',
+    };
+
+    const getRouteTitle = (pathname) => {
+        const sortedPaths = Object.keys(routeTitles).sort((a, b) => b.length - a.length);
+    
+        for (let path of sortedPaths) {
+            if (pathname.startsWith(path)) {
+                return routeTitles[path]; 
+            }
+        }
+        return 'Default Title';
+    };
+
+    const currentTitle = getRouteTitle(location.pathname);
     
 
     return (
         <div className="landingpage">
              {!excludedPaths.includes(location.pathname) && (
                 <div id="navbar">
-                    <Navbar1 />
+                    <Navbar1 title = {currentTitle} />
                 </div>
             )}
 
@@ -64,7 +105,7 @@ const LandingPage = () => {
                     <Route path="/payment-list" element={<PaymentList />} />
                     <Route path="/payment-view/:order_no" element={<PaymentView />} />
                     <Route path="/dispatch/:order_header_id" element={<DispatchDashboard />} />
-                    <Route path="/dispatchs" element={<DispatchDashboards />} />
+                    {/* <Route path="/dispatchs" element={<DispatchDashboards />} /> */}
                     <Route path="/invoice-print" element={<Invoice />} />
                 </Routes>
             </div>

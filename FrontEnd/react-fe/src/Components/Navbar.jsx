@@ -11,7 +11,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
-const Navbar1 = () => {
+const Navbar1 = ({title}) => {
     const [showSubmenu, setShowSubmenu] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState(null);
     const submenuRef = useRef(null);
@@ -62,7 +62,7 @@ const Navbar1 = () => {
                     />
                     <h4 style={{ fontWeight: '600' }}>
                         <Link to='/landingpage' className="text-decoration-none" style={{ color: '#ffffff' }}>
-                            Invoicing and Payment - Application
+                            {title}
                         </Link>
                     </h4>
 
