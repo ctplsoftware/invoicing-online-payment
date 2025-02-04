@@ -5,11 +5,92 @@ from rest_framework.permissions import IsAuthenticated
 from ..models.CustomerMasterModel import CustomerMaster
 from ..serializers.CustomerSerializer import CustomerSerializer
 from django.utils import timezone
+from django.conf import settings
+
+from asset.models import *
+
+from asset.utils import *
+import requests
+
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_customer(request):
+        
+    julian_date = base33()
+    current_year = str(datetime.datetime.now().year)[-2:]
+    today_count = get_count_requestid(RequestHeader)
+
+
+
+    client_id = settings.CLIENT_ID
+    client_secret = settings.CLIENT_SECRET
+
+    user_name = settings.USERNAME
+    password = settings.PASSWORD
+    gstin = settings.GSTIN
+
+    authentication_url = settings.AUTHENTICATION_URL
+    authentication_headers = {
+        'Content-Type': 'application/json',
+        'gspappid': client_id,
+        'gspappsecret': client_secret
+    }
+
+    authentication_response_object = requests.post(authentication_url, headers = authentication_headers)
+    authentication_response = authentication_response_object.json()
+
+
+
+    access_token = authentication_response['access_token']
+
+
+    get_taxpayer_details_url = settings.TAXPAYER_DETAILS_URL
+    get_taxpayer_details_headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f"Bearer {str(access_token)}",
+        'user_name': user_name,
+        'password': password,
+        'gstin': gstin,
+        'requestid': requestid
+    }
+
+    get_taxpayer_details_params = {
+        'gstin': request.data.get('gstin_number')
+    }
+
+    request_header = {
+        'request_id': requestid,
+        'purpose': 'get-taxpayer-details'
+    }
+
+    RequestHeader.objects.create(**request_header)
+
+    get_taxpayer_details_response_object = requests.get(get_taxpayer_details_url, headers = get_taxpayer_details_headers, params = get_taxpayer_details_params)
+
+    print(get_taxpayer_details_response_object) 
+    
+
+   
+
+
+
+
+
+
+
+    requestid = f"REQUESTID{julian_date}{current_year}{today_count+1:04}"
+
+
+
+    get_taxpayer_details_headers = {
+        'Content-Type': 'application/json',
+
+    }
+
+
+
 
     validated_data = {
         key: value for key, value in {
@@ -95,7 +176,6 @@ def update_customer(request, id):
     except CustomerMaster.DoesNotExist:
         return Response({"error": "Customer not found"}, status=status.HTTP_404_NOT_FOUND)
     
-    print(request.data)
     
     validated_data = {
         key: value for key, value in {

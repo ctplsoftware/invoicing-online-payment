@@ -33,6 +33,21 @@ class CustomerMaster(models.Model):
     additional_address2_city = models.CharField(max_length = 100, null = True, blank = True)
     additional_address2_state_code = models.CharField(max_length = 100, null = True, blank = True)
 
+
+    TradeName = models.CharField(max_length= 255, null = True)
+    LegalName = models.CharField(max_length= 255, null = True)
+    AddrBnm = models.CharField(max_length= 255, null = True)
+    AddrBno = models.CharField(max_length= 255, null = True)
+    AddrFlno = models.CharField(max_length= 255, null = True)
+    AddrSt = models.CharField(max_length= 255, null = True)
+    StateCode = models.CharField(max_length= 255, null = True)
+    AddrPncd = models.CharField(max_length= 255, null = True)
+    TaxType = models.CharField(max_length= 255, null = True)
+    CustomerStatus = models.CharField(max_length= 255, null = True)
+    BlkStatus = models.CharField(max_length= 255, null = True)
+
+
+
     credit_limit = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True)
     used_limit = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True ,default=0)
     credit_days = models.CharField(max_length=50, blank=True, null=True)

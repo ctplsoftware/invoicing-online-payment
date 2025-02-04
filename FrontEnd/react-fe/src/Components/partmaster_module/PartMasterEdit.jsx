@@ -43,7 +43,7 @@ const PartMasterEdit = () => {
                         part_name: partmasterData.part_name,
                         status: partmasterData.status,
                         unit_price: partmasterData.unit_price,
-                        unit_price: partmasterData.hsn_code,
+                        hsn_code: partmasterData.hsn_code,
                         uom: partmasterData.uom,
                         hsn_code: partmasterData.hsn_code
                     });

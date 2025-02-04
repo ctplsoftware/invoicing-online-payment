@@ -14,6 +14,7 @@ class EInvoiceHeader(models.Model):
     EwbDt = models.DateTimeField(null = True)
     EwbValidTill = models.CharField(max_length = 200, null = True)
     Remarks = models.TextField(null = True)
+    einvoice_status = models.CharField(max_length = 50, null = True)
     created_by = models.IntegerField(null = True)
     updated_by = models.IntegerField(null = True)
     created_at = models.DateTimeField(auto_now_add = True, null = True)

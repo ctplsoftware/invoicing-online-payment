@@ -26,6 +26,10 @@
   color: white;
 }
 
+.custom-confirm-btn{
+  margin-left: -145px;
+}
+
 .App-link {
   color: #61dafb;
 }

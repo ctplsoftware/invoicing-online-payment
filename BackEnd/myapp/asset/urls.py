@@ -74,6 +74,9 @@ urlpatterns = [
     path('android/get-order', AndroidAPIView.get_order),
     path('android/get-order-list', AndroidAPIView.get_order_list),
     path('android/create-order-attachment', AndroidAPIView.create_order_attachment),
+    path('android/customer-details',AndroidAPIView.get_card_details),
+    path('android/order-counts',AndroidAPIView.get_order_count),
+    path('android/einvoice-pdf', AndroidAPIView.get_einvoice_details)
 
     
 ]

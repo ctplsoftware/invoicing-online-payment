@@ -42,8 +42,22 @@ CLIENT_SECRET = '5531F90CG6414G44E8GA274GD48DFA3EDDCE'
 AUTHENTICATION_URL = 'https://gsp.adaequare.com/gsp/authenticate?action=GSP&grant_type=token'
 GENERATE_IRN_URL = 'https://gsp.adaequare.com/test/enriched/ei/api/invoice'
 CANCEL_IRN_URL = 'https://gsp.adaequare.com/test/enriched/ei/api/invoice/cancel'
+TAXPAYER_DETAILS_URL = 'https://gsp.adaequare.com/test/enriched/ei/api/master/gstin'
+
+COMPANY_NAME = 'Chakravarthy Commercials'
+COMPANY_ADDRESS = '161 A ETTAYAPURAM ROAD, Thoothukudi, Tamil Nadu, 628002'
+STATE_NAME = 'Tamil Nadu'
+STATE_CODE = '33'
+EMAIL_ID = 'sample@gmail.com'
+PHONE_NUMBER = '1234567890'
+
+BANK_ACCOUNT_NUMBER = '0708102000012120'
+BANK_NAME = 'IDBI Bank'
+IFSC_CODE = 'IBKL0000708'
+BRANCH_NAME = 'Tirunelveli'
 
 GSTIN = '02AMBPG7773M002'
+PAN = 'AMBPG7773M002'
 USERNAME = 'adqgsphpusr1'
 PASSWORD = 'Gsp@1234'
 

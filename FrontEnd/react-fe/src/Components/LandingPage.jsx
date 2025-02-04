@@ -23,7 +23,7 @@ import CustomerDashboard from "./customer_module/CustomerDashboard.jsx";
 import PaymentList from "./payment_verification/PaymentList.jsx";
 import PaymentView from "./payment_verification/PaymentView.jsx";
 import DispatchDashboard from "./payment_verification/DispatchDashboard.jsx";
-import DispatchDashboards from "./payment_verification/testport.jsx";
+import EInvoice from "./payment_verification/EInvoice.jsx";
 import Invoice from "./payment_verification/Invoice.jsx";
 import { LocationSearching } from "@mui/icons-material";
 
@@ -47,7 +47,7 @@ const LandingPage = () => {
         '/landingpage/usercreate': 'Create User',
         '/landingpage/userlist': 'User Master',
         '/landingpage/useredit/': 'Edit User',
-        '/landingpage/stock-part-details/:partname': 'Stock Part Details',
+        '/landingpage/stock-part-details/': 'Detailed Stock Report',
         '/landingpage/locationmastercreate': 'Create Location',
         '/landingpage/locationmasterlist': 'Location Master',
         '/landingpage/locationmasteredit/': 'Edit Location',
@@ -55,8 +55,8 @@ const LandingPage = () => {
         '/landingpage/payment-list': 'Order Transaction',
         '/landingpage/payment-view/:order_no': 'Payment View',
         '/landingpage/dispatch/': 'Order Transaction - Verify/Dispatch/Generate',
-        // '/landingpage/dispatchs': 'Dispatch Dashboards',
-        '/landingpage/invoice-print': 'Invoice Print',
+        '/landingpage/generate-einvoice/': 'Generate E-Invoice',
+        '/landingpage/einvoice-print': 'Invoice Print',
     };
 
     const getRouteTitle = (pathname) => {
@@ -105,8 +105,9 @@ const LandingPage = () => {
                     <Route path="/payment-list" element={<PaymentList />} />
                     <Route path="/payment-view/:order_no" element={<PaymentView />} />
                     <Route path="/dispatch/:order_header_id" element={<DispatchDashboard />} />
-                    {/* <Route path="/dispatchs" element={<DispatchDashboards />} /> */}
-                    <Route path="/invoice-print" element={<Invoice />} />
+                    <Route path="/generate-einvoice/:id" element={<EInvoice />} />
+                    <Route path="/einvoice-print" element={<Invoice />} />
+                    
                 </Routes>
             </div>
         </div>

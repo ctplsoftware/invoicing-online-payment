@@ -15,6 +15,7 @@ class EInvoiceTransaction(models.Model):
     AddlDocDtls = models.JSONField()
     ExpDtls = models.JSONField()
     EwbDtls = models.JSONField()
+    status = models.CharField(max_length = 50, null = True)
     created_by = models.IntegerField(null = True)
     updated_by = models.IntegerField(null = True)
     created_at = models.DateTimeField(auto_now_add = True, null = True)

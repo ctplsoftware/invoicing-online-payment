@@ -17,9 +17,9 @@ const StockReport = () => {
 
     const columns = [
         { name: 'S No', selector: row => row.Sno, width: '70px' },
-        { name: 'Part Name', selector: row => row.part_name, flex: 1 },
+
         { 
-            name: 'Current Stock', 
+            name: 'Part Name', 
             cell: row => (
                 <span 
                     style={{
@@ -29,11 +29,16 @@ const StockReport = () => {
                     }} 
                     onClick={() => handleQuantityClick(row.part_name)}
                 >
-                    {row.inward_quantity}
+                    {row.part_name}
                 </span>
             ), 
             flex: 1.5 
         },
+
+
+
+        { name: 'Quantity', selector: row => row.inward_quantity, flex: 1 },
+        
     ];
 
         const handleQuantityClick = (partName) => {
@@ -113,7 +118,6 @@ const StockReport = () => {
 
             {/* DataTable */}
             <DataTable
-                title="Stock Report"
                 columns={columns}
                 data={filteredRows}
                 pagination

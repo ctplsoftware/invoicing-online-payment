@@ -7,6 +7,7 @@ class OrderTransaction(models.Model):
     payment_amount = models.FloatField()
     payment_date = models.CharField(max_length = 200, null = True)
     payment_comments = models.CharField(max_length = 200, null = True)
+    status = models.CharField(max_length = 50, null = True)
     created_by = models.IntegerField()
     updated_by = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add = True, null = True)

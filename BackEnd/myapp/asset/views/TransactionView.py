@@ -1,5 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.contrib.auth import authenticate
 
 from asset.models import *
 from asset.utils import *
@@ -14,12 +15,13 @@ from asset.serializers.OrderTransactionSerializer import OrderTransactionSeriali
 from asset.serializers.CustomerSerializer import CustomerSerializer
 
 import requests
+from decimal import Decimal
 
 
 
 @api_view(['GET'])
 def get_order_details_all(request):
-        orderheader_data = OrderHeader.objects.all()
+        orderheader_data = OrderHeader.objects.all().order_by('-id')
         serializer = OrderheaderSerializer(orderheader_data, many=True)
         return Response(serializer.data)
     
@@ -31,10 +33,10 @@ def get_order_details(request):
         with transaction.atomic():
 
             order_header_id = request.query_params.get('order_header_id')
-            print("order_id",order_header_id)
 
             order_header = OrderHeader.objects.filter(id = order_header_id).prefetch_related('attachments', 'transaction').first()
             customer_data = CustomerMaster.objects.filter(id = order_header.customer_master_id).first()
+
 
             if order_header:
                 # Serialize the order header
@@ -154,17 +156,45 @@ def update_verified_completed(request):
 
 @api_view(['POST'])
 def create_e_invoice(request):
-    # try:
-    #     with transaction.atomic():
+
+    julian_date = base33()
+    current_year = str(datetime.datetime.now().year)[-2:]
+    today_count = get_count_requestid(RequestHeader)
+
+
+    requestid = f"REQUESTID{julian_date}{current_year}{today_count+1:04}"
+    document_number = f"DOCNO{julian_date}{today_count+1:04}"
+
+    request_header = {
+        'request_id': requestid,
+        'purpose': 'generate-irn',
+        'order_header_id': request.data.get('order_header_id')
+    }
+    
+    RequestHeader.objects.create(**request_header)
+
+    try:
+        with transaction.atomic():
 
             order_header_id = request.data.get('order_header_id')
 
             order_header = OrderHeader.objects.filter(id = order_header_id).first()
 
-            julian_date = base33()
-            current_year = str(datetime.datetime.now().year)[-2:]
-            today_count = get_count_requestid(RequestHeader)
 
+            order_header.delivery_note = request.data.get('delivery_note')
+            order_header.other_references = request.data.get('other_references')
+            order_header.buyer_order_number = request.data.get('buyer_order_number')
+            order_header.buyer_order_date = request.data.get('buyer_order_date')
+
+            order_header.delivery_note_date = request.data.get('delivery_note_date')
+            order_header.dispatch_document_number = request.data.get('dispatch_document_number')
+            order_header.dispatched_through = request.data.get('dispatched_through')
+            order_header.terms_of_delivery = request.data.get('terms_of_delivery')
+            order_header.delivery_note_date = request.data.get('delivery_note_date')
+
+            order_header.save()
+
+            
 
             client_id = settings.CLIENT_ID
             client_secret = settings.CLIENT_SECRET
@@ -173,8 +203,7 @@ def create_e_invoice(request):
             password = settings.PASSWORD
             gstin = settings.GSTIN
 
-            requestid = f"REQUESTID{julian_date}{current_year}{today_count+1:04}"
-            document_number = f"DOCNO{julian_date}{today_count+1:04}"
+            
 
 
             # Generate access_token
@@ -192,7 +221,6 @@ def create_e_invoice(request):
 
 
             access_token = authentication_response['access_token']
-            print(access_token)
 
 
             # Generate IRN
@@ -435,18 +463,12 @@ def create_e_invoice(request):
                 "EwbDtls": EwbDtls,
             }
 
-            request_header = {
-                'request_id': requestid,
-                'purpose': 'generate-irn',
-                'order_header_id': order_header_id
-            }
             
-            RequestHeader.objects.create(**request_header)
 
             
             generate_irn_response_object = requests.post(generate_irn_url, json = generate_irn_request_body, headers = generate_irn_headers)
             generate_irn_response = generate_irn_response_object.json()['result']
-            # generate_irn_response = generate_irn_response_object.json()
+
             
 
 
@@ -499,95 +521,126 @@ def create_e_invoice(request):
 
     
 
-    # except Exception as e:
-    #     print(e)
-    #     return Response('error')
+    except Exception as e:
+        print(e)
+        return Response('error')
 
 
 @api_view(['POST'])
 def cancel_e_invoice(request):
-    # try:
-    #     with transaction.atomic():
 
-            # Generate Access Token
+    julian_date = base33()
+    current_year = str(datetime.datetime.now().year)[-2:]
+    today_count = get_count_requestid(RequestHeader)
 
-            irn = request.data.get('irn')
-            order_header = OrderHeader.objects.filter(id = request.data.get('order_header_id')).first()
+    requestid = f"REQUESTID{julian_date}{current_year}{today_count+1:04}"
+    request_header = {
+            'request_id': requestid,
+            'purpose': 'cancel-irn'
+    }
 
-            # irn = "8cda211444333a62ab61c840ac09014e32882374a3c76e68f294f1af0e021463"
-
-
-
-            client_id = settings.CLIENT_ID
-            client_secret = settings.CLIENT_SECRET
-
-            user_name = settings.USERNAME
-            password = settings.PASSWORD
-            gstin = settings.GSTIN
-
-            authentication_url = settings.AUTHENTICATION_URL
-            authentication_headers = {
-                'Content-Type': 'application/json',
-                'gspappid': client_id,
-                'gspappsecret': client_secret
-            }
-
-            authentication_response_object = requests.post(authentication_url, headers = authentication_headers)
-            authentication_response = authentication_response_object.json()
-
-            julian_date = base33()
-            current_year = str(datetime.datetime.now().year)[-2:]
-            today_count = get_count(RequestHeader)
+    RequestHeader.objects.create(**request_header)
 
 
-            requestid = f"REQUESTID{julian_date}{current_year}{today_count+1:04}"
+    try:
+        with transaction.atomic():
 
+            username = request.data.get('username')
+            password = request.data.get('password')
 
-            access_token = authentication_response['access_token']
+            user = authenticate(username=username, password=password)
 
-            cancel_irn_url = settings.CANCEL_IRN_URL
-            cancel_irn_headers = {
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {str(access_token)}",
-                'user_name': user_name,
-                'password': password,
-                'gstin': gstin,
-                'requestid': requestid
-            }
+            if not user:
+                return Response('Invalid Credentials')
 
-            cancel_irn_request_body = {
-                'irn': irn,
-                'cnlrsn': 1,
-                'cnlrem': 'Wrong Entry'
-            }
-
-            cancel_irn_response_object = requests.post(cancel_irn_url, json = cancel_irn_request_body, headers = cancel_irn_headers)
-            cancel_irn_response = cancel_irn_response_object.json()['message']
-
-            if cancel_irn_response == 'E-Invoice cancelled successfully':
-                request_header = {
-                    'request_id': requestid,
-                    'purpose': 'cancel-irn'
-                }
-                RequestHeader.objects.create(**request_header)
-                e_invoice_header_id = EInvoiceHeader.objects.filter(Irn = irn).first().request_id
-
-                order_header.status = 'invalid'
-                order_header.completed_status = 'invalid'
-                order_header.save()
-
-                # PartMaster.objects.filter(id = order_header.part_master_id).update(allocated_stoc)
-                OrderTransaction.objects.filter(order_header_id = order_header.id).update(status = 'invalid')
-                OrderAttachmentTransaction.objects.filter(order_header_id = order_header.id).update(status = 'invalid')
-                EInvoiceTransaction.objects.filter(e_invoice_header_id = e_invoice_header_id).update(status = 'invalid')
-                EInvoiceHeader.objects.filter(Irn = irn).update(status = 'invalid')
-
-                return Response('success')
-            
             else:
-                return Response('error')
+                # Generate Access Token
+
+                irn = request.data.get('irn')
+                order_header = OrderHeader.objects.filter(id = request.data.get('order_header_id')).first()
+
+                client_id = settings.CLIENT_ID
+                client_secret = settings.CLIENT_SECRET
+
+                user_name = settings.USERNAME
+                password = settings.PASSWORD
+                gstin = settings.GSTIN
+
+                authentication_url = settings.AUTHENTICATION_URL
+                authentication_headers = {
+                    'Content-Type': 'application/json',
+                    'gspappid': client_id,
+                    'gspappsecret': client_secret
+                }
+
+                authentication_response_object = requests.post(authentication_url, headers = authentication_headers)
+                authentication_response = authentication_response_object.json()
+
+                
+
+                access_token = authentication_response['access_token']
 
 
-    # except Exception as e:
-    #     print(e)
-    #     return Response('error')
+                # Cancel E-Invoice
+
+                cancel_irn_url = settings.CANCEL_IRN_URL
+                cancel_irn_headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': f"Bearer {str(access_token)}",
+                    'user_name': user_name,
+                    'password': password,
+                    'gstin': gstin,
+                    'requestid': requestid
+                }
+
+                cancel_irn_request_body = {
+                    'irn': irn,
+                    'cnlrsn': '1',
+                    'cnlrem': 'Wrong Entry'
+                }
+
+
+
+                cancel_irn_response_object = requests.post(cancel_irn_url, json = cancel_irn_request_body, headers = cancel_irn_headers)
+                cancel_irn_response = cancel_irn_response_object.json()['message']
+
+
+                if cancel_irn_response == 'E-Invoice is cancelled successfully':
+                    
+
+                    order_header.status = 'invalid'
+                    order_header.completed_status = 'invalid'
+
+                    part_master = PartMaster.objects.filter(id = order_header.part_master_id).first()
+                    customer_master = CustomerMaster.objects.filter(id = order_header.customer_master_id).first()
+
+                    part_master.allocated_stock = float(part_master.allocated_stock) - float(order_header.quantity)
+
+                    if order_header.verified_status == 'no':
+                        remaining_used_limit = float(order_header.total_amount) - float(order_header.paid_amount)
+                        customer_master.used_limit = customer_master.used_limit - Decimal(remaining_used_limit)
+                        customer_master.save()
+
+                    part_master.save()
+                    order_header.save()
+
+                    e_invoice_header = EInvoiceHeader.objects.filter(Irn = irn).first()
+                    e_invoice_header.einvoice_status = 'invalid'
+                    e_invoice_header.save()
+
+                
+
+
+                    OrderTransaction.objects.filter(order_header_id = order_header.id).update(status = 'invalid')
+                    OrderAttachmentTransaction.objects.filter(order_header_id = order_header.id).update(status = 'invalid')
+                    EInvoiceTransaction.objects.filter(e_invoice_header_id = e_invoice_header.id).update(status = 'invalid')
+
+                    return Response('success')
+                
+                else:
+                    return Response('error')
+
+
+    except Exception as e:
+        print(e)
+        return Response('error')

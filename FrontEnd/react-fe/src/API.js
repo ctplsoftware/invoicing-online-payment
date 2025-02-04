@@ -20,7 +20,6 @@ class API {
         return response.data;
     }
 
-
     async customerMasterEditFetch(id) {
         try {
             const response = await apiClient.get(`${BaseURL}/customerMasterEditFetch/${id}`);
@@ -58,7 +57,6 @@ class API {
         const response = await apiClient.post(`${BaseURL}/part_master_Create`, data)
         return response.data;
     }
-
 
     async get_part_master() {
 
@@ -115,7 +113,6 @@ class API {
 
         }
     }
-
 
     async fetch_inward_transaction() {
 
@@ -323,7 +320,7 @@ class API {
         }
     }
 
-    // Generate E Invoice
+    // E Invoice
 
     async generateEInvoice(data) {
         try {
@@ -334,8 +331,6 @@ class API {
             console.error('Error updating customer:', error);
         }
     }
-
-    // Cancel E Invoice
 
     async cancelEInvoice(data) {
         try {
