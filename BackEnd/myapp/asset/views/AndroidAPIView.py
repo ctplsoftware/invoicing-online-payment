@@ -15,35 +15,70 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from datetime import timedelta
+from datetime import datetime
+from django.conf import settings
 
 
 
 @api_view(['POST'])
 def android_login(request):
-    # Get username and password from the request body
-    username = request.data.get('username')
-    password = request.data.get('password')
+    try:
+        response_data = {}
+        # Get username and password from the request body
+        username = request.data.get('username')
+        password = request.data.get('password')
 
-    # Authenticate the user
-    user = authenticate(username=username, password=password) 
+        # Authenticate the user
+        user = authenticate(username=username, password=password) 
+        print(user)
+        
 
-    if user is not None:
-        access_token_lifetime =timedelta(hours=1)
-        refresh_token_lifetime =timedelta(days=3650)
-        refresh = RefreshToken.for_user(user)
-        refresh.set_exp(lifetime=refresh_token_lifetime)
-        access_token = refresh.access_token
-        access_token.set_exp(lifetime=access_token_lifetime)
-        serializer = UserSerializer(user)        # Return the response
-        return Response({
-            'user': serializer.data,  # Basic user information
-            'refresh': str(refresh),  # Long-lived refresh token
-            'access': str(refresh.access_token),  # Short-lived access token
-        }, status=status.HTTP_200_OK)
+        if user is not None:
+            access_token_lifetime =timedelta(days=3650)
+            refresh_token_lifetime =timedelta(days=3650)
+            refresh = RefreshToken.for_user(user)
+            refresh.set_exp(lifetime=refresh_token_lifetime)
+            access_token = refresh.access_token
+            access_token.set_exp(lifetime=access_token_lifetime)
+            user = User.objects.filter(username = username).first()
+            customerData = CustomerMaster.objects.filter(id=user.last_name).first()
+            
+            
+            serializer = UserSerializer(user)        # Return the response
+            
+            response_data = {
+                    'data': {
+                        'user_id': user.id,
+                        'user_name': user.username,
+                        'customer_name':customerData.name,
+                        'customer_id':customerData.id,
+                        'access_token':str(refresh.access_token)
+                    },
+                    'message': 'Valid',
+                    'success': True
+                }
 
-    # If authentication fails, return error response
-    return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
-
+            return Response(response_data)
+        
+        else :
+            response_data = {
+            'data': None,
+            'message': 'Invalid credentials',
+            'success': False
+        }
+        
+        return Response(response_data)  
+    
+    except Exception as e:
+        print(e)
+        response_data = {
+            'data': None,
+            'message': 'Invalid credentials',
+            'success': False
+        }
+        
+        return Response(response_data)       
+        
 @api_view(['POST'])
 def logout(request):
     try:
@@ -57,7 +92,9 @@ def logout(request):
         return Response({"error": "Invalid token or already blacklisted"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_generate_order(request):
     try:
         with transaction.atomic():
@@ -70,12 +107,9 @@ def get_generate_order(request):
 
             limits = CustomerMaster.objects.filter(id = customer_id).first()
             credit_limit = float(limits.credit_limit) - float(limits.used_limit)
-            print("credit_limits checks",credit_limit)
 
             addresses = [address for address in total_addresses if address != '' and address is not None]
-            print("adressssss...",addresses)
             part_details = [{'part_id': part['id'], 'part_name': part['part_name'], 'unit_price': part['unit_price'], 'stock': float(part['stock']) - float(part['allocated_stock']), 'uom': part['uom']} for part in part_master]
-            print("part details...",part_details)
 
 
             response_data = {
@@ -100,7 +134,9 @@ def get_generate_order(request):
         return Response(response_data)
 
 
+
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_order(request):
     response_data = {}
 
@@ -109,9 +145,15 @@ def create_order(request):
 
             part_master = PartMaster.objects.filter(id = request.data.get('part_id')).first()
             customer_master = CustomerMaster.objects.filter(id = request.data.get('customer_id')).first()
+            delivery_address = request.data.get('delivery_address')
             quantity = float(request.data.get('qty'))
             payment_type = request.data.get('payment_type')
-            
+            addresses_map = {customer_master.delivery_address : f"{customer_master.delivery_address_city}_{customer_master.delivery_address_state}_{customer_master.delivery_address_state_code}", customer_master.additional_address1 : f"{customer_master.additional_address1_city}_{customer_master.additional_address1_state}_{customer_master.additional_address1_state_code}", customer_master.additional_address2 : f"{customer_master.additional_address2_city}_{customer_master.additional_address2_state}_{customer_master.additional_address2_state_code}"}
+
+            delivery_address_city = addresses_map[delivery_address].split('_')[0]
+            delivery_address_state = addresses_map[delivery_address].split('_')[1]
+            delivery_address_state_code = addresses_map[delivery_address].split('_')[2]
+
             available_stock = float(part_master.stock) - float(part_master.allocated_stock)
 
             if quantity > available_stock:
@@ -125,6 +167,29 @@ def create_order(request):
             else:
                 amount_inr = round(part_master.unit_price * quantity, 2)
                 amount_inr_tax = round(amount_inr + float(amount_inr * 0.18), 2)
+
+                if delivery_address_state_code == 33:
+                    igst_percentage = 0.0
+                    sgst_percentage = 9.0
+                    cgst_percentage = 9.0
+
+                    igst_amount = 0.0
+                    sgst_amount = round(float(amount_inr * 0.09), 2)
+                    cgst_amount = round(float(amount_inr * 0.09), 2)
+                    total_tax_amount = sgst_amount + cgst_amount
+                    
+                else:
+
+                    igst_percentage = 18.0
+                    sgst_percentage = 0.0
+                    cgst_percentage = 0.0
+
+                    igst_amount = round(float(amount_inr * 0.18), 2)
+                    sgst_amount = 0.0
+                    cgst_amount = 0.0
+                    total_tax_amount = igst_amount
+                    
+
 
                 if payment_type == 'Credit':
                     
@@ -142,13 +207,25 @@ def create_order(request):
                         order_header = {}
 
                         last_order = get_count(OrderHeader)
-                        order_number = f"{customer_master.name}{last_order + 1}"
+                        julian_date = base33()
+                        current_year = str(datetime.now().year)[-2:]
+                        order_number = f"OR{julian_date}{current_year}{last_order+1:04}"
                         
                         order_header = {
                             'order_number': order_number,
                             'payment_type': 'credit',
                             'part_name': part_master.part_name,
-                            'delivery_address': request.data.get('delivery_address'),
+                            'delivery_address': delivery_address,
+                            'delivery_address_city': delivery_address_city,
+                            'delivery_address_state': delivery_address_state,
+                            'delivery_address_state_code': delivery_address_state_code,
+                            'igst_percentage': igst_percentage,
+                            'sgst_percentage': sgst_percentage,
+                            'cgst_percentage': cgst_percentage,
+                            'igst_amount': igst_amount,
+                            'sgst_amount': sgst_amount,
+                            'cgst_amount': cgst_amount,
+                            'total_tax_amount': total_tax_amount,
                             'uom': part_master.uom,
                             'quantity': quantity,
                             'unit_price': part_master.unit_price,
@@ -183,13 +260,25 @@ def create_order(request):
                     order_header = {}
 
                     last_order = get_count(OrderHeader)
-                    order_number = f"{customer_master.name}{last_order + 1}"
+                    julian_date = base33()
+                    current_year = str(datetime.now().year)[-2:]
+                    order_number = f"OR{julian_date}{current_year}{last_order+1:04}"
 
                     order_header = {
                         'order_number': order_number,
                         'payment_type': 'advance',
                         'part_name': part_master.part_name,
-                        'delivery_address': request.data.get('delivery_address'),
+                        'delivery_address': delivery_address,
+                        'delivery_address_city': delivery_address_city,
+                        'delivery_address_state': delivery_address_state,
+                        'delivery_address_state_code': delivery_address_state_code,
+                        'igst_percentage': igst_percentage,
+                        'sgst_percentage': sgst_percentage,
+                        'cgst_percentage': cgst_percentage,
+                        'igst_amount': igst_amount,
+                        'sgst_amount': sgst_amount,
+                        'cgst_amount': cgst_amount,
+                        'total_tax_amount': total_tax_amount,
                         'uom': part_master.uom,
                         'quantity': quantity,
                         'unit_price': part_master.unit_price,
@@ -235,7 +324,9 @@ def create_order(request):
         return Response(response_data)
 
 
+
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_order_list(request):
     response_data = {}
 
@@ -269,7 +360,9 @@ def get_order_list(request):
         return Response(response_data)
 
 
+
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_order(request):
     response_data = {}
 
@@ -306,7 +399,9 @@ def get_order(request):
         return Response(response_data)
 
 
+
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_order_attachment(request):
     response_data = {}
 
@@ -377,3 +472,181 @@ def create_order_attachment(request):
         return Response(response_data)
 
 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_card_details(request):
+    try:
+        customer_id = request.query_params.get('customer_id')
+        
+        if not customer_id:
+            return Response({
+                'message': 'Customer ID is required',
+                'success': False
+            }, status=400)
+        
+        with transaction.atomic():  
+            customer = CustomerMaster.objects.filter(id=customer_id).first()
+            
+            if not customer:
+                return Response({
+                    'message': 'Customer not found',
+                    'success': False
+                }, status=404)
+            
+            response_data = {
+                'data': {
+                    'credit_limit': customer.credit_limit,
+                    'used_limit': customer.used_limit
+                },
+                'message': 'Valid',
+                'success': True
+            }
+        
+        return Response(response_data, status=200)
+        
+    except Exception as e:
+        return Response({
+            'message': 'Error while fetching data',
+            'error': str(e),
+            'success': False
+        }, status=500)
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_order_count(request):
+    try:
+        customer_id = request.query_params.get('customer_id')
+        
+        if not customer_id:
+            return Response({
+                'message': 'Customer ID is required',
+                'success': False
+            }, status=400)
+        
+        with transaction.atomic():  
+            orderheader = OrderHeader.objects.filter(customer_master_id =customer_id)
+            completedOrders = orderheader.filter(completed_status = "yes").count()
+            pendingOrders = orderheader.filter(completed_status = "no").count()
+            
+            response_data = {
+                'data': {
+                    'pending_orders': pendingOrders,
+                    'completed_orders': completedOrders,
+                    
+                },
+                'message': 'Valid',
+                'success': True
+            }
+        
+        return Response(response_data, status=200)
+        
+    except Exception as e:
+        return Response({
+            'message': 'Error while fetching data',
+            'error': str(e),
+            'success': False
+        }, status=500)            
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_einvoice_details(request):
+    response_data = {}
+
+    try:
+        with transaction.atomic():
+            order_header = OrderHeader.objects.filter(order_number = request.query_params.get('order_no')).first()
+            
+            if order_header.irn_invoice_number == None or order_header.irn_invoice_number == '' or order_header.completed_status == 'invalid':
+                response_data = {
+                    'data': None,
+                    'message': 'E-Invoice not yet generated/cancelled for this order.',
+                    'success': False
+                }
+                return Response(response_data)
+
+            else:
+                e_invoice_header = EInvoiceHeader.objects.filter(order_header_id = order_header.id).first()
+                customer_master = CustomerMaster.objects.filter(id = order_header.customer_master_id).first()
+
+
+                formatted_date = e_invoice_header.AckDt.strftime("%d-%b-%Y")
+
+                data = {
+                    'ack_no': e_invoice_header.AckNo,
+                    'irn_no': e_invoice_header.Irn,
+                    'ack_date': formatted_date,
+
+                    'vendor_company_name': settings.COMPANY_NAME,
+                    'vendor_company_address': settings.COMPANY_ADDRESS,
+                    'vendor_company_phone_number': settings.PHONE_NUMBER,
+                    'vendor_company_pan': settings.PAN,
+                    'vendor_company_gstin': settings.GSTIN,
+                    'vendor_state_name': settings.STATE_NAME,
+                    'vendor_state_code': settings.STATE_CODE,
+                    'vendor_company_email': settings.EMAIL_ID,
+                    'vendor_company_bank_name': settings.BANK_NAME,
+                    'vendor_company_bank_account': settings.BANK_ACCOUNT_NUMBER,
+                    'vendor_company_bank_branch': f"{settings.BRANCH_NAME} & {settings.IFSC_CODE}",
+
+                    'buyer_company_name': customer_master.name,
+                    'buyer_company_address': order_header.delivery_address,
+                    'buyer_company_gstin': customer_master.gstin_number,
+                    'buyer_state_name': order_header.delivery_address_state,
+                    'buyer_state_code': order_header.delivery_address_state_code,
+
+                    'invoice_no': order_header.order_number,
+                    'delivery_note': order_header.delivery_note,
+                    'mode_of_payment': order_header.payment_type,
+                    'reference_number': f"{order_header.order_number} dt. {formatted_date}",
+                    'other_references': order_header.other_references,
+                    'buyer_order_number': order_header.buyer_order_number,
+                    'buyer_order_date': order_header.buyer_order_date,
+                    'dispatch_doc_no': order_header.dispatch_document_number,
+                    'delivery_note_date': order_header.delivery_note_date,
+                    'dispatched_through': order_header.dispatched_through,
+                    'terms_of_delivery': order_header.terms_of_delivery,
+                    'description_of_goods': order_header.part_name,
+                    'hsn_code': order_header.part_master.hsn_code,
+                    'quantity': f"{order_header.quantity} {order_header.part_master.uom}",
+                    'rate': order_header.part_master.unit_price,
+                    'per': order_header.part_master.uom,
+                    'amount_for_quantity': order_header.amount_for_quantity,
+
+                    'sgst_per': order_header.sgst_percentage,
+                    'sgst_amount': order_header.sgst_amount,
+                    'cgst_per': order_header.cgst_percentage,
+                    'cgst_amount': order_header.cgst_amount,
+                    'igst_per': order_header.igst_percentage,
+                    'igst_amount': order_header.igst_amount,
+
+                    'total_amount': order_header.total_amount,
+                    'amount_in_words': '',
+                    'total_tax_amount': order_header.total_tax_amount,
+
+                    'qr_code_data': e_invoice_header.SignedQRCode,
+
+                }
+
+                response_data = {
+                    'data': data,
+                    'message': 'Valid',
+                    'success': True
+                }
+
+                return Response(response_data)
+
+
+    
+    except Exception as e:
+        print(e)
+
+        response_data = {
+            'message': 'Invalid',
+            'success': False
+        }
+
+        return Response(response_data)

@@ -5,6 +5,7 @@ class PartMaster(models.Model):
     status = models.CharField(max_length=50)
     unit_price = models.FloatField()
     stock = models.FloatField(null=True, blank=True,default=0)
+    hsn_code = models.CharField(max_length = 100, null = True)
     allocated_stock = models.CharField(max_length=255, null=True, blank=True ,default="0")
     uom = models.CharField(max_length=100,null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)  

@@ -9,3 +9,6 @@ from .OrderHeaderModel import OrderHeader
 from .OrderTransactionModel import OrderTransaction
 from .OrderAttachmentTransactionModel import OrderAttachmentTransaction
 from .LocationMasterModel import LoactionMaster
+from .EInvoiceHeaderModel import EInvoiceHeader
+from .EInvoiceTransactionModel import EInvoiceTransaction
+from .RequestHeaderModel import RequestHeader
