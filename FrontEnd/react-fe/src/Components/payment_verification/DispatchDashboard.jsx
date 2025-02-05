@@ -646,6 +646,6 @@ function DispatchDashboard() {
       </div>
     </div>
   );
-}
+
 
 export default DispatchDashboard;
