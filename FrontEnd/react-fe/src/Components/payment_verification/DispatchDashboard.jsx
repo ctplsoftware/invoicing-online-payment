@@ -129,16 +129,23 @@ function DispatchDashboard() {
         updated_by: parsedDetails.user.id,
       };
 
-      const response = await api.updateOrderHeaderVerifyStatus(orderheadedata);
-      if (response) {
-        alert("Working good");
-        setVerifyStatus(true);
-        window.location.reload();
-      } else {
-        alert("Failed occurs");
-      }
-    } catch (error) {
-      console.error("Error adding part:", error);
+            const response = await api.updateOrderHeaderVerifyStatus(orderheadedata);
+            if (response) {
+                alert("Working good");
+                setVerifyStatus(true);
+                window.location.reload();
+
+
+            } else {
+                alert("Failed occurs");
+            }
+
+
+        } catch (error) {
+            console.error("Error adding part:", error);
+
+        }
+
     }
   };
 
@@ -631,6 +638,6 @@ function DispatchDashboard() {
       </div>
     </div>
   );
-}
+
 
 export default DispatchDashboard;

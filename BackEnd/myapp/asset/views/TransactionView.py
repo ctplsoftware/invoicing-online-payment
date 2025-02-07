@@ -163,6 +163,7 @@ def update_verified_completed(request):
                     customer_master.save()
 
                 order_header.save()
+                
                 return Response('success')
 
 
