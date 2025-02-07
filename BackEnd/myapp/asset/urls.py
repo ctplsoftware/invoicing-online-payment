@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import UserView, CustomerView ,PartMasterView,InwardTransactionView,permissionscheckView,authenticateView ,AndroidAPIView, usercreationView,AndroidAPIView ,LocationMasterViews,OrderTransactionView, TransactionView
+
+from .views import UserView, CustomerView ,PartMasterView,InwardTransactionView,permissionscheckView,authenticateView ,AndroidAPIView, usercreationView,AndroidAPIView ,LocationMasterViews,OrderTransactionView, TransactionView, ReportViews
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -34,6 +35,7 @@ urlpatterns = [
     #Inward transaction start
     path('create_inwardTransaction',InwardTransactionView.create_inwardTransaction),
     path('fetch_inward_transaction',InwardTransactionView.fetch_inward_transaction),
+    path('get-inward-part-location-details',InwardTransactionView.get_inward_part_location_details),
     path('edit_inward_transaction/<int:id>',InwardTransactionView.edit_inward_transaction),
     path('update_inwardtransaction/<int:id>',InwardTransactionView.update_inwardtransaction),
 
@@ -76,7 +78,13 @@ urlpatterns = [
     path('android/create-order-attachment', AndroidAPIView.create_order_attachment),
     path('android/customer-details',AndroidAPIView.get_card_details),
     path('android/order-counts',AndroidAPIView.get_order_count),
-    path('android/einvoice-pdf', AndroidAPIView.get_einvoice_details)
+    path('android/einvoice-pdf', AndroidAPIView.get_einvoice_details),
+
+
+
+    # Reports
+    path('get-order-list', ReportViews.get_order_list),
+    path('get-einvoice-order-list', ReportViews.get_einvoice_order_list),
 
     
 ]

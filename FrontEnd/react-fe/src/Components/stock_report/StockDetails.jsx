@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { API } from "../../API";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import DataTable from "react-data-table-component";
 
 const StockDetails = () => {
   const { partname } = useParams(); // Get part_name from the URL
+  const location = useLocation();
+  const location_master_id = location.state?.location_master_id;
+  const location_name = location.state?.location_name;
+  const part_name = location.state?.part_name;
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pageSize, setPageSize] = useState(5);
@@ -16,22 +20,17 @@ const StockDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const inwardTransactionFetch = await api.fetch_inward_transaction();
+        if(location_master_id && part_name){
+          const data = {
+            'location_master_id': location_master_id,
+            'part_name': part_name
+          };
 
-        // Filter data for the specific part_name
-        const filteredData = inwardTransactionFetch.filter(
-          (item) => item.part_name.toLowerCase() === partname.toLowerCase()
-        );
+          const inwardTransactionFetch = await api.get_inward_part_location_details(data);
+          setRows(inwardTransactionFetch);
 
-        // Add unique id property for DataGrid
-        const formattedData = filteredData.map((item, index) => ({
-          Sno: index + 1, // Ensure unique ID for DataGrid rows
-          ...item,
-        }));
-
-        console.log("formattedData...", formattedData);
-
-        setRows(formattedData);
+        }
+        
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -43,7 +42,7 @@ const StockDetails = () => {
   }, [partname]);
 
   const columns = [
-    { name: "Sno", selector: (row) => row.Sno, width: "70px" },
+    { name: "Sno", selector: (row, index) => index + 1, width: "70px" },
     { name: "Part Name", selector: (row) => row.part_name, width: "150px" },
     {
       name: "Quantity",
@@ -81,7 +80,7 @@ const StockDetails = () => {
       }}
     >   
         <div style={{'marginBottom': '20px', 'font-size': '20px'}} className="">
-        <span ><b>Details for Part : {decodeURIComponent(partname)}</b></span>
+        <span ><b>Details for Part : {part_name} and Location: {location_name}</b></span>
 
 
         </div>

@@ -1,11 +1,18 @@
 from django.db import models
 from asset.models.PartMasterModel import PartMaster
 from asset.models.CustomerMasterModel import CustomerMaster
+from asset.models.LocationMasterModel import LoactionMaster
 
 
 class OrderHeader(models.Model):
     part_master = models.ForeignKey(PartMaster, on_delete = models.CASCADE)
     customer_master = models.ForeignKey(CustomerMaster, on_delete = models.CASCADE)
+    location_master = models.ForeignKey(LoactionMaster, on_delete = models.CASCADE)
+
+    location_name = models.CharField(max_length = 200, null = True)
+    location_address = models.CharField(max_length = 200, null = True)
+
+
     order_number = models.CharField(max_length = 100, null = True, blank = True)
     payment_type = models.CharField(max_length = 20, null = True, blank = True)
     part_name = models.CharField(max_length = 200, null = True, blank = True)

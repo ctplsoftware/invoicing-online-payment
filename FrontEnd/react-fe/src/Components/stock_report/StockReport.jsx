@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FaEdit } from 'react-icons/fa';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { API } from '../../API';
 import DataTable from 'react-data-table-component';
 
@@ -16,36 +16,37 @@ const StockReport = () => {
     const [loading, setLoading] = useState(true);
 
     const columns = [
-        { name: 'S No', selector: row => row.Sno, width: '70px' },
+        { name: 'S No', selector: (row, index) => index + 1, width: '70px' },
 
+        {
+            name: 'Location',
+            selector: row => (
+              <NavLink 
+                to={`/landingpage/stock-part-details/${row.id}`} 
+                state={{location_master_id: row.locationmaster_id, part_name: row.part_name, location_name: row.locationmaster_id__name}}>
+                {row.locationmaster_id__name}
+              </NavLink>
+            ),
+            flex: 1
+        },
+          
         { 
             name: 'Part Name', 
-            cell: row => (
-                <span 
-                    style={{
-                        color: 'blue',
-                        textDecoration: 'underline',
-                        cursor: 'pointer'
-                    }} 
-                    onClick={() => handleQuantityClick(row.part_name)}
-                >
-                    {row.part_name}
-                </span>
-            ), 
+            cell: row => row.part_name, 
             flex: 1.5 
         },
 
 
 
-        { name: 'Quantity', selector: row => row.inward_quantity, flex: 1 },
+        { name: 'Quantity', selector: row => row.total_inward_quantity, flex: 1 },
         
     ];
 
-        const handleQuantityClick = (partName) => {
-            console.log('Clicked Part Name:', partName);
-            // Navigate to another page or perform an API call with the partName
-            navigate(`/landingpage/stock-part-details/${encodeURIComponent(partName)}`);
-        };
+    const handleQuantityClick = (partName) => {
+        console.log('Clicked Part Name:', partName);
+        // Navigate to another page or perform an API call with the partName
+        navigate(`/landingpage/stock-part-details/${encodeURIComponent(partName)}`);
+    };
 
 
     useEffect(() => {
@@ -53,28 +54,11 @@ const StockReport = () => {
             setLoading(true);
             try {
                 const inwardtransactionfetch = await api.fetch_inward_transaction();
+                setRows(inwardtransactionfetch);
+                console.log(inwardtransactionfetch, 'checkkk');
+                
 
-                const itemMap = inwardtransactionfetch.reduce((acc, item) => {
-                    const normalizedDescription = item.part_name.toLowerCase();
-
-                    if (acc[normalizedDescription]) {
-                        acc[normalizedDescription].inward_quantity += item.inward_quantity;
-                    } else {
-                        acc[normalizedDescription] = {
-                            id: item.id,
-                            part_name: item.part_name,
-                            inward_quantity: item.inward_quantity,
-                        };
-                    }
-                    return acc;
-                }, {});
-
-                const fetchedData = Object.values(itemMap).map((item, index) => ({
-                    Sno: index + 1,
-                    ...item,
-                }));
-
-                setRows(fetchedData);
+               
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
@@ -92,10 +76,10 @@ const StockReport = () => {
     const filteredRows = rows.filter((row) => {
         return (
             row.part_name.toLowerCase().includes(searchText.toLowerCase()) &&
-            (filter ? row.inward_quantity.toLowerCase() === filter : true)
+            (filter ? row.total_inward_quantity.toLowerCase() === filter : true) &&
+            (filter ? row.locationmaster_id__name.toLowerCase() === filter : true)
         );
     });
-
 
 
 

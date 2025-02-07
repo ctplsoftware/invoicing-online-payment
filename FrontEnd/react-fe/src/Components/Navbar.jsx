@@ -165,9 +165,23 @@ const Navbar1 = ({ title }) => {
                     </NavDropdown.Item>
                   </>
                 ) : (
+                  <>
                   <NavDropdown.Item href="/landingpage/stockreport">
                     Stock Report{" "}
                   </NavDropdown.Item>
+
+                  <NavDropdown.Item href="/landingpage/order-reports">
+                  Order Reports{" "}
+                  </NavDropdown.Item>
+
+                  <NavDropdown.Item href="/landingpage/einvoice-reports">
+                  E-Invoice Reports{" "}
+                  </NavDropdown.Item>
+
+
+                  </>
+
+                  
                 )}
               </NavDropdown>
             )

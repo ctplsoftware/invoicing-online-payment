@@ -2,23 +2,19 @@ import React from "react";
 import '../payment_verification/invoice.css'
 import logoImg from '../../Assets/printaxlogo.png';
 import Qrcode from '../../Assets/qrCode.png';
-import { useLocation } from "react-router-dom";
+
 // import QRCode from "qrcode.react";
 
-const Invoice = () => {
-    const location = useLocation();
-    console.log(location.pathname, 'pathname');
-    
-
+const TaxInvoice = () => {
     return (
       <div className="invoice-container" style={{marginTop:'-2%'}}>
         <div className="invoice-wrapper">
           <h2 className="invoice-title">TAX INVOICE</h2>
   
-          <div className="invoice-section" style={{marginLeft:"-30%" }}>
+          <div className="invoice-section" style={{textAlign:'justify' }}>
             <p><strong>IRN:</strong> a3c39dfe5ab841ab3c8889a9ca39de71f9a5251de80cdf02d9-c60a7af3fa76c9</p>
-            <p style={{marginLeft:"-30.5%"}}><strong>Ack No.:</strong> 152420056447231</p>
-            <p style={{marginLeft:"-34.5%"}}><strong>Ack Date:</strong> 6-Dec-24</p>
+            <p ><strong>Ack No.:</strong> 152420056447231</p>
+            <p ><strong>Ack Date:</strong> 6-Dec-24</p>
             
             <div className="qr-code">
             <img src={Qrcode} alt="Company Logo" style={{ height:'140px', marginTop:'-15%',marginLeft:'80%' }} />
@@ -26,25 +22,24 @@ const Invoice = () => {
             </div>
           </div>
   
-          <div className="invoice-header">
+          <div className="invoice-header" style={{marginTop:'-2%',fontSize:'small'}}>
             <div className="seller-buyer-section">
               <div className="seller-details">
-              <img src={logoImg} alt="Company Logo" style={{ fontSize:'12px',height:'42px',marginLeft:'-65%',marginBottom:'-7%' }} />
-                <h3>Printax LLP</h3>
-                <p>New No.11, Old No.6, 1st Main Road, Karpagam Gardens, Adyar, Chennai - 600 020.</p>
-                <p>044-24902473,42054423</p>
-                <p>PAN : AAZFP4517G</p>
-                <p>UDYAM : UDYAM-TN-02-0094436 (Micro)</p>
+              <img src={logoImg} alt="Company Logo" style={{ fontSize:'12px',height:'42px',marginBottom:'-4%' }} />
+                <h3 style={{marginTop:'-3%'}}>Printax LLP</h3>
+                <p>New No.11, Old No.6, 1st Main Road, Karpagam Gardens, Adyar, Chennai - 600 020. 044-24902473,42054423 . PAN : AAZFP4517G. UDYAM : UDYAM-TN-02-0094436 (Micro)</p>
                 <p>GSTIN/UIN: 33AAZFP4517G1ZX</p>
                 <p>Email: printaxllp.chennai@gmail.com</p>
               </div>
               <div className="buyer-details">
-                <h3> <span style={{fontSize:'14px'}}>Buyer (Bill to):</span> CODENTRIX TECHNOLOGIES PRIVATE LIMITED</h3>
+                <h5> <span style={{fontSize:'14px'}}>Buyer (Bill to):</span><strong> CODENTRIX TECHNOLOGIES PRIVATE LIMITED </strong></h5>
+                <span style={{textAlign:'left'}}>
                 <p>6/43, NAVARATHNA GARDENS, 2nd Cross Street, EKKATUTHANGAL, Chennai - 600032</p>
                 <p>GSTIN/UIN: 33AAGCC4141B1ZD</p>
                 <p>State Name : Tamil Nadu, Code : 33</p>
                 <p>Place of Supply : Tamil Nadu
                 </p>
+                </span>
               </div>
             </div>
   
@@ -89,7 +84,7 @@ const Invoice = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                <tr style={{height:'250px'}}>
                   <td>1</td>
                   <td>Magic DS Cloth Tapes 300mm x 20m</td>
                   <td>59069910</td>
@@ -106,13 +101,15 @@ const Invoice = () => {
   
           {/* Additional Summary Table */}
           <div className="invoice-content">
-            <table className="summary-table">
+            <table className="invoice-table">
               <thead>
                 <tr>
                   <th>HSN/SAC</th>
                   <th>Taxable Value</th>
                   <th>CGST</th>
+                  <th>Rate</th>
                   <th>SGST/UTGST</th>
+                  <th>Rate</th>
                   <th>Total Tax Amount</th>
                 </tr>
               </thead>
@@ -121,7 +118,18 @@ const Invoice = () => {
                   <td>59069910</td>
                   <td>₹1,450.00</td>
                   <td>₹87.00</td>
+                  <td>6%</td>
                   <td>₹87.00</td>
+                  <td>6%</td>
+                  <td>₹174.00</td>
+                </tr>
+                <tr style={{fontWeight:'bold'}}>
+                  <td>Total</td>
+                  <td>₹1,450.00</td>
+                  <td>₹87.00</td>
+                  <td></td>
+                  <td>₹87.00</td>
+                  <td></td>
                   <td>₹174.00</td>
                 </tr>
               </tbody>
@@ -145,7 +153,7 @@ const Invoice = () => {
 
     <div className="signature-box" style={{ textAlign: 'center', marginTop: '5%' ,padding:'10px'}}>
     <h5>For <strong> Printax LLP</strong></h5>
-    <p style={{ marginTop: "30%" }}><strong>Authorised Signatory</strong></p>
+    <p style={{ marginTop: "20%" }}><strong>Authorised Signatory</strong></p>
   </div>
   </div>
 
@@ -158,6 +166,6 @@ const Invoice = () => {
     );
 };
   
-  export default Invoice;
+export default TaxInvoice;
   
   

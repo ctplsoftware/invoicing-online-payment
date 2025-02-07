@@ -6,6 +6,8 @@ from ..models.InwardTransactionModel import InwardTransaction
 from ..serializers.InwardTransactionSerializer import InwardTransactionSerializer
 from django.utils import timezone
 from ..models.PartMasterModel import PartMaster
+from django.db.models import Sum
+from django.db import transaction
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -66,9 +68,27 @@ def edit_inward_transaction(request, id):
 @permission_classes([IsAuthenticated])
 def fetch_inward_transaction(request):
         
-        inwardtransaction_data = InwardTransaction.objects.all()
-        serializer = InwardTransactionSerializer(inwardtransaction_data, many=True)
-        return Response(serializer.data)
+        inwardtransaction_data = InwardTransaction.objects.values('part_name', 'locationmaster_id__name', 'locationmaster_id').annotate(total_inward_quantity=Sum('inward_quantity'))
+        return Response(inwardtransaction_data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_inward_part_location_details(request):
+    try:
+        with transaction.atomic():
+            location_master_id = request.query_params.get('location_master_id')
+            part_name = request.query_params.get('part_name')
+            response_data = InwardTransaction.objects.filter(locationmaster_id = location_master_id, part_name = part_name).values('locationmaster_id__name', 'part_name', 'uom', 'comments', 'inward_quantity', 'inward_by', 'inward_date').order_by('-inward_date')
+
+            return Response(response_data)
+
+            
+    
+    except Exception as e:
+        print(e)
+        return Response('error')
+
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])

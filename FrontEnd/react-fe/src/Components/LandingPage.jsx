@@ -25,12 +25,14 @@ import PaymentView from "./payment_verification/PaymentView.jsx";
 import DispatchDashboard from "./payment_verification/DispatchDashboard.jsx";
 import EInvoice from "./payment_verification/EInvoice.jsx";
 import Invoice from "./payment_verification/Invoice.jsx";
+import OrderReport from "./reports/OrderReport.jsx";
+import EInvoiceReport from "./reports/EInvoiceReport.jsx";
 import { LocationSearching } from "@mui/icons-material";
 
 const LandingPage = () => {
 
     const location = useLocation();
-    const excludedPaths = ["/landingpage/invoice-print"];
+    const excludedPaths = ["/landingpage/einvoice-print"];
 
     const routeTitles = {
         '/landingpage': 'Chakravarthy Commercials',
@@ -56,7 +58,8 @@ const LandingPage = () => {
         '/landingpage/payment-view/:order_no': 'Payment View',
         '/landingpage/dispatch/': 'Order Transaction - Verify/Dispatch/Generate',
         '/landingpage/generate-einvoice/': 'Generate E-Invoice',
-        '/landingpage/einvoice-print': 'Invoice Print',
+        '/landingpage/order-reports': 'Order Reports',
+        '/landingpage/einvoice-reports': 'E-Invoice Reports',
     };
 
     const getRouteTitle = (pathname) => {
@@ -107,6 +110,9 @@ const LandingPage = () => {
                     <Route path="/dispatch/:order_header_id" element={<DispatchDashboard />} />
                     <Route path="/generate-einvoice/:id" element={<EInvoice />} />
                     <Route path="/einvoice-print" element={<Invoice />} />
+                    <Route path="/order-reports" element={<OrderReport />} />
+                    <Route path="/einvoice-reports" element={<EInvoiceReport />} />
+
                     
                 </Routes>
             </div>
