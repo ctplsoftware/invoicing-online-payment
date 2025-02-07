@@ -49,7 +49,7 @@ const CustomerMaster = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  };
+  };  
 
   const validateForm = () => {
     const newErrors = {};
@@ -76,7 +76,7 @@ const CustomerMaster = () => {
 
     console.log("innnn");
 
-    if (Object.keys(validationErrors).length > 0) {
+    if (Object.keys(validationErrors).length > 0) { 
       setErrors(validationErrors);
 
       Object.values(validationErrors).forEach((erroMessage) => {
@@ -112,7 +112,7 @@ const CustomerMaster = () => {
   };
 
   return (
-    <>
+    <div style={{maxHeight: "115vh", overflow: "auto"}}>
       {permissions.includes("asset.view_sampleform") ? (
         <div className="empty-state">
           <h3 style={{ marginTop: "15%" }}>No access to this page</h3>
@@ -120,28 +120,8 @@ const CustomerMaster = () => {
         </div>
       ) : (
         <>
-          <Container fluid>
-            <Form onSubmit={handleSubmit}>
-              <div>
-                <button
-                  onClick={handleSubmit}
-                  style={{
-                    padding: "10px 20px",
-                    backgroundColor: "#1976d2",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    marginTop: "20px",
-                    marginRight: "200px"
-                  }}
-                >
-                  Save
-                </button>
-
-                
-              </div>
-
+        <Container fluid style={{ backgroundColor: "#f5f5f5", padding: "30px", borderRadius: "8px" }}>
+          <Form onSubmit={handleSubmit}>
               <Row>
                 <Col md={6} style={{ marginTop: "20px" }}>
                   <Form.Label>Company Name</Form.Label>
@@ -153,6 +133,7 @@ const CustomerMaster = () => {
                     required
                     className="input-border"
                     autoFocus
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
 
@@ -165,6 +146,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
               </Row>
@@ -203,6 +185,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
 
@@ -215,6 +198,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
               </Row>
@@ -240,6 +224,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
 
@@ -252,6 +237,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
 
@@ -264,6 +250,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
               </Row>
@@ -289,6 +276,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
 
@@ -301,6 +289,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
 
@@ -313,6 +302,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
               </Row>
@@ -338,6 +328,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
 
@@ -350,6 +341,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
 
@@ -362,6 +354,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
               </Row>
@@ -387,6 +380,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
 
@@ -399,6 +393,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
 
@@ -411,14 +406,48 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
               </Row>
+              <div style={{marginRight: "180px"}}>
+              <button
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "rgb(73 81 88)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "20px",
+                    cursor: "pointer",
+                    marginTop: "20px",
+                    marginRight: "10px",
+                  }}
+                >
+                  Back
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "#1976d2",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "20px",
+                    cursor: "pointer",
+                    marginTop: "20px",
+                  }}
+                >
+                  Save
+                </button> 
+              </div>
             </Form>
           </Container>
         </>
+        
       )}
-    </>
+    </div>
+
+  
   );
 };
 

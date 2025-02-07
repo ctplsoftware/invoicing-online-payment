@@ -130,7 +130,7 @@ const EditCustomerForm = ({}) => {
 
 
   return (
-    <>
+    <div style={{maxHeight: "115vh", overflow: "auto"}}>
       {permissions.includes("asset.view_sampleform") ? (
         <div className="empty-state">
           <h3 style={{ marginTop: "15%" }}>No access to this page</h3>
@@ -138,26 +138,8 @@ const EditCustomerForm = ({}) => {
         </div>
       ) : (
         <>
-          <Container fluid>
-            <Form onSubmit={handleSubmit}>
-              <div>
-              <button
-                  onClick={handleSubmit}
-                  style={{
-                    padding: "10px 20px",
-                    backgroundColor: "#1976d2",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    marginTop: "20px",
-                    marginRight: "200px"
-                  }}
-                >
-                  Save
-                </button>
-              </div>
-
+        <Container fluid style={{ backgroundColor: "#f5f5f5", padding: "30px", borderRadius: "8px" }}>
+        <Form onSubmit={handleSubmit}>
               <Row>
                 <Col md={6} style={{ marginTop: "20px" }}>
                   <Form.Label>Company Name</Form.Label>
@@ -169,6 +151,7 @@ const EditCustomerForm = ({}) => {
                     required
                     className="input-border"
                     autoFocus
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
 
@@ -181,6 +164,7 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
               </Row>
@@ -219,6 +203,7 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
                   />
                 </Col>
 
@@ -231,6 +216,8 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
+
                   />
                 </Col>
               </Row>
@@ -256,6 +243,8 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
+
                   />
                 </Col>
 
@@ -268,6 +257,8 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
+
                   />
                 </Col>
 
@@ -280,6 +271,8 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
+
                   />
                 </Col>
               </Row>
@@ -305,6 +298,8 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
+
                   />
                 </Col>
 
@@ -317,6 +312,8 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
+
                   />
                 </Col>
 
@@ -329,6 +326,8 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
+
                   />
                 </Col>
               </Row>
@@ -354,6 +353,8 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
+
                   />
                 </Col>
 
@@ -366,6 +367,8 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
+
                   />
                 </Col>
 
@@ -378,6 +381,8 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
+
                   />
                 </Col>
               </Row>
@@ -403,6 +408,8 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
+
                   />
                 </Col>
 
@@ -415,6 +422,8 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
+
                   />
                 </Col>
 
@@ -427,14 +436,47 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
+                    style={{borderRadius: "30px"}}
+
                   />
                 </Col>
               </Row>
+              <div style={{marginRight: "80px"}}>
+              <button
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "rgb(73 81 88)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "20px",
+                    cursor: "pointer",
+                    marginTop: "20px",
+                    marginRight: "10px",
+                  }}
+                >
+                  Back
+                </button>
+              <button
+                  onClick={handleSubmit}
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "#1976d2",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "20px",
+                    cursor: "pointer",
+                    marginTop: "20px",
+                    marginRight: "200px"
+                  }}
+                >
+                  Update
+                </button>
+              </div>
             </Form>
           </Container>
         </>
       )}
-    </>
+    </div>
   );
 };
 
