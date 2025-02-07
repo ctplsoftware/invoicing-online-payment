@@ -110,6 +110,12 @@ class API {
     return response.data;
   }
 
+  async get_inward_transaction() {
+    const response = await apiClient.get(`${BaseURL}/get-inward-transaction`);
+
+    return response.data;
+  }
+
   async get_inward_part_location_details(data) {
     try {
       const response = await apiClient.get(

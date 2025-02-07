@@ -35,6 +35,7 @@ urlpatterns = [
     #Inward transaction start
     path('create_inwardTransaction',InwardTransactionView.create_inwardTransaction),
     path('fetch_inward_transaction',InwardTransactionView.fetch_inward_transaction),
+    path('get-inward-transaction',InwardTransactionView.get_inward_transaction),
     path('get-inward-part-location-details',InwardTransactionView.get_inward_part_location_details),
     path('edit_inward_transaction/<int:id>',InwardTransactionView.edit_inward_transaction),
     path('update_inwardtransaction/<int:id>',InwardTransactionView.update_inwardtransaction),

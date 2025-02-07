@@ -43,7 +43,7 @@ function InwardTransactionList() {
         const fetchData = async () => {
             setLoading(true); // Start loading
             try {
-                const inwardtransactionfecth = await api.fetch_inward_transaction();
+                const inwardtransactionfecth = await api.get_inward_transaction();
 
                 const fetchedata = inwardtransactionfecth.map((item, index) => ({
                     id: item.id,

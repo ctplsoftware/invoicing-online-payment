@@ -69,8 +69,23 @@ def edit_inward_transaction(request, id):
 def fetch_inward_transaction(request):
         
         inwardtransaction_data = InwardTransaction.objects.values('part_name', 'locationmaster_id__name', 'locationmaster_id').annotate(total_inward_quantity=Sum('inward_quantity'))
+        print(inwardtransaction_data)
         return Response(inwardtransaction_data)
 
+
+@api_view(['GET'])
+def get_inward_transaction(request):
+    try:
+        with transaction.atomic():
+            inwardtransaction_data = InwardTransaction.objects.all().order_by('-id')
+            serializer = InwardTransactionSerializer(inwardtransaction_data, many = True)
+
+            return Response(serializer.data)
+            
+    
+    except Exception as e:
+        print(e)
+        return Response('error')
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
