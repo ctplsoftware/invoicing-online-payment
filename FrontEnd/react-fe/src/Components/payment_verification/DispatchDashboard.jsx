@@ -52,22 +52,14 @@ function DispatchDashboard() {
     const fetchData = async () => {
       try {
         const ordermasterfetch = await api.fetch_dispatchById(order_header_id);
+        console.log(ordermasterfetch?.order_header?.invoice_generated_status === "yes", 'checkkkk');
+        
         setFormData(ordermasterfetch);
-        setDispatchStatus(
-          ordermasterfetch?.order_header?.dispatched_status === "yes"
-        );
-        setVerifyStatus(
-          ordermasterfetch?.order_header?.verified_status === "yes"
-        );
-        setGenerateStatus(
-          ordermasterfetch?.order_header?.invoice_generated_status === "yes"
-        );
-        setIsAttachVerifying(
-          ordermasterfetch?.order_header?.attached_status === "no"
-        );
-        const balance_limit_calculate =
-          ordermasterfetch?.customer_data?.credit_limit -
-          ordermasterfetch?.customer_data?.used_limit;
+        setDispatchStatus(ordermasterfetch?.order_header?.dispatched_status === "yes");
+        setVerifyStatus(ordermasterfetch?.order_header?.verified_status === "yes");
+        setGenerateStatus(ordermasterfetch?.order_header?.invoice_generated_status === "yes");
+        setIsAttachVerifying(ordermasterfetch?.order_header?.attached_status === "no");
+        const balance_limit_calculate = ordermasterfetch?.customer_data?.credit_limit - ordermasterfetch?.customer_data?.used_limit;
         setBalanceLimit(balance_limit_calculate);
         const reaming_balance =
           ordermasterfetch?.order_header?.total_amount -
@@ -82,7 +74,7 @@ function DispatchDashboard() {
     };
 
     fetchData();
-  }, [order_header_id]);
+  }, []);
 
   function formatToLocalTime(dateString) {
     return moment(dateString).format("LLLL");
@@ -137,16 +129,23 @@ function DispatchDashboard() {
         updated_by: parsedDetails.user.id,
       };
 
-      const response = await api.updateOrderHeaderVerifyStatus(orderheadedata);
-      if (response) {
-        alert("Working good");
-        setVerifyStatus(true);
-        window.location.reload();
-      } else {
-        alert("Failed occurs");
-      }
-    } catch (error) {
-      console.error("Error adding part:", error);
+            const response = await api.updateOrderHeaderVerifyStatus(orderheadedata);
+            if (response) {
+                alert("Working good");
+                setVerifyStatus(true);
+                window.location.reload();
+
+
+            } else {
+                alert("Failed occurs");
+            }
+
+
+        } catch (error) {
+            console.error("Error adding part:", error);
+
+        }
+
     }
   };
 
@@ -639,6 +638,6 @@ function DispatchDashboard() {
       </div>
     </div>
   );
-}
+
 
 export default DispatchDashboard;

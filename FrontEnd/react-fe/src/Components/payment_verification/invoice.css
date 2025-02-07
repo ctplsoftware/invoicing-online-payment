@@ -1,3 +1,5 @@
+/* Make the entire page scrollable */
+
   /* Styling for the QR code */
   .qr-code {
     margin-top: 20px;
@@ -33,29 +35,33 @@
   width: 70%;
   margin: auto;
   font-family: Arial, sans-serif;
-  border: 1px solid #000;
   padding: 20px;
   background: #fff;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  max-height: 100vh ;
+  max-height: 120vh ;
   overflow-y: auto;
 }
 
 /* Media query for printing on A4 size */
 @media print {
   .invoice-container {
-      width: 150%; /* Ensure it uses full width on paper */
-      max-width: 290mm; /* A4 width in mm */
-      height: 200vh;
+      width: 130%; /* Ensure it uses full width on paper */
+      max-width: 250mm; /* A4 width in mm */
+      max-height: 120vh ;
       box-shadow: none; /* Remove shadow for clean print */
-      padding: 10mm; /* Adjust padding for printing */
-      margin: 0; /* Remove margin to fit on page */
+      padding: 2mm; /* Adjust padding for printing */
+  
       overflow: visible; /* Ensure it fits properly */
+    transform: scale(0.9); 
+    /* margin:scale(0.9); */
+    margin-top: -9%;
+
   }
   
   body {
-      margin: 0; /* Remove body margin */
-      padding: 0; /* Remove padding */
+    /* transform: scale(0.9); Set scale to 90% */
+    margin-top: -8%; /* Remove body margin */
+    padding: 0; /* Remove padding */
+    max-height: 100vh ;
   }
   
   /* Remove non-printable elements */
@@ -72,22 +78,33 @@
     margin-bottom: 20px;
     font-weight: bold;
   }
-  
   .invoice-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
+  margin-top: -2%;
+  font-size: small;
+  padding: 10px; /* Reduce padding */
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
   
   .seller-details, .buyer-details {
     max-width: unset;
     padding: 10px;
+    text-align: justify;
     border: 1px solid #000;
   }
   .invoice-info{
     width: 45%;
     padding: 10px;
+    text-align: justify;
     border: 1px solid #000;
+  }
+  .invoice-info p {
+    margin: 2px 0; /* Reduce space between paragraphs */
+  }
+  
+  .invoice-info hr {
+    margin: 4px 0; /* Reduce space around hr */
   }
   .invoice-table {
     width: 100%;
@@ -97,8 +114,14 @@
   
   .invoice-table th, .invoice-table td {
     border: 1px solid #000;
-    padding: 10px;
+    /* padding: 10px; */
+    padding: 12px 15px;
+    line-height: 1.6;
     text-align: left;
+  }
+
+  .invoice-table td {
+    height: 40px; /* Increase row height */
   }
   
   .invoice-summary {

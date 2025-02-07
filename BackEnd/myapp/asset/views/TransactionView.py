@@ -24,7 +24,7 @@ def get_order_details_all(request):
         orderheader_data = OrderHeader.objects.all().order_by('-id')
         serializer = OrderheaderSerializer(orderheader_data, many=True)
         return Response(serializer.data)
-    
+
 
 @api_view(['GET'])
 def get_order_details(request):
@@ -61,6 +61,28 @@ def get_order_details(request):
             else:
                 return Response('Order not found.')
             
+    
+    except Exception as e:
+        print(e)
+        return Response('error')
+
+
+@api_view(['PUT'])
+def update_dispatch_location(request):
+    try:
+        with transaction.atomic():
+
+            order_header = OrderHeader.objects.filter(id = request.data.get('order_header_id')).first()
+
+            if order_header:
+                order_header.location_master_id = request.data.get('location_master_id')
+                order_header.location_name = request.data.get('location_name')
+                order_header.location_address = request.data.get('location_address')
+
+                order_header.save()
+
+            else:
+                return Response('No order found.')
     
     except Exception as e:
         print(e)
@@ -141,6 +163,7 @@ def update_verified_completed(request):
                     customer_master.save()
 
                 order_header.save()
+                
                 return Response('success')
 
 
@@ -641,6 +664,60 @@ def cancel_e_invoice(request):
                     return Response('error')
 
 
+    except Exception as e:
+        print(e)
+        return Response('error')
+    
+@api_view(['PUT'])
+def cancel_order(request):
+
+    try:
+        with transaction.atomic():
+            order_header = OrderHeader.objects.filter(id = request.data.get('order_header_id')).first()
+            
+
+
+            if order_header:
+
+                inward_transaction = InwardTransaction.objects.filter(locationmaster_id = order_header.location_master_id).first()
+                customer_master = CustomerMaster.objects.filter(id = order_header.customer_master_id).first()
+                part_master = PartMaster.objects.filter(id = order_header.part_master_id).first()
+
+                order_header.completed_status = 'cancelled'
+
+                e_invoice_header = EInvoiceHeader.objects.filter(order_header_id = order_header.id).first()
+
+                if e_invoice_header:
+
+                    e_invoice_header.einvoice_status = 'cancelled'
+                    e_invoice_transaction = EInvoiceTransaction.objects.filter(e_invoice_header_id = e_invoice_header.id).first()
+                    e_invoice_transaction.status = 'cancelled'
+
+                    e_invoice_header.save()
+                    e_invoice_transaction.save()
+
+                    response = cancel_e_invoice(request)
+
+                    if response == 'success':
+                        print('done')
+
+                
+
+                part_master.allocated_stock = round(float(part_master.allocated_stock), 2) - round(float(order_header.quantity), 2)
+                customer_master.used_limit = round(float(customer_master.used_limit), 2) -  round(float(order_header.total_amount), 2) 
+                inward_transaction.inward_quantity = round(float(inward_transaction.inward_quantity), 2) + round(float(order_header.quantity), 2)
+
+
+                
+                order_header.save()
+                inward_transaction.save()
+                customer_master.save()
+                part_master.save()
+
+
+            else:
+                return Response('No order found.')
+    
     except Exception as e:
         print(e)
         return Response('error')
