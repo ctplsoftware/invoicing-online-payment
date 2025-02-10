@@ -59,6 +59,8 @@ def get_order_details(request):
                     'location_master': location_master
                 }
 
+                print(response_data)
+
                 return Response(response_data)
 
             else:

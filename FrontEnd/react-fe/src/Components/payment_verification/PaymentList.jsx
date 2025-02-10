@@ -7,6 +7,7 @@ import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CheckCircle, ReceiptLong } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
+import { NavLink } from 'react-router-dom';
 
 
 const PaymentList = () => {
@@ -22,27 +23,28 @@ const PaymentList = () => {
 
     const columns = [
         { name: 'S No', selector: row => row.Sno, },
-        { 
-            name: 'Order Number', 
+        {
+            name: 'Order Number',
             cell: row => (
-                <span 
+                <NavLink
+                    to={`/landingpage/dispatch/${row.id}`} // ✅ Use curly braces {} with a template literal
+                    state={{ order_header_id: row.id }} // ✅ Pass order_header_id via state
                     style={{
                         color: 'blue',
                         textDecoration: 'underline',
                         cursor: 'pointer',
-                        fontSize:'17px'
-                    }} 
-                    onClick={() => handleQuantityClick(row.id)}
+                        fontSize: '17px'
+                    }}
                 >
                     {row.order_number}
-                </span>
-            ), 
-            
+                </NavLink>
+
+            ),
         },
-        { name: 'Customer Name', selector: row => row.customer_name,  },
-        { name: 'Payment Type', selector: row => row.payment_type,  },
-        { name: 'Purchase Qty', selector: row => row.quantity,  },
-        { name: 'Amount', selector: row => row.total_amount,  },
+        { name: 'Customer Name', selector: row => row.customer_name, },
+        { name: 'Payment Type', selector: row => row.payment_type, },
+        { name: 'Purchase Qty', selector: row => row.quantity, },
+        { name: 'Amount', selector: row => row.total_amount, },
 
     ];
 
@@ -56,17 +58,17 @@ const PaymentList = () => {
                 const ordermasterfetch = await api.fetch_ordertransactiondata();
                 const partmasterfetch = await api.get_part_master();
 
-                console.log("ordermasterfetch...",ordermasterfetch);
-                
+                console.log("ordermasterfetch...", ordermasterfetch);
+
                 // Create the fetchedData array by mapping over the ordermasterfetch array
                 const fetchedData = ordermasterfetch.map((item, index) => {
 
-                    
+
                     // Find the part from partmasterfetch based on part_id
                     const part = partmasterfetch.find(part => part.id === item.part);
 
                     console.log("part", part); // Debugging the found part
-                    
+
                     return {
                         id: item.id,
                         Sno: index + 1,
@@ -75,12 +77,12 @@ const PaymentList = () => {
                         quantity: item.quantity,
                         total_amount: item.total_amount,
                         order_number: item.order_number,
-                        payment_type:item.payment_type
+                        payment_type: item.payment_type
                     };
                 });
 
-                console.log("fetchedData...",fetchedData);
-                
+                console.log("fetchedData...", fetchedData);
+
 
                 // Set the fetched data into the state
                 setRows(fetchedData);
@@ -101,7 +103,7 @@ const PaymentList = () => {
     const filteredRows = rows.filter((row) => {
         return filter ? row.status.toLowerCase() === filter.toLowerCase() : true;
     });
-    
+
 
     const handleEditClick = (row) => {
         //  navigate(`/landingpage/partmaster-edit/${row.id}`);
@@ -112,7 +114,7 @@ const PaymentList = () => {
     return (
 
         <div style={{ width: '51.1%', margin: '40px auto', fontFamily: 'Arial, sans-serif' }}>
-          
+
 
             {/* DataTable */}
             <DataTable
