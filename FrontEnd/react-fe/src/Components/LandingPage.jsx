@@ -31,6 +31,7 @@ import { LocationSearching } from "@mui/icons-material";
 
 const LandingPage = () => {
 
+    
     const location = useLocation();
     const excludedPaths = ["/landingpage/einvoice-print"];
 
@@ -85,7 +86,7 @@ const LandingPage = () => {
             )}
 
             
-            <div className="components">
+            <div className="components" style={{maxHeight: "115vh", overflow: "auto"}}>
                 <Routes>
                     <Route path='/customermastercreate' element={<CustomerMaster />} />
                     <Route path='/customermasterdashboard' element={<CustomerMasterdashboard />} />

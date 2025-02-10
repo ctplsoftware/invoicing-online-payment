@@ -8,6 +8,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 
 const PartMasterEdit = () => {
     const api = new API();
@@ -76,7 +77,7 @@ const PartMasterEdit = () => {
     };
 
     return (
-        <>
+      <>
         {permissions.includes("asset.view_sampleform") ? (
           <div className="empty-state">
             <h3 style={{ marginTop: "15%" }}>No access to this page</h3>
@@ -84,10 +85,20 @@ const PartMasterEdit = () => {
           </div>
         ) : (
           <>
-            <Container fluid>
+          <Container
+                fluid
+                style={{
+                  backgroundColor: "#f5f5f5",
+                  padding: "30px",
+                  borderRadius: "22px",
+                  maxWidth: "90%",
+                  marginTop: "80px",
+                  boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
+                }}
+              >
               <Form>
                 <Row>
-                  <Col md={4} style={{ marginTop: "20px" }}>
+                  <Col md={4}>
                     <Form.Label>Part Name</Form.Label>
                     <Form.Control
                       type="text"
@@ -96,10 +107,11 @@ const PartMasterEdit = () => {
                       onChange={handleChange}
                       className="input-border"
                       required
+                      style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
                     />
                   </Col>
   
-                  <Col md={4} style={{ marginTop: "20px" }}>
+                  <Col md={4}>
                     <Form.Label>Unit Price</Form.Label>
                     <Form.Control
                       type="text"
@@ -108,10 +120,11 @@ const PartMasterEdit = () => {
                       onChange={handleChange}
                       className="input-border"
                       required
+                      style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
                     />
                   </Col>
   
-                  <Col md={4} style={{ marginTop: "20px" }}>
+                  <Col md={3}>
                     <Form.Label>UOM (Unit of Measure)</Form.Label>
                     <Form.Control
                       type="text"
@@ -120,12 +133,13 @@ const PartMasterEdit = () => {
                       onChange={handleChange}
                       className="input-border"
                       required
+                      style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
                     />
                   </Col>
                 </Row>
   
-                <Row>
-                  <Col md={4} style={{ marginTop: "20px" }}>
+                <Row className="align-items-end mt-3">
+                  <Col md={4}>
                     <Form.Label>HSN Code</Form.Label>
                     <Form.Control
                       type="text"
@@ -134,29 +148,42 @@ const PartMasterEdit = () => {
                       onChange={handleChange}
                       className="input-border"
                       required
+                      style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
                     />
                   </Col>
+                  
+                  <Col md={2} className="d-flex justify-content-start">
+                    <Button
+                        onClick={handleSubmit}
+                        style={{
+                          padding: "10px 20px",
+                          backgroundColor: "#1976d2",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "8px",
+                          cursor: "pointer",
+                          minWidth: "120px",
+                        }}
+                      >
+                        Update
+                    </Button>
+                  </Col>
+                  <Col md={1} className="d-flex justify-content-start">
+                    <Button
+                        style={{
+                          padding: "10px 20px",
+                          backgroundColor: "rgb(73 81 88)",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "8px",
+                          cursor: "pointer",
+                          minWidth: "120px",
+                        }}
+                      >
+                        Back
+                    </Button>
+                  </Col>
                 </Row>
-  
-                <div>
-                <button
-                  onClick={handleSubmit}
-                  style={{
-                    padding: "10px 20px",
-                    backgroundColor: "#1976d2",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    marginTop: "20px",
-                    marginRight: "200px"
-                  }}
-                >
-                  Save
-                </button>
-
-                
-              </div>
               </Form>
             </Container>
           </>

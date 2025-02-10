@@ -90,7 +90,7 @@ const CustomerMasterdashboard = () => {
   );
 
   return (
-    <div style={{maxHeight: "115vh", overflow: "auto", width: "91%", marginLeft: "50px", marginTop: "20px" }}>
+    <div style={{width: "91%", marginLeft: "50px", marginTop: "20px" }}>
       {/* Button Section */}
       <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px"}}>
         <button

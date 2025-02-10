@@ -121,7 +121,7 @@ const CustomerMaster = () => {
       ) : (
         <>
         <Container fluid style={{ backgroundColor: "#f5f5f5", padding: "30px", borderRadius: "8px" }}>
-          <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit}>
               <Row>
                 <Col md={6} style={{ marginTop: "20px" }}>
                   <Form.Label>Company Name</Form.Label>

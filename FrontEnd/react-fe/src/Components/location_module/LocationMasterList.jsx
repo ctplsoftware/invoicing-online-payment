@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { API } from "../../API";
 import DataTable from "react-data-table-component";
@@ -16,8 +15,16 @@ function LocationMasterList() {
 
   const columns = [
     { name: "S No", selector: (row) => row.Sno, width: "70px" },
-    { name: "Name", selector: (row) => row.name, flex: 1 },
-    {
+    { 
+      name: "Name",
+      selector: (row) => (<a href="#" onClick={(e) => { e.preventDefault(); handleEditClick(row);
+            }} 
+            style={{ textDecoration: "none", color: "#007bff", cursor: "pointer" }}
+        >
+            {row.name}
+        </a>
+    ),       flex: 1 
+    },    {
       name: "Location Address",
       selector: (row) => row.location_address,
       flex: 1.5,
@@ -49,17 +56,6 @@ function LocationMasterList() {
             })
           : "No update",
       width: "180px",
-    },
-    {
-      name: "Actions",
-      selector: (row) => row.id,
-      cell: (row) => (
-        <FaEdit
-          onClick={() => handleEditClick(row)}
-          style={{ height: "20px", width: "50px", cursor: "pointer" }}
-        />
-      ),
-      width: "80px",
     },
   ];
 
@@ -106,44 +102,54 @@ function LocationMasterList() {
   };
 
   return (
-    <div style={{ width: "91%", marginLeft: "63px", marginTop: "25px" }}>
+    <div style={{ width: "91%", marginLeft: "50px", marginTop: "20px" }}>
       {/* Button to create new Part */}
-      <button
-        onClick={() => navigate("/landingpage/locationmastercreate")}
-        style={{
-          padding: "10px 20px",
-          backgroundColor: "#1976d2",
-          color: "#fff",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-      >
-        Create
-      </button>
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px"}}>
+        <button
+          onClick={() => navigate("/landingpage/locationmastercreate")}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: "#1976d2",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            marginRight: "100px",
+            fontWeight: "bold", 
+          }}
+        >
+          Create
+        </button>
+      </div>
 
       {/* Search and Filter */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <div>
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchText}
-            onChange={handleSearchChange}
-            style={{ width: "auto", marginBottom: 10 }}
-          />
-        </div>
-        <div>
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            style={{ marginBottom: 10 }}
-          >
-            <option value="">All</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
-        </div>
+      <div style={{ display: "flex", gap: "10px",  marginBottom: "15px" }}>
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchText}
+          onChange={handleSearchChange}
+          style={{
+            padding: "8px 12px",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            width: "250px",
+          }}
+        />
+        <select
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          style={{
+            padding: "8px 12px",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            width: "150px",
+          }}
+        >
+          <option value="">All</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
       </div>
 
       {/* DataTable for displaying rows */}
@@ -195,7 +201,7 @@ function LocationMasterList() {
             style: {
               fontSize: "12px",
               padding: "10px",
-              justifyContent: "flex-end", // Align pagination to the left
+              justifyContent: "flex-start", // Align pagination to the left
             },
           },
         }}

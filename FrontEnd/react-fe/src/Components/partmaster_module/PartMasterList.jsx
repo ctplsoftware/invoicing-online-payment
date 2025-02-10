@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { API } from "../../API";
 import DataTable from "react-data-table-component";
@@ -15,15 +14,21 @@ function PartMasterList() {
   const navigate = useNavigate();
 
   const columns = [
-    { name: "S No", selector: (row) => row.Sno, width: "70px" },
-    { name: "Part Name", selector: (row) => row.part_name, flex: 1 },
-    { name: "Unit Price", selector: (row) => row.unit_price, flex: 1.5 },
+    { name: "S No", selector: (row) => row.Sno, width: "auto" },
+    { name: "Part Name",
+      selector: (row) =>(<a href="#" onClick={(e) => { e.preventDefault(); handleEditClick(row);
+              }} 
+              style={{ textDecoration: "none", color: "#007bff", cursor: "pointer" }}>
+              {row.part_name}
+              </a>), width: "auto"
+    },
+    { name: "Unit Price", selector: (row) => row.unit_price, width: "auto" },
     {
       name: "UOM (Unit of Measure)",
       selector: (row) => row.uom,
-      width: "120px",
+      width: "auto",
     },
-    { name: "Status", selector: (row) => row.status, width: "110px" },
+    { name: "Status", selector: (row) => row.status, width: "auto" },
 
     {
       name: "Created At",
@@ -36,7 +41,7 @@ function PartMasterList() {
         });
         return formattedDate;
       },
-      width: "180px",
+      width: "auto",
     },
     {
       name: "Updated At",
@@ -49,22 +54,7 @@ function PartMasterList() {
               timeZone: "Asia/Kolkata",
             })
           : "No update",
-      width: "180px",
-    },
-    {
-      name: "Actions",
-      cell: (row) => (
-        <FaEdit
-          onClick={() => handleEditClick(row)}
-          style={{
-            height: "20px",
-            width: "80px",
-            cursor: "pointer",
-            color: "#1976d2",
-          }}
-        />
-      ),
-      width: "130px",
+      width: "auto",
     },
   ];
 
@@ -110,15 +100,9 @@ function PartMasterList() {
   };
 
   return (
-    <div
-      style={{
-        width: "90%",
-        margin: "20px auto",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
+      <div style={{width: "91%", marginLeft: "50px", marginTop: "20px" }}>
       {/* Create Button */}
-      <div style={{ justifyContent: "flex-end", marginBottom: "15px" }}>
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px"}}>
         <button
           onClick={() => navigate("/landingpage/partmaster-form")}
           style={{
@@ -128,6 +112,8 @@ function PartMasterList() {
             border: "none",
             borderRadius: "4px",
             cursor: "pointer",
+            marginRight: "100px",
+            fontWeight: "bold", 
           }}
         >
           Create   
@@ -135,7 +121,7 @@ function PartMasterList() {
       </div>
 
       {/* Search and Filter */}
-      <div style={{ display: "flex", gap: "10px", marginBottom: "15px" }}>
+      <div style={{ display: "flex", gap: "10px",  marginBottom: "15px" }}>
         <input
           type="text"
           placeholder="Search..."
@@ -212,12 +198,12 @@ function PartMasterList() {
             style: {
               fontSize: "12px",
               padding: "10px",
-              justifyContent: "flex-end", // Align pagination to the left
+              justifyContent: "flex-start", // Align pagination to the left
             },
           },
         }}
       />
-    </div>
+      </div>
   );
 }
 

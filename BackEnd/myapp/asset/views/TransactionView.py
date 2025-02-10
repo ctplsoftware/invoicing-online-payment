@@ -47,13 +47,15 @@ def get_order_details(request):
 
                 # Serialize the related transactions
                 order_transaction_data = OrderTransactionSerializer(order_header.transaction.all(), many=True).data
-                 
+                location_master = LoactionMaster.objects.filter(status = 'active').values('id', 'name', 'location_address', 'status')
+
                 customer_data_serial = CustomerSerializer(customer_data).data
                 response_data = {
                     'order_header': order_header_data,
                     'order_attachment_images': order_attachment_images_data,
                     'order_transaction': order_transaction_data,
-                    'customer_data': customer_data_serial
+                    'customer_data': customer_data_serial,
+                    'location_master': location_master
                 }
 
                 return Response(response_data)
