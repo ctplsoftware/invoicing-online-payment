@@ -22,7 +22,7 @@ import LocationMasterEdit from "./location_module/LocationMasterEdit.jsx";
 import CustomerDashboard from "./customer_module/CustomerDashboard.jsx";
 import PaymentList from "./payment_verification/PaymentList.jsx";
 import PaymentView from "./payment_verification/PaymentView.jsx";
-// import DispatchDashboard from "./payment_verification/DispatchDashboard.jsx";
+import DispatchDashboard from "./payment_verification/DispatchDashboard.jsx";
 import EInvoice from "./payment_verification/EInvoice.jsx";
 import Invoice from "./payment_verification/Invoice.jsx";
 import OrderReport from "./reports/OrderReport.jsx";
@@ -108,6 +108,7 @@ const LandingPage = () => {
                     <Route path="/locationmasterlist" element={<LocationMasterList />} />
                     <Route path="/locationmasteredit/:id" element={<LocationMasterEdit />} />
                     <Route path="/customerdashboard" element={<CustomerDashboard />} />
+                    <Route path="/dispatch/:id" element={<DispatchDashboard />} />
                     <Route path="/payment-list" element={<PaymentList />} />
                     <Route path="/einvoice-list" element={<EInvoiceList />} />
                     <Route path="/payment-view/:order_no" element={<PaymentView />} />

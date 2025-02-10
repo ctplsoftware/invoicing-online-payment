@@ -24,20 +24,23 @@ import {
 import { display, styled } from "@mui/system";
 import { API } from "../../API.js";
 import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import moment from "moment";
 import { BaseURL } from "../../utils.js";
-import cancelEInvoiceAlert from "../../alert.js";
+import { cancelEInvoiceAlert } from "../../alert.js";
 
 function DispatchDashboard() {
   //const [selectedImage, setSelectedImage] = useState(vickyimg);
 
   const api = new API();
   const navigate = useNavigate();
-  const { order_header_id } = useParams();
+  const location = useLocation();
+  const order_header_id = location.state?.order_header_id;
 
-  
-  
+
+
+
+
   const [formData, setFormData] = useState({});
   const [dispatchStatus, setDispatchStatus] = useState(false);
   const [verifyStatus, setVerifyStatus] = useState(false);
@@ -55,7 +58,7 @@ function DispatchDashboard() {
       try {
         const ordermasterfetch = await api.fetch_dispatchById(order_header_id);
         console.log(ordermasterfetch);
-        
+
         setFormData(ordermasterfetch);
         setDispatchStatus(ordermasterfetch?.order_header?.dispatched_status === "yes");
         setVerifyStatus(ordermasterfetch?.order_header?.verified_status === "yes");
@@ -63,9 +66,9 @@ function DispatchDashboard() {
         setGenerateStatus(ordermasterfetch?.order_header?.invoice_generated_status === "yes");
         setIsAttachVerifying(ordermasterfetch?.order_header?.attached_status === "no");
         const balance_limit_calculate = ordermasterfetch?.customer_data?.credit_limit - ordermasterfetch?.customer_data?.used_limit;
-        const locationVal = ordermasterfetch?.location_master;  
-        console.log(locationVal,'locationVal');
-        setlocationVal(locationVal);    
+        const locationVal = ordermasterfetch?.location_master;
+        console.log(locationVal, 'locationVal');
+        setlocationVal(locationVal);
         setBalanceLimit(balance_limit_calculate);
         const reaming_balance =
           ordermasterfetch?.order_header?.total_amount -
@@ -107,12 +110,12 @@ function DispatchDashboard() {
     }
   };
 
-  function handleCreateEInvoice(){
+  function handleCreateEInvoice() {
     var data = {
-        'order_header_id': order_header_id,
-        'order_number': formData.order_header?.order_number
+      'order_header_id': order_header_id,
+      'order_number': formData.order_header?.order_number
     }
-    navigate(`/landingpage/generate-einvoice/${order_header_id}`, {state: data});
+    navigate(`/landingpage/generate-einvoice/${order_header_id}`, { state: data });
 
   }
 
@@ -135,24 +138,24 @@ function DispatchDashboard() {
         updated_by: parsedDetails.user.id,
       };
 
-            const response = await api.updateOrderHeaderVerifyStatus(orderheadedata);
-            if (response) {
-                alert("Working good");
-                setVerifyStatus(true);
-                window.location.reload();
+      const response = await api.updateOrderHeaderVerifyStatus(orderheadedata);
+      if (response) {
+        alert("Working good");
+        setVerifyStatus(true);
+        window.location.reload();
 
 
-            } else {
-                alert("Failed occurs");
-            }
+      } else {
+        alert("Failed occurs");
+      }
 
 
-        } catch (error) {
-            console.error("Error adding part:", error);
-
-        }
+    } catch (error) {
+      console.error("Error adding part:", error);
 
     }
+
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -165,9 +168,9 @@ function DispatchDashboard() {
   return (
     <div style={{ height: "753px", overflow: "scroll" }}>
       <div className="head-conatiner">
-        
+
         <div className="invoice-button">
-          
+
         </div>
 
         <div className="order-imgpreview">
@@ -253,23 +256,28 @@ function DispatchDashboard() {
             </div>
           </div>
 
-          <div>
-                    <h2>Select Location</h2>
-                    <select name="location" id="location">
-                        {locationVal.map((loc) => (
-                            <option key={loc.id} value={loc.id}>{loc.name}</option>
-                        ))}
-                    </select>
-                    
-          </div>
+          <div className="location-container">
+                <h2>Select Location</h2>
 
-          
+                {locationVal && Array.isArray(locationVal) && locationVal.length > 0 ? (
+                  <select name="location" id="location">
+                    {locationVal.map((loc) => (
+                      <option key={loc.id} value={loc.id}>{loc.name}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <p>No locations available</p>
+                )}
+              </div>
+
+
+
         </div>
 
-        
-        
-        
-        
+
+
+
+
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
             <button
@@ -320,9 +328,9 @@ function DispatchDashboard() {
                       <Button
                         variant="contained"
                         color="error"
-                        style={{'width': '200px'}}
+                        style={{ 'width': '200px' }}
                         onClick={() => {
-                            handleCreateEInvoice();
+                          handleCreateEInvoice();
                         }}
                       >
                         CREATE E-INVOICE
@@ -335,9 +343,9 @@ function DispatchDashboard() {
                       <Button
                         variant="contained"
                         color="error"
-                        style={{'width': '200px'}}
+                        style={{ 'width': '200px' }}
                         onClick={() => cancelEInvoiceAlert(order_header_id, formData.order_header?.irn_invoice_number)}
-                        
+
                       >
                         CANCEL E-INVOICE
                       </Button>
@@ -402,9 +410,9 @@ function DispatchDashboard() {
                       <Button
                         variant="contained"
                         color="error"
-                        style={{'width': '200px'}}
+                        style={{ 'width': '200px' }}
                         onClick={() => {
-                            handleCreateEInvoice();
+                          handleCreateEInvoice();
                         }}
                       >
                         CREATE E-INVOICE
@@ -431,9 +439,9 @@ function DispatchDashboard() {
                       <Button
                         variant="contained"
                         color="error"
-                        style={{'width': '200px'}}
+                        style={{ 'width': '200px' }}
                         onClick={() => cancelEInvoiceAlert(order_header_id, formData.order_header?.irn_invoice_number)}
-                        
+
                       >
                         CANCEL E-INVOICE
                       </Button>
@@ -450,7 +458,7 @@ function DispatchDashboard() {
         </div>
       </div>
     </div>
-  
+
   );
 };
 
