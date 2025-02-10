@@ -363,6 +363,19 @@ class API {
     }
   }
 
+  async get_order_list_filtered(data) {
+    try {
+      const response = await apiClient.get(
+        `${BaseURL}/get-order-list`, {params: data}
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
+
 
 
 

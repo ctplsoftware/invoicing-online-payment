@@ -36,3 +36,18 @@ def get_einvoice_order_list(request):
         print(e)
         return Response('error')
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_order_list_filtered(request):
+    try:
+        with transaction.atomic():
+            start_date = request.query_params.get('start_date')
+            end_date = request.query_params.get('end_date')
+
+            print(start_date, end_date)
+
+
+    
+    except Exception as e:
+        print(e)
+        return Response('error')

@@ -12,26 +12,45 @@ export default function OrderReport() {
   const location = useLocation();
   const navigate = useNavigate();
   const [data, setData] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const exportToExcel = (data, fileName = "Order Report.xlsx") => {
     const headers = [
-        [ "SNO", "Order Number", "Payment Type", "Customer Name", "Part Name", "Unit Price", "Quantity", "Total Amount", "Dispatched Location", "Delivery Address", "Ordered By", "Order Date", "Status"],
+      [
+        "SNO",
+        "Order Number",
+        "Payment Type",
+        "Customer Name",
+        "Part Name",
+        "Unit Price",
+        "Quantity",
+        "Total Amount",
+        "Dispatched Location",
+        "Delivery Address",
+        "Ordered By",
+        "Order Date",
+        "Status",
+      ],
     ];
 
     const formattedData = data.map((row, index) => ({
-        SNO: index + 1,
-        "Order Number": row.order_number || "N/A",
-        "Payment Type": row.payment_type.charAt(0).toUpperCase() + row.payment_type.slice(1),
-        "Customer Name": row.customer_name,
-        "Part Name": row.part_name,
-        "Unit Price": row.unit_price,
-        "Quantity": row.quantity,
-        "Total Amount": row.total_amount,
-        "Dispatched Location": row.location_name,
-        "Delivery Address": row.delivery_address,
-        "Ordered By": row.ordered_by,
-        "Order Date": new Date(row.ordered_at.split(".")[0]).toLocaleDateString("en-IN"),
-        "Status": row.completed_status == 'yes' ? "Completed" : "Pending",
+      SNO: index + 1,
+      "Order Number": row.order_number || "N/A",
+      "Payment Type":
+        row.payment_type.charAt(0).toUpperCase() + row.payment_type.slice(1),
+      "Customer Name": row.customer_name,
+      "Part Name": row.part_name,
+      "Unit Price": row.unit_price,
+      Quantity: row.quantity,
+      "Total Amount": row.total_amount,
+      "Dispatched Location": row.location_name,
+      "Delivery Address": row.delivery_address,
+      "Ordered By": row.ordered_by,
+      "Order Date": new Date(row.ordered_at.split(".")[0]).toLocaleDateString(
+        "en-IN"
+      ),
+      Status: row.completed_status == "yes" ? "Completed" : "Pending",
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
@@ -41,15 +60,16 @@ export default function OrderReport() {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
 
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
     const blob = new Blob([excelBuffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
 
     saveAs(blob, fileName);
-};
-
-
+  };
 
   useEffect(() => {
     async function get() {
@@ -84,7 +104,8 @@ export default function OrderReport() {
 
     {
       name: "Payment Type",
-      cell: (row) => row.payment_type.charAt(0).toUpperCase() + row.payment_type.slice(1),
+      cell: (row) =>
+        row.payment_type.charAt(0).toUpperCase() + row.payment_type.slice(1),
       flex: 1.5,
     },
 
@@ -125,47 +146,76 @@ export default function OrderReport() {
     },
 
     {
-        name: "Status",
-        cell: (row) => row.completed_status == 'yes' ? 'Completed' : 'Pending',
-        flex: 1.5,
+      name: "Status",
+      cell: (row) => (row.completed_status == "yes" ? "Completed" : "Pending"),
+      flex: 1.5,
     },
 
     {
-        name: "Ordered By",
-        cell: (row) => row.ordered_by,
-        flex: 1.5,
+      name: "Ordered By",
+      cell: (row) => row.ordered_by,
+      flex: 1.5,
     },
 
     {
-        name: "Ordered Date",
-        cell: (row) => {
-            const date = new Date(row.ordered_at.split(".")[0]); 
-    
-            return date.toLocaleString("en-IN", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: true
-            });
-        },
-        flex: 1.5,
-    }
-    
+      name: "Ordered Date",
+      cell: (row) => {
+        const date = new Date(row.ordered_at.split(".")[0]);
 
-    
-
-
+        return date.toLocaleString("en-IN", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        });
+      },
+      flex: 1.5,
+    },
   ];
 
   return (
     <>
-       <div style={{ width: '91%', marginLeft: '63px', marginTop: '30px', marginBottom: '10px' }}>
+      <div
+        style={{
+          width: "91%",
+          marginLeft: "63px",
+          marginTop: "30px",
+          marginBottom: "10px",
+        }}
+      >
+        <button onClick={() => exportToExcel(data)}>Download Excel</button>
+      </div>
 
-       <button onClick={() => exportToExcel(data)}>Download Excel</button>
-       </div>
-       
+      <span style={{ paddingLeft: "30px", paddingRight: "15px" }}>
+        <b> Start Date</b>
+      </span>
+      <input
+        type="date"
+        value={startDate}
+        onChange={(e) => setStartDate(e.target.value)}
+        placeholder="Start Date"
+        required
+      />
+      <span style={{ paddingLeft: "30px", paddingRight: "15px" }}>
+        <b> End Date</b>
+      </span>
+      <input
+        type="date"
+        value={endDate}
+        onChange={(e) => setEndDate(e.target.value)}
+        placeholder="End Date"
+        required
+      />
+      <span
+        style={{
+          paddingLeft: "35px",
+          paddingRight: "10px",
+          paddingTop: "10px",
+        }}
+      ></span>
+
       <DataTable
         columns={columns}
         data={data}
