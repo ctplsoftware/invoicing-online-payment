@@ -160,9 +160,13 @@ const Navbar1 = ({ title }) => {
                     <NavDropdown.Item href="/landingpage/inwardtransactionlist">
                       Inward Process{" "}
                     </NavDropdown.Item>
+                    <NavDropdown.Item href="/landingpage/einvoice-list">
+                      E-Invoice List Process{" "}
+                    </NavDropdown.Item>
                     <NavDropdown.Item href="/landingpage/payment-list">
                       Payment List Process{" "}
                     </NavDropdown.Item>
+                    
                   </>
                 ) : (
                   <>
@@ -171,11 +175,11 @@ const Navbar1 = ({ title }) => {
                   </NavDropdown.Item>
 
                   <NavDropdown.Item href="/landingpage/order-reports">
-                  Order Reports{" "}
+                  Order Report{" "}
                   </NavDropdown.Item>
 
                   <NavDropdown.Item href="/landingpage/einvoice-reports">
-                  E-Invoice Reports{" "}
+                  E-Invoice Report{" "}
                   </NavDropdown.Item>
 
 

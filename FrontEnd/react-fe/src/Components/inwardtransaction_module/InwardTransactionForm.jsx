@@ -7,10 +7,12 @@ import permissionList from "../../permission.js";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
+import { alertWarning } from "../../alert.js";
 
 const InwardTransactionForm = () => {
   const api = new API();
   const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
   const permissions = permissionList();
 
   const [formData, setFormData] = useState({
@@ -31,6 +33,19 @@ const InwardTransactionForm = () => {
       ...formData,
       [name]: value,
     });
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.part_name.trim())
+      newErrors.part_name = "Part name is required";
+    if (!formData.uom.trim()) newErrors.uom = "UOM is required";
+    if (!formData.inward_quantity) newErrors.uom = "Quantity is required";
+    if (formData.inward_quantity == 0 || formData.inward_quantity < 0)
+      newErrors.uom = "Quantity must be greater than 0";
+
+    return newErrors;
   };
 
   useEffect(() => {
@@ -65,6 +80,15 @@ const InwardTransactionForm = () => {
       const parsedUserDetails = JSON.parse(userDetails); // Parse the JSON string
       const username = parsedUserDetails.user?.username; // Safely access the username
 
+      const validationErrors = validateForm();
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        Object.values(validationErrors).forEach((erroMessage) => {
+          alertWarning(erroMessage);
+        });
+        return;
+      }
+
       // Add username to formData
       const dataToSubmit = {
         ...formData,
@@ -89,6 +113,10 @@ const InwardTransactionForm = () => {
       console.error("Error adding part:", error);
     }
   };
+
+  function handleBack() {
+    navigate("/landingpage/inwardtransactionlist");
+  }
 
   return (
     <>
@@ -180,14 +208,25 @@ const InwardTransactionForm = () => {
                     required
                   />
                 </Col>
-                
-
-
-
-
               </Row>
 
-              <div>
+              <div style={{ marginRight: "80px" }}>
+                <button
+                  onClick={() => handleBack()}
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "rgb(73 81 88)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "20px",
+                    cursor: "pointer",
+                    marginTop: "20px",
+                    marginRight: "10px",
+                  }}
+                >
+                  Back
+                </button>
+
                 <button
                   onClick={handleSubmit}
                   style={{
@@ -198,110 +237,17 @@ const InwardTransactionForm = () => {
                     borderRadius: "4px",
                     cursor: "pointer",
                     marginTop: "20px",
-                    marginRight: "200px"
+                    marginRight: "200px",
                   }}
                 >
                   Save
                 </button>
-
-                
               </div>
             </Form>
           </Container>
         </>
       )}
     </>
-
-    // <div className="customer-master" style={{ marginLeft: '360px' }}>
-    //     <h2>Inward Process </h2>
-    //     <form onSubmit={handleSubmit}>
-    //         <label>
-    //             Part Name
-    //             <select
-    //                 name="part_name"
-    //                 value={formData.part_name}
-    //                 onChange={handleChange}
-    //                 required
-    //             >
-    //                 <option value="">Select Part Name</option>
-    //                 {partdatafetch.map((row, index) => (
-    //                     <option key={index} value={row.part_name}>
-    //                         {row.part_name}
-    //                     </option>
-    //                 ))}
-    //             </select>
-    //         </label>
-
-    //         <label>
-    //             Location Name
-    //             <select
-    //                 name="location_id" // Use location_id as the name
-    //                 value={formData.location_id}
-    //                 onChange={handleChange}
-    //                 required
-    //             >
-    //                 <option value="">Select Location Name</option>
-    //                 {locationnamefetch.map((row) => (
-    //                     <option key={row.id} value={row.id}>
-    //                         {row.name}
-    //                     </option>
-    //                 ))}
-    //             </select>
-    //         </label>
-
-    //         <label>
-    //             Inward Quantity
-    //             <input
-    //                 type="text"
-    //                 name="inward_quantity"
-    //                 placeholder="Enter Inward quantity"
-    //                 value={formData.quantity}
-    //                 onChange={handleChange}
-    //                 required
-    //             />
-    //         </label>
-
-    //         <label>
-    //             UOM (unit of measure)
-    //             <div>
-    //                 <select
-    //                     name="uom"
-    //                     value={formData.uom}
-    //                     onChange={handleChange}
-    //                     required
-    //                 >
-    //                     <option value="">Select UOM</option>
-    //                     <option value="tons">tons</option>
-    //                 </select>
-    //             </div>
-
-    //         </label>
-
-    //         <label>
-    //             Comments
-    //             <input
-    //                 type="text"
-    //                 name="comments"
-    //                 placeholder="Enter Comments"
-    //                 value={formData.comments}
-    //                 onChange={handleChange}
-    //                 required
-    //             />
-    //         </label>
-
-    //         <div style={{ display: 'flex', gap: '12px', marginRight: '105%' }}>
-    //             <div className="pm-button-container " style={{ gap: "10px", marginLeft: '-20%', marginTop: '6%' }}>
-    //                 <button className='btn-save2' onClick={() => navigate("/landingpage/inwardtransactionlist")}>Back</button>
-
-    //             </div>
-
-    //             <div className="pm-button-container" style={{ gap: "5px", marginTop: '6%', marginLeft: '10%' }}>
-    //                 <button className='btn-save' type="Save">Inward</button>
-    //             </div>
-    //         </div>
-
-    //     </form>
-    // </div>
   );
 };
 

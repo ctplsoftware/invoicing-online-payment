@@ -6,6 +6,7 @@ import permissionList from "../../permission.js";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
+import { generateEInvoiceAlert } from "../../alert.js";
 import { API } from "../../API.js";
 
 export default function EInvoice() {
@@ -15,11 +16,11 @@ export default function EInvoice() {
   const permissions = permissionList();
 
   const order_data = location.state || {};
-  const order_header_id = order_data.order_header_id;
-  const order_number = order_data.order_number;
+  const order_header_id = order_data?.order_header_id;
+  const order_number = order_data?.order_number;
 
   const [data, setData] = useState({
-    order_header_id: "",
+    order_header_id: order_header_id,
     delivery_note: "",
     other_references: "",
     buyer_order_number: "",
@@ -38,19 +39,8 @@ export default function EInvoice() {
     });
   };
 
-  async function handleGenerate() {
-    try {
-      data.order_header_id = order_header_id;
-
-      const response = await api.generateEInvoice(data);
-      if (response == "success") {
-        navigate(`/landingpage/dispatch/${order_header_id}`);
-      } else {
-        alert("Failed occurs");
-      }
-    } catch (error) {
-      console.error("Error adding part:", error);
-    }
+  function handleBack() {
+    navigate("/landingpage/einvoice-list");
   }
 
   return (
@@ -127,7 +117,7 @@ export default function EInvoice() {
         </Row>
 
         <Row>
-        <Col md={4} style={{ marginTop: "20px" }}>
+          <Col md={4} style={{ marginTop: "20px" }}>
             <Form.Label>Delivery Note Date (Optional)</Form.Label>
             <Form.Control
               type="text"
@@ -137,8 +127,6 @@ export default function EInvoice() {
               onChange={handleChange}
             />
           </Col>
-
-
 
           <Col md={4} style={{ marginTop: "20px" }}>
             <Form.Label>Dispatch Through (Optional)</Form.Label>
@@ -163,22 +151,40 @@ export default function EInvoice() {
           </Col>
         </Row>
 
-        <button
-          onClick={handleGenerate}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#1976d2",
-            color: "#fff",
-            border: "none",
-            width: "250px",
-            borderRadius: "4px",
-            cursor: "pointer",
-            marginTop: "20px",
-            marginRight: "200px",
-          }}
-        >
-          GENERATE E-INVOICE
-        </button>
+        <div style={{ marginRight: "80px" }}>
+          <button
+            onClick={() => generateEInvoiceAlert(data)}
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#1976d2",
+              color: "#fff",
+              border: "none",
+              width: "250px",
+              borderRadius: "4px",
+              cursor: "pointer",
+              marginTop: "20px",
+              marginRight: "200px",
+            }}
+          >
+            GENERATE E-INVOICE
+          </button>
+
+          <button
+            onClick={() => handleBack()}
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "rgb(73 81 88)",
+              color: "#fff",
+              border: "none",
+              borderRadius: "20px",
+              cursor: "pointer",
+              marginTop: "20px",
+              float: "left",
+            }}
+          >
+            Back
+          </button>
+        </div>
       </Container>
     </>
   );

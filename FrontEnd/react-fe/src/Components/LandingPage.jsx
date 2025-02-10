@@ -22,11 +22,12 @@ import LocationMasterEdit from "./location_module/LocationMasterEdit.jsx";
 import CustomerDashboard from "./customer_module/CustomerDashboard.jsx";
 import PaymentList from "./payment_verification/PaymentList.jsx";
 import PaymentView from "./payment_verification/PaymentView.jsx";
-import DispatchDashboard from "./payment_verification/DispatchDashboard.jsx";
+// import DispatchDashboard from "./payment_verification/DispatchDashboard.jsx";
 import EInvoice from "./payment_verification/EInvoice.jsx";
 import Invoice from "./payment_verification/Invoice.jsx";
 import OrderReport from "./reports/OrderReport.jsx";
 import EInvoiceReport from "./reports/EInvoiceReport.jsx";
+import EInvoiceList from "./payment_verification/EInvoiceList.jsx";
 import { LocationSearching } from "@mui/icons-material";
 
 const LandingPage = () => {
@@ -56,6 +57,7 @@ const LandingPage = () => {
         '/landingpage/locationmasteredit/': 'Edit Location',
         '/landingpage/customerdashboard': 'Customer Dashboard',
         '/landingpage/payment-list': 'Order Transaction',
+        '/landingpage/einvoice-list': 'E-Invoice List',
         '/landingpage/payment-view/:order_no': 'Payment View',
         '/landingpage/dispatch/': 'Order Transaction - Verify/Dispatch/Generate',
         '/landingpage/generate-einvoice/': 'Generate E-Invoice',
@@ -107,8 +109,8 @@ const LandingPage = () => {
                     <Route path="/locationmasteredit/:id" element={<LocationMasterEdit />} />
                     <Route path="/customerdashboard" element={<CustomerDashboard />} />
                     <Route path="/payment-list" element={<PaymentList />} />
+                    <Route path="/einvoice-list" element={<EInvoiceList />} />
                     <Route path="/payment-view/:order_no" element={<PaymentView />} />
-                    <Route path="/dispatch/:order_header_id" element={<DispatchDashboard />} />
                     <Route path="/generate-einvoice/:id" element={<EInvoice />} />
                     <Route path="/einvoice-print" element={<Invoice />} />
                     <Route path="/order-reports" element={<OrderReport />} />

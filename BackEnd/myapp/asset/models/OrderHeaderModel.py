@@ -7,7 +7,7 @@ from asset.models.LocationMasterModel import LoactionMaster
 class OrderHeader(models.Model):
     part_master = models.ForeignKey(PartMaster, on_delete = models.CASCADE)
     customer_master = models.ForeignKey(CustomerMaster, on_delete = models.CASCADE)
-    location_master = models.ForeignKey(LoactionMaster, on_delete = models.CASCADE)
+    location_master = models.ForeignKey(LoactionMaster, on_delete = models.CASCADE, null = True, blank = True)
 
     location_name = models.CharField(max_length = 200, null = True)
     location_address = models.CharField(max_length = 200, null = True)

@@ -7,6 +7,7 @@ import permissionList from "../../permission.js";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
+import { alertWarning } from "../../alert.js";
 
 const CustomerMaster = () => {
   const api = new API();
@@ -49,7 +50,7 @@ const CustomerMaster = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  };  
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -74,13 +75,12 @@ const CustomerMaster = () => {
     e.preventDefault();
     const validationErrors = validateForm();
 
-    console.log("innnn");
 
-    if (Object.keys(validationErrors).length > 0) { 
+    if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
 
       Object.values(validationErrors).forEach((erroMessage) => {
-        alert(erroMessage);
+        alertWarning(erroMessage);
       });
 
       return;
@@ -111,8 +111,12 @@ const CustomerMaster = () => {
     }
   };
 
+  function handleBack() {
+    navigate("/landingpage/customermasterdashboard");
+  }
+
   return (
-    <div style={{maxHeight: "115vh", overflow: "auto"}}>
+    <div style={{ maxHeight: "115vh", overflow: "auto" }}>
       {permissions.includes("asset.view_sampleform") ? (
         <div className="empty-state">
           <h3 style={{ marginTop: "15%" }}>No access to this page</h3>
@@ -133,7 +137,7 @@ const CustomerMaster = () => {
                     required
                     className="input-border"
                     autoFocus
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -146,7 +150,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
               </Row>
@@ -185,7 +189,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -198,7 +202,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
               </Row>
@@ -224,7 +228,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -237,7 +241,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -250,7 +254,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
               </Row>
@@ -276,7 +280,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -289,7 +293,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -302,7 +306,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
               </Row>
@@ -328,7 +332,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -341,7 +345,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -354,7 +358,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
               </Row>
@@ -380,7 +384,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -393,7 +397,7 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -406,12 +410,13 @@ const CustomerMaster = () => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
               </Row>
-              <div style={{marginRight: "180px"}}>
-              <button
+              <div style={{ marginRight: "180px" }}>
+                <button
+                  onClick={() => handleBack()}
                   style={{
                     padding: "10px 20px",
                     backgroundColor: "rgb(73 81 88)",
@@ -438,16 +443,13 @@ const CustomerMaster = () => {
                   }}
                 >
                   Save
-                </button> 
+                </button>
               </div>
             </Form>
           </Container>
         </>
-        
       )}
     </div>
-
-  
   );
 };
 

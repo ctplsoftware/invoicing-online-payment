@@ -1,6 +1,6 @@
-import { API } from '../../API.js';
+import { API } from "../../API.js";
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from "react-router-dom";
 
 import Container from "react-bootstrap/Container";
 import permissionList from "../../permission.js";
@@ -10,61 +10,86 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
 const LocationMasterEdit = () => {
-    const api = new API();
-    const navigate = useNavigate();
-    const permissions = permissionList();
-    const { id } = useParams(); // Get the ID from the URL
+  const api = new API();
+  const navigate = useNavigate();
+  const permissions = permissionList();
+  const [errors, setErrors] = useState({});
+  const { id } = useParams(); // Get the ID from the URL
 
-    const [formData, setFormData] = useState({
-        name: '',
-        status: 'active',
-        location_address: '',
+  const [formData, setFormData] = useState({
+    name: "",
+    status: "active",
+    location_address: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
     });
+  };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
+  const validateForm = () => {
+    const newErrors = {};
 
-    useEffect(() => {
-        const fetchPartMaster = async () => {
-            try {
-                const locationmasterData = await api.edit_location_fetch(id);
-                if (locationmasterData) {
-                    setFormData({
-                        id: locationmasterData.id,
-                        name: locationmasterData.name,
-                        status: locationmasterData.status,
-                        location_address: locationmasterData.location_address,
-                    });
-                }
-            } catch (error) {
-                console.error("Failed to fetch part data:", error);
-            }
-        };
-        fetchPartMaster();
-    }, [id]);
+    if (!formData.name.trim()) newErrors.name = "Location name is required";
+    if (!formData.location_address.trim())
+      newErrors.location_address = "Location address is required";
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const userDetails = localStorage.getItem("userDetails");
-        const parsedDetails = JSON.parse(userDetails); 
-        const locationdetails ={
-            ...formData,
-            user_id:parsedDetails.user.id
+    return newErrors;
+  };
+
+  useEffect(() => {
+    const fetchPartMaster = async () => {
+      try {
+        const locationmasterData = await api.edit_location_fetch(id);
+        if (locationmasterData) {
+          setFormData({
+            id: locationmasterData.id,
+            name: locationmasterData.name,
+            status: locationmasterData.status,
+            location_address: locationmasterData.location_address,
+          });
         }
-        try {
-            await api.update_locationmaster(locationdetails);
-            alert("Update successful");
-            navigate('/landingpage/locationmasterlist');
-        } catch (error) {
-            console.error("Update failed:", error);
-            alert("Update failed. Please try again.");
-        }
+      } catch (error) {
+        console.error("Failed to fetch part data:", error);
+      }
     };
+    fetchPartMaster();
+  }, [id]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const userDetails = localStorage.getItem("userDetails");
+    const parsedDetails = JSON.parse(userDetails);
+
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      Object.values(validationErrors).forEach((erroMessage) => {
+        alertWarning(erroMessage);
+      });
+      return;
+    }
+
+    const locationdetails = {
+      ...formData,
+      user_id: parsedDetails.user.id,
+    };
+    try {
+      await api.update_locationmaster(locationdetails);
+      alert("Update successful");
+      navigate("/landingpage/locationmasterlist");
+    } catch (error) {
+      console.error("Update failed:", error);
+      alert("Update failed. Please try again.");
+    }
+  };
+
+  function handleBack() {
+    navigate("/landingpage/locationmasterlist");
+  }
 
     return (
         <>

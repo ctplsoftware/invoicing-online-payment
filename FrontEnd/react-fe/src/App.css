@@ -30,6 +30,43 @@
   margin-left: -145px;
 }
 
+.custom-swal-container {
+  font-family: 'Arial', sans-serif; /* Change font style */
+  border-radius: 10px; /* Rounded corners */
+
+}
+
+.custom-toast-popup {
+  width: 400px;
+  height: 180px;
+}
+
+.custom-toast-popup-2 {
+  width: 400px;
+  height: 180px;
+}
+
+.custom-toast-popup-3 {
+  width: 400px;
+  height: 200px;
+}
+
+.custom-toast-icon {
+  font-size: 5px;
+}
+
+.custom-toast-title {
+  font-size: 20px;
+}
+
+.custom-confirm-button,
+.custom-cancel-button {
+  font-size: 13px !important;
+  margin-bottom: -10px !important;
+  margin-left: -70px !important;
+}
+
+
 .App-link {
   color: #61dafb;
 }

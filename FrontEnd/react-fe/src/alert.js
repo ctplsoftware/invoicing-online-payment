@@ -1,13 +1,65 @@
-
-
 import Swal from "sweetalert2";
 import {API} from "./API";
 
 
+export async function generateEInvoiceAlert(form_data) {
+  const api = new API();
+
+  try {
+    const { value: formValues } = await Swal.fire({
+      title: "Are you sure you want to generate the e-invoice?",
+      html:
+        '<input id="swal-username" class="swal2-input" placeholder="Username">' +
+        '<input id="swal-password" type="password" class="swal2-input" placeholder="Password">',
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: "Submit",
+      customClass: {
+        confirmButton: "custom-confirm-btn", 
+        cancelButton: "custom-cancel-btn",
+      },
+      preConfirm: function () {
+        const username = document.getElementById("swal-username").value;
+        const password = document.getElementById("swal-password").value;
+
+        if (!username || !password) {
+          Swal.showValidationMessage("Both fields are required!");
+          return false;
+        }
+
+        return { username, password };
+      }
+    });
+
+    if (formValues) {
+      const data = {
+        username: formValues.username,
+        password: formValues.password,
+        data: form_data
+      };
+
+      const response = await api.generateEInvoice(data);
 
 
 
-export default async function cancelEInvoiceAlert(order_header_id, irn) {
+      if (response === "success") {
+        Swal.fire("Success!", "E-Invoice generated successfully!", "success");
+      } 
+      else if(response == 'Invalid Credentials'){
+        Swal.fire("Error!", "Invalid Credentials", "error");
+
+      }
+      else {
+        Swal.fire("Error!", "Please try again.", "error");
+      }
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    Swal.fire("Error!", "Something went wrong!", "error");
+  }
+}
+
+export async function cancelEInvoiceAlert(order_header_id, irn) {
   const api = new API();
 
   try {
@@ -63,6 +115,40 @@ export default async function cancelEInvoiceAlert(order_header_id, irn) {
     console.error("Error:", error);
     Swal.fire("Error!", "Something went wrong!", "error");
   }
+}
+
+export function alertWarning(text){
+  Swal.fire({
+    icon: 'warning',
+    title: `${text}`,
+    customClass: {
+      popup: 'custom-toast-popup-2',
+      icon: 'custom-toast-icon',
+      title: 'custom-toast-title',
+      confirmButton: 'custom-confirm-button',
+    },
+  });
+}
+
+export function alertSuccess(successMessage, navigate, navigationComponent){
+  Swal.fire({
+      icon: 'success',
+      title: `${successMessage}`,
+      customClass: {
+        popup: 'custom-toast-popup',
+        icon: 'custom-toast-icon',
+        title: 'custom-toast-title',
+        confirmButton: 'custom-confirm-button',
+      },
+
+    }).then(() => {
+      if(navigationComponent != 0){
+        navigate(`${navigationComponent}`);
+      }
+      else{
+        window.location.reload();
+      }
+    });
 }
 
     
