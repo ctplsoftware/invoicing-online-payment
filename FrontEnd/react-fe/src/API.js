@@ -310,6 +310,18 @@ class API {
     }
   }
 
+  async update_dispatch_location(data) {
+    try {
+      const response = await axios.put(
+        `${BaseURL}/dispatch-location-update`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error updating customer:", error);
+    }
+  }
+
   // E Invoice
 
   async get_einvoice_list() {

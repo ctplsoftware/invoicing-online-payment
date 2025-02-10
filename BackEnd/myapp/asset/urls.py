@@ -60,6 +60,7 @@ urlpatterns = [
     #order_header master
     path('order-details-all', TransactionView.get_order_details_all),
     path('order-details-get', TransactionView.get_order_details),
+    path('dispatch-location-update', TransactionView.update_dispatch_location),
     path('disptach-completed-update', TransactionView.update_dispatched_completed),
     path('verified-completed-update', TransactionView.update_verified_completed),
     path('einvoice-list', TransactionView.get_einvoice_list),

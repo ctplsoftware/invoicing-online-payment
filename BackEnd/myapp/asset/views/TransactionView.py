@@ -80,11 +80,19 @@ def update_dispatch_location(request):
             order_header = OrderHeader.objects.filter(id = request.data.get('order_header_id')).first()
 
             if order_header:
-                order_header.location_master_id = request.data.get('location_master_id')
-                order_header.location_name = request.data.get('location_name')
-                order_header.location_address = request.data.get('location_address')
+                location_master = LoactionMaster.objects.filter(id = request.data.get('location_master_id')).first()
+                if location_master:
 
-                order_header.save()
+                    order_header.location_master_id = location_master.id
+                    order_header.location_name = location_master.name
+                    order_header.location_address = location_master.location_address
+
+                    order_header.save()
+
+                    return Response('success')
+
+                else:
+                    return Response('No location found.')
 
             else:
                 return Response('No order found.')
