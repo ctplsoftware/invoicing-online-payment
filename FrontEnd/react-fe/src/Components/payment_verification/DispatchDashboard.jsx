@@ -165,6 +165,13 @@ function DispatchDashboard() {
     });
   };
 
+  const handleLocation = () => {
+    const selectedLocation = document.getElementById("location").value;    
+    const orderheadedata = {
+      order_header_id: formData.order_header.id,
+    };
+  };
+
   return (
     <div style={{ height: "753px", overflow: "scroll" }}>
       <div className="head-conatiner">
@@ -380,9 +387,8 @@ function DispatchDashboard() {
                       <Button
                         variant="contained"
                         color="primary"
-                        disabled={isAttachVerifiying}
                         onClick={() => {
-                          handleVerify();
+                          handleLocation();
                         }}
                       >
                         Confirm
