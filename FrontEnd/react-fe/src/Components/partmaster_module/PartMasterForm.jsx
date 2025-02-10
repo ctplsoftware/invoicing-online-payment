@@ -8,11 +8,13 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
+import { alertWarning } from "../../alert.js";
 
 const PartMaster = () => {
   const api = new API();
   const navigate = useNavigate();
   const permissions = permissionList();
+  const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
     part_name: "",
@@ -30,12 +32,41 @@ const PartMaster = () => {
     });
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.part_name.trim()) 
+      newErrors.part_name = "Part name is required";
+    if (!formData.unit_price.trim())
+      newErrors.unit_price = "Unit price is required";
+    if (!formData.uom.trim())
+      newErrors.uom = "UOM is required";
+    if (!/^[0-9A-Za-z]{15}$/.test(formData.unit_price))
+      newErrors.unit_price = "Unit price must be a number!";
+    if (!formData.hsn_code.trim())
+      newErrors.hsn_code = "HSN code is required";
+    if (formData.unit_price == 0 || formData.unit_price < 0)
+      newErrors.hsn_code = "Unit price must be greater than 0.";
+
+    
+    return newErrors;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const userDetails = localStorage.getItem("userDetails");
 
     const parsedDetails = JSON.parse(userDetails);
+
+    const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+          setErrors(validationErrors);
+          Object.values(validationErrors).forEach((erroMessage) => {
+            alertWarning(erroMessage);
+          });
+          return;
+    }
 
     try {
       const partmasterdatas = {
@@ -53,6 +84,12 @@ const PartMaster = () => {
       console.error("Error adding part:", error);
     }
   };
+
+
+
+  function handleBack(){
+    navigate('/landingpage/partmaster-fecthList');
+  }
 
   return (
     <>
@@ -81,11 +118,12 @@ const PartMaster = () => {
                 <Col md={4} style={{ marginTop: "20px" }}>
                   <Form.Label>Unit Price</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="number"
                     name="unit_price"
                     value={formData.unit_price}
                     onChange={handleChange}
                     className="input-border"
+                    min={1}
                     required
                   />
                 </Col>
@@ -117,7 +155,23 @@ const PartMaster = () => {
                 </Col>
               </Row>
 
-              <div>
+              <div style={{ marginRight: "80px" }}>
+              <button
+                  onClick={() => handleBack()}
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "rgb(73 81 88)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "20px",
+                    cursor: "pointer",
+                    marginTop: "20px",
+                    marginRight: "10px",
+                  }}
+                >
+                  Back
+                </button>
+
                 <button
                   onClick={handleSubmit}
                   style={{

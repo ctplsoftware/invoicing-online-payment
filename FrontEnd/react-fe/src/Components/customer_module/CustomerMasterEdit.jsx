@@ -11,6 +11,7 @@ import permissionList from "../../permission.js";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
+import { alertWarning } from "../../alert.js";
 
 const EditCustomerForm = ({}) => {
   const { id } = useParams();
@@ -28,7 +29,7 @@ const EditCustomerForm = ({}) => {
     const fetchCustomer = async () => {
       const api = new API();
       const currentCustomer = await api.customerMasterEditFetch(id);
-      
+
       setCurrentCustomer({
         id: currentCustomer.id,
         name: currentCustomer.name,
@@ -48,18 +49,20 @@ const EditCustomerForm = ({}) => {
         delivery_address: currentCustomer.delivery_address,
         delivery_address_city: currentCustomer.delivery_address_city,
         delivery_address_state: currentCustomer.delivery_address_state,
-        delivery_address_state_code: currentCustomer.delivery_address_state_code,
+        delivery_address_state_code:
+          currentCustomer.delivery_address_state_code,
 
         additional_address1: currentCustomer.additional_address1,
         additional_address1_city: currentCustomer.additional_address1_city,
         additional_address1_state: currentCustomer.additional_address1_state,
-        additional_address1_state_code: currentCustomer.additional_address1_state_code,
+        additional_address1_state_code:
+          currentCustomer.additional_address1_state_code,
 
         additional_address2: currentCustomer.additional_address2,
         additional_address2_city: currentCustomer.additional_address2_city,
         additional_address2_state: currentCustomer.additional_address2_state,
-        additional_address2_state_code: currentCustomer.additional_address2_state_code,
-
+        additional_address2_state_code:
+          currentCustomer.additional_address2_state_code,
       });
     };
 
@@ -73,8 +76,7 @@ const EditCustomerForm = ({}) => {
 
   const validateForm = () => {
     const newErrors = {};
-    console.log(currentCustomer, 'checkk');
-    
+
     if (!currentCustomer.name.trim())
       newErrors.name = "Customer name is required";
     if (!currentCustomer.delivery_address.trim())
@@ -89,7 +91,12 @@ const EditCustomerForm = ({}) => {
       newErrors.contact_person = "Contact person is required";
     if (!/^\d{10}$/.test(currentCustomer.contact_number))
       newErrors.contact_number = "Contact number must be a 10-digit number";
+
     return newErrors;
+
+    
+
+
   };
 
   const handleSubmit = async (event) => {
@@ -100,7 +107,7 @@ const EditCustomerForm = ({}) => {
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       Object.values(validationErrors).forEach((erroMessage) => {
-        alert(erroMessage);
+        alertWarning(erroMessage);
       });
       return;
     }
@@ -128,9 +135,12 @@ const EditCustomerForm = ({}) => {
     }
   };
 
+  function handleBack() {
+    navigate("/landingpage/customermasterdashboard");
+  }
 
   return (
-    <div style={{maxHeight: "115vh", overflow: "auto"}}>
+    <div style={{ maxHeight: "115vh", overflow: "auto" }}>
       {permissions.includes("asset.view_sampleform") ? (
         <div className="empty-state">
           <h3 style={{ marginTop: "15%" }}>No access to this page</h3>
@@ -138,8 +148,15 @@ const EditCustomerForm = ({}) => {
         </div>
       ) : (
         <>
-        <Container fluid style={{ backgroundColor: "#f5f5f5", padding: "30px", borderRadius: "8px" }}>
-        <Form onSubmit={handleSubmit}>
+          <Container
+            fluid
+            style={{
+              backgroundColor: "#f5f5f5",
+              padding: "30px",
+              borderRadius: "8px",
+            }}
+          >
+            <Form onSubmit={handleSubmit}>
               <Row>
                 <Col md={6} style={{ marginTop: "20px" }}>
                   <Form.Label>Company Name</Form.Label>
@@ -151,7 +168,7 @@ const EditCustomerForm = ({}) => {
                     required
                     className="input-border"
                     autoFocus
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -164,7 +181,7 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
               </Row>
@@ -203,7 +220,7 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -216,8 +233,7 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
-
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
               </Row>
@@ -243,8 +259,7 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
-
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -257,8 +272,7 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
-
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -271,8 +285,7 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
-
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
               </Row>
@@ -298,8 +311,7 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
-
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -312,8 +324,7 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
-
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -326,8 +337,7 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
-
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
               </Row>
@@ -353,8 +363,7 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
-
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -367,8 +376,7 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
-
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -381,8 +389,7 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
-
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
               </Row>
@@ -408,8 +415,7 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
-
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -422,8 +428,7 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
-
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
 
@@ -436,13 +441,13 @@ const EditCustomerForm = ({}) => {
                     onChange={handleChange}
                     className="input-border"
                     required
-                    style={{borderRadius: "30px"}}
-
+                    style={{ borderRadius: "30px" }}
                   />
                 </Col>
               </Row>
-              <div style={{marginRight: "80px"}}>
-              <button
+              <div style={{ marginRight: "80px" }}>
+                <button
+                  onClick={() => handleBack()}
                   style={{
                     padding: "10px 20px",
                     backgroundColor: "rgb(73 81 88)",
@@ -456,7 +461,7 @@ const EditCustomerForm = ({}) => {
                 >
                   Back
                 </button>
-              <button
+                <button
                   onClick={handleSubmit}
                   style={{
                     padding: "10px 20px",
@@ -466,7 +471,7 @@ const EditCustomerForm = ({}) => {
                     borderRadius: "20px",
                     cursor: "pointer",
                     marginTop: "20px",
-                    marginRight: "200px"
+                    marginRight: "200px",
                   }}
                 >
                   Update

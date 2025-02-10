@@ -92,7 +92,6 @@ def logout(request):
         return Response({"error": "Invalid token or already blacklisted"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_generate_order(request):
@@ -502,6 +501,7 @@ def get_card_details(request):
                 'message': 'Valid',
                 'success': True
             }
+
         
         return Response(response_data, status=200)
         

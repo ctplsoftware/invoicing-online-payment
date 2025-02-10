@@ -312,6 +312,12 @@ class API {
 
   // E Invoice
 
+  async get_einvoice_list() {
+    
+    const response = await apiClient.get(`${BaseURL}/einvoice-list`);
+    return response.data;
+  }
+
   async generateEInvoice(data) {
     try {
       const response = await axios.post(`${BaseURL}/einvoice-create`, data);
@@ -333,7 +339,7 @@ class API {
 
 //   Reports
 
-async get_order_list(data) {
+  async get_order_list(data) {
     try {
       const response = await apiClient.get(
         `${BaseURL}/get-order-list`
