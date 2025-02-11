@@ -317,9 +317,7 @@ function DispatchCredit() {
                   </div>
             {/* Carts */}
           {formData?.order_header?.payment_type === "credit" &&
-          formData?.order_header?.location_master !== null &&
-          formData?.order_header?.dispatched_status === "yes" && formData?.order_header.attached_status !== "no" &&
-           (
+          formData?.order_header?.location_master !== null &&(
 
             <div
             style={{
