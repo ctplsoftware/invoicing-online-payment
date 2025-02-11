@@ -223,21 +223,19 @@ def create_e_invoice(request):
             else:
 
 
-                order_header_id = request.data.get('order_header_id')
+                order_header_id = request.data.get('data')['order_header_id']
 
                 order_header = OrderHeader.objects.filter(id = order_header_id).first()
+                order_header.delivery_note = request.data.get('data')['delivery_note']
+                order_header.other_references = request.data.get('data')['other_references']
+                order_header.buyer_order_number = request.data.get('data')['buyer_order_number']
+                order_header.buyer_order_date = request.data.get('data')['buyer_order_date']
 
-
-                order_header.delivery_note = request.data.get('delivery_note')
-                order_header.other_references = request.data.get('other_references')
-                order_header.buyer_order_number = request.data.get('buyer_order_number')
-                order_header.buyer_order_date = request.data.get('buyer_order_date')
-
-                order_header.delivery_note_date = request.data.get('delivery_note_date')
-                order_header.dispatch_document_number = request.data.get('dispatch_document_number')
-                order_header.dispatched_through = request.data.get('dispatched_through')
-                order_header.terms_of_delivery = request.data.get('terms_of_delivery')
-                order_header.delivery_note_date = request.data.get('delivery_note_date')
+                order_header.delivery_note_date = request.data.get('data')['delivery_note_date']
+                order_header.dispatch_document_number = request.data.get('data')['dispatch_document_number']
+                order_header.dispatched_through = request.data.get('data')['dispatched_through']
+                order_header.terms_of_delivery = request.data.get('data')['terms_of_delivery']
+                order_header.delivery_note_date = request.data.get('data')['delivery_note_date']
 
                 order_header.save()
 

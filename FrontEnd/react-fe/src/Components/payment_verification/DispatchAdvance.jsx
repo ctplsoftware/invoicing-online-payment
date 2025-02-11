@@ -30,7 +30,7 @@ import moment from "moment";
 import { BaseURL } from "../../utils.js";
 import { alertWarning, cancelEInvoiceAlert } from "../../alert.js";
 
-function DispatchDashboard() {
+function DispatchAdvance() {
   //const [selectedImage, setSelectedImage] = useState(vickyimg);
 
   const api = new API();
@@ -613,4 +613,4 @@ function DispatchDashboard() {
   );
 }
 
-export default DispatchDashboard;
+export default DispatchAdvance;
