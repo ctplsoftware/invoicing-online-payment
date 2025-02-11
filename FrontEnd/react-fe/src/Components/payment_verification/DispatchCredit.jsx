@@ -75,7 +75,7 @@ function DispatchCredit() {
       showCancelButton: true,
         confirmButtonText: "Yes",
         cancelButtonText: "No",
-        width: "0p65x",
+        width: "650px",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -119,8 +119,9 @@ function DispatchCredit() {
 
       const response = await api.updateOrderHeaderVerifyStatus(orderheadedata);
       if (response) {
-        alert("Working good");
-        window.location.reload();
+        Swal.fire("Success!", "Order dispatched successfully.", "success").then(() => {
+          window.location.reload();
+        });
       } else {
         alert("Failed occurs");
       }
