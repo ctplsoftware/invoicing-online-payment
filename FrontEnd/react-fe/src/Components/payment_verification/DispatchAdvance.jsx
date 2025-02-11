@@ -116,8 +116,7 @@ function DispatchAdvance() {
           const response = await api.updateOrderHeaderDispatchStatus(orderheadedata);
           if (response) {
             Swal.fire("Success!", "Order dispatched successfully.", "success").then(() => {
-              setDispatchStatus(true);
-              window.location.reload();
+              navigate('/landingpage/payment-list');
             });
           } else {
             Swal.fire("Failed!", "Failed to dispatch order.", "error");
@@ -495,7 +494,7 @@ function DispatchAdvance() {
           {/* input fields */}
         {formData?.order_header?.payment_type === "advance" &&
           formData?.order_header?.location_master !== null &&
-          formData?.order_header?.verified_status === "no" &&
+          formData?.order_header?.verified_status === "no" && formData?.order_header?.attached_status !== "no" && 
           (
               <Card
                 sx={{
@@ -578,7 +577,7 @@ function DispatchAdvance() {
           
                   {/* Show Verify button if dispatchStatus is true */}
                   {formData?.order_header?.location_master !== null &&
-                  formData?.order_header?.verified_status === "no" && (
+                  formData?.order_header?.verified_status === "no" && formData?.order_header?.attached_status !== "no" && (
                     <Grid item>
                       <Button
                         variant="contained"

@@ -123,8 +123,8 @@ function DispatchCredit() {
 
       const response = await api.updateOrderHeaderVerifyStatus(orderheadedata);
       if (response) {
-        Swal.fire("Success!", "Order dispatched successfully.", "success").then(() => {
-          window.location.reload();
+        Swal.fire("Success!", "Payment verified successfully.", "success").then(() => {
+          navigate('/landingpage/payment-list');
         });
       } else {
         alert("Failed occurs");
