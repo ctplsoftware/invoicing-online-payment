@@ -1,8 +1,6 @@
 import "../payment_verification/dispatchdashboard.css";
-import "react-image-lightbox/style.css"; // Import the lightbox styles
-import Lightbox from "react-image-lightbox";
+import "react-image-lightbox/style.css";
 import React, { useState, useEffect } from "react";
-import vickyimg from "../payment_verification/screeshot.png";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 import Swal from "sweetalert2";
@@ -22,33 +20,25 @@ import {
   Container,
   getBottomNavigationUtilityClass,
 } from "@mui/material";
-import { display, styled } from "@mui/system";
 import { API } from "../../API.js";
-import { useParams } from "react-router-dom";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import moment from "moment";
 import { BaseURL } from "../../utils.js";
-import { alertWarning, cancelEInvoiceAlert } from "../../alert.js";
 
 function DispatchCredit() {
 
   const api = new API();
   const navigate = useNavigate();
   const location = useLocation();
+  const {id} = useParams();
   const order_header_id = location.state?.order_header_id;
   
-
   const [formData, setFormData] = useState({});  
-  const [dispatchStatus, setDispatchStatus] = useState(false);
-  const [verifyStatus, setVerifyStatus] = useState(false);
-  const [locationStatus, setLocationStatus] = useState(false);
-  const [generateStatus, setGenerateStatus] = useState(false);
   const [paymentTable, setPaymentTable] = useState({});
   const [balanceLimit, setBalanceLimit] = useState(null);
   const [locationVal, setlocationVal] = useState(null);
   const [remainingAmount, setRemainingAmount] = useState(null);
   const [isusedLimit, setUsedLimit] = useState(null);
-  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,11 +46,6 @@ function DispatchCredit() {
         const ordermasterfetch = await api.fetch_dispatchById(order_header_id);
 
         setFormData(ordermasterfetch);
-        setDispatchStatus(ordermasterfetch?.order_header?.dispatched_status === "yes");
-        setLocationStatus (ordermasterfetch?.order_header?.location_id !== null);
-        setVerifyStatus(ordermasterfetch?.order_header?.verified_status === "yes");
-        setVerifyStatus(ordermasterfetch?.order_header?.location_name !== null);
-        setGenerateStatus(ordermasterfetch?.order_header?.invoice_generated_status === "yes");
         
 
         const balance_limit_calculate = ordermasterfetch?.customer_data?.credit_limit - ordermasterfetch?.customer_data?.used_limit;
@@ -100,7 +85,6 @@ function DispatchCredit() {
           const response = await api.updateOrderHeaderDispatchStatus(orderheadedata);
           if (response) {
             Swal.fire("Success!", "Order dispatched successfully.", "success").then(() => {
-              setDispatchStatus(true);
               window.location.reload();
             });
           } else {
@@ -136,7 +120,6 @@ function DispatchCredit() {
       const response = await api.updateOrderHeaderVerifyStatus(orderheadedata);
       if (response) {
         alert("Working good");
-        setVerifyStatus(true);
         window.location.reload();
       } else {
         alert("Failed occurs");
@@ -178,7 +161,6 @@ function DispatchCredit() {
                 order_header_id: formData.order_header.id,
                 location_master_id: selectedLocation,
             };
-            setIsVisible(false);
 
             api.update_dispatch_location(form_data)
                 .then(() => {
@@ -321,7 +303,7 @@ function DispatchCredit() {
             {/* Carts */}
           {formData?.order_header?.payment_type === "credit" &&
           formData?.order_header?.location_master !== null &&
-          dispatchStatus && formData?.order_header.attached_status !== "no" &&
+          formData?.order_header?.dispatched_status === "yes" && formData?.order_header.attached_status !== "no" &&
            (
 
             <div
@@ -450,7 +432,7 @@ function DispatchCredit() {
           {/* input fields */}
         {formData?.order_header?.payment_type === "credit" &&
           formData?.order_header?.location_master !== null &&
-          dispatchStatus && formData?.order_header.attached_status !== "no" &&
+          formData?.order_header?.dispatched_status === "yes" && formData?.order_header.attached_status !== "no" &&
           (
               <Card
                 sx={{
@@ -543,7 +525,7 @@ function DispatchCredit() {
                       </Grid>
                   )}
 
-                  {!dispatchStatus && generateStatus && (
+                  {formData?.order_header?.verified_status === "no" && formData?.order_header?.invoice_generated_status === "no" && (
                     <Grid item>
                       <Button
                         variant="contained"
@@ -557,7 +539,7 @@ function DispatchCredit() {
                     </Grid>
                   )}          
 
-                  {dispatchStatus && formData?.order_header?.verified_status === "no" && formData?.order_header.attached_status !== "no" && (
+                  {formData?.order_header?.dispatched_status === "yes" && formData?.order_header?.verified_status === "no" && formData?.order_header.attached_status !== "no" && (
                     <Grid item>
                       <Button
                         variant="contained"
