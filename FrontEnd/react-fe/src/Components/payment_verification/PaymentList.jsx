@@ -25,22 +25,28 @@ const PaymentList = () => {
         { name: 'S No', selector: row => row.Sno, },
         {
             name: 'Order Number',
-            cell: row => (
-                <NavLink
-                    to={`/landingpage/dispatch/${row.id}`} // ✅ Use curly braces {} with a template literal
-                    state={{ order_header_id: row.id }} // ✅ Pass order_header_id via state
-                    style={{
-                        color: 'blue',
-                        textDecoration: 'underline',
-                        cursor: 'pointer',
-                        fontSize: '17px'
-                    }}
-                >
-                    {row.order_number}
-                </NavLink>
-
-            ),
+            cell: row => {
+                const url = row.payment_type === 'advance' 
+                    ? `/landingpage/dispatch/advance/${row.id}` 
+                    : `/landingpage/dispatch/credit/${row.id}`;
+        
+                return (
+                    <NavLink
+                        to={url}
+                        state={{ order_header_id: row.id }}
+                        style={{
+                            color: 'blue',
+                            textDecoration: 'underline',
+                            cursor: 'pointer',
+                            fontSize: '17px'
+                        }}
+                    >
+                        {row.order_number}
+                    </NavLink>
+                );
+            },
         },
+        
         { name: 'Customer Name', selector: row => row.customer_name, },
         { name: 'Payment Type', selector: row => row.payment_type, },
         { name: 'Purchase Qty', selector: row => row.quantity, },

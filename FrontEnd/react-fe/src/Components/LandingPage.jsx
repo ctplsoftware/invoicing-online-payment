@@ -28,6 +28,9 @@ import Invoice from "./payment_verification/Invoice.jsx";
 import OrderReport from "./reports/OrderReport.jsx";
 import EInvoiceReport from "./reports/EInvoiceReport.jsx";
 import EInvoiceList from "./payment_verification/EInvoiceList.jsx";
+import DispatchCredit from "./payment_verification/DispatchCredit.jsx";
+import DispatchAdvance from "./payment_verification/DispatchAdvance.jsx";
+
 import { LocationSearching } from "@mui/icons-material";
 
 const LandingPage = () => {
@@ -108,7 +111,8 @@ const LandingPage = () => {
                     <Route path="/locationmasterlist" element={<LocationMasterList />} />
                     <Route path="/locationmasteredit/:id" element={<LocationMasterEdit />} />
                     <Route path="/customerdashboard" element={<CustomerDashboard />} />
-                    <Route path="/dispatch/:id" element={<DispatchDashboard />} />
+                    <Route path="/dispatch/advance/:id" element={<DispatchAdvance />} />
+                    <Route path="/dispatch/credit/:id" element={<DispatchCredit />} />
                     <Route path="/payment-list" element={<PaymentList />} />
                     <Route path="/einvoice-list" element={<EInvoiceList />} />
                     <Route path="/payment-view/:order_no" element={<PaymentView />} />
