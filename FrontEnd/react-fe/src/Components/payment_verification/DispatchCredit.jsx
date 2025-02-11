@@ -106,8 +106,12 @@ function DispatchCredit() {
     let paidAmount = formData.order_header?.paid_amount || 0;
     const paymentAmount = parseFloat(paymentTable.payment_amount);
     if (isNaN(paymentAmount) || paymentAmount <= 0) {
-      alert("Invalid payment amount. Please enter a valid number.");
-      return;
+      Swal.fire({
+              title: "Invalid payment amount. Please enter a valid number.",
+              confirmButtonText: "OK",
+              width: "700px",
+            });
+            return;
     }
 
     try {
