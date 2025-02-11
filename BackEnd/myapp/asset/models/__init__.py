@@ -12,3 +12,4 @@ from .LocationMasterModel import LoactionMaster
 from .EInvoiceHeaderModel import EInvoiceHeader
 from .EInvoiceTransactionModel import EInvoiceTransaction
 from .RequestHeaderModel import RequestHeader
+from .InwardHeaderModel import InwardHeader

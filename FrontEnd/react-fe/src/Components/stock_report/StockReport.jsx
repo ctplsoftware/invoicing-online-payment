@@ -23,8 +23,8 @@ const StockReport = () => {
             selector: row => (
               <NavLink 
                 to={`/landingpage/stock-part-details/${row.id}`} 
-                state={{location_master_id: row.locationmaster_id, part_name: row.part_name, location_name: row.locationmaster_id__name}}>
-                {row.locationmaster_id__name}
+                state={{location_master_id: row.location_master_id, part_name: row.part_name, location_name: row.location_master_id__name}}>
+                {row.location_master_id__name}
               </NavLink>
             ),
             flex: 1
@@ -38,7 +38,7 @@ const StockReport = () => {
 
 
 
-        { name: 'Quantity', selector: row => row.total_inward_quantity, flex: 1 },
+        { name: 'Quantity', selector: row => row.total_quantity, flex: 1 },
         
     ];
 

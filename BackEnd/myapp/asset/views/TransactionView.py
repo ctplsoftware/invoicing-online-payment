@@ -109,6 +109,18 @@ def update_dispatched_completed(request):
             order_header = OrderHeader.objects.filter(id = request.data.get('order_header_id')).first()
 
             if order_header:
+                
+                inward_header = InwardHeader.objects.filter(location_master_id = order_header.location_master_id, part_master_id = order_header.part_master_id).first()
+                inward_header.total_quantity -= round(float(order_header.quantity), 2)
+                inward_header.save()
+                
+                part_master = PartMaster.objects.filter(id = order_header.part_master_id).first()
+
+                part_master.allocated_stock -= round(float(order_header.quantity), 2)
+                part_master.stock -= round(float(order_header.quantity), 2)
+
+                part_master.save()
+
                 if order_header.payment_type == 'credit':
                     order_header.dispatched_status = 'yes'
                     status = 'yes' if order_header.verified_status == 'yes' and order_header.paid_status == 'yes' else 'no'

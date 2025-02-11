@@ -42,8 +42,6 @@ const PartMaster = () => {
       newErrors.unit_price = "Unit price is required";
     if (!formData.uom.trim())
       newErrors.uom = "UOM is required";
-    if (!/^[0-9A-Za-z]{15}$/.test(formData.unit_price))
-      newErrors.unit_price = "Unit price must be a number!";
     if (!formData.hsn_code.trim())
       newErrors.hsn_code = "HSN code is required";
     if (formData.unit_price == 0 || formData.unit_price < 0)

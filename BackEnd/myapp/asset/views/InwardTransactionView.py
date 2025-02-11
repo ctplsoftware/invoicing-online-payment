@@ -9,50 +9,67 @@ from ..models.PartMasterModel import PartMaster
 from django.db.models import Sum
 from django.db import transaction
 
+from asset.models import *
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_inwardTransaction(request):
-    data = request.data.copy()
-    data['created_by'] = 1  # Defaulting created_by
-    data['updated_by'] = 1  # Defaulting updated_by
-     
-    location_id = data.get('location_id')
-    part_name = data.get('part_name')
-    quantity = data.get('inward_quantity', 0)  # Get the inward_quantity from the request
-
     try:
-        # Get the PartMaster object for the given part_name
-        part = PartMaster.objects.get(part_name=part_name)
-    except PartMaster.DoesNotExist:
-        return Response({'error': 'Part not found'}, status=status.HTTP_404_NOT_FOUND)
+        with transaction.atomic():
 
-    # Update locationmaster for the transaction
-    data['locationmaster'] = location_id
+            inward_header = InwardHeader.objects.filter(location_master_id = request.data.get('location_id')).first()
+            part_master = PartMaster.objects.filter(part_name = request.data.get('part_name')).first()
 
-    # Serialize the InwardTransaction data
-    serializer = InwardTransactionSerializer(data=data)
+            part_master.stock += round(float(request.data.get('inward_quantity')), 2)
 
-    if serializer.is_valid():
-        serializer.save()
+            part_master.save()
 
-        # Update the stock in PartMaster
-        try:
-            quantity_to_add = float(quantity)  # Convert quantity to float
-        except ValueError:
-            return Response({'error': 'Invalid quantity'}, status=status.HTTP_400_BAD_REQUEST)
+            if inward_header:
+                inward_transaction = {
+                    'part_name': request.data.get('part_name'),
+                    'inward_quantity': round(float(request.data.get('inward_quantity')), 2),
+                    'comments': request.data.get('comments'),
+                    'uom': 'tons',
+                    'locationmaster_id': request.data.get('location_id'),
+                    'created_by': 1,
+                    'updated_by': 1
+                }
 
-        if part.stock is None:  # Handle case where stock is None
-            part.stock = 0.0
+                inward_header.total_quantity += round(float(request.data.get('inward_quantity')), 2)
 
-        part.stock += quantity_to_add  # Add the quantity to existing stock (float addition)
-        part.save()
+                inward_header.save()
+                InwardTransaction.objects.create(**inward_transaction)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                part_master_id = PartMaster.objects.filter(part_name = request.data.get('part_name')).first().id
 
-    
-    
+                inward_header = {
+                    'part_name': request.data.get('part_name'),
+                    'total_quantity': round(float(request.data.get('inward_quantity')), 2),
+                    'part_master_id': part_master_id,
+                    'location_master_id': request.data.get('location_id')
+                }
+
+                inward_transaction = {
+                    'part_name': request.data.get('part_name'),
+                    'inward_quantity': round(float(request.data.get('inward_quantity')), 2),
+                    'comments': request.data.get('comments'),
+                    'uom': 'tons',
+                    'locationmaster_id': request.data.get('location_id'),
+                    'created_by': 1,
+                    'updated_by': 1
+                }
+
+                InwardHeader.objects.create(**inward_header)
+                InwardTransaction.objects.create(**inward_transaction)
+            
+            return Response('success')
+
+    except Exception as e:
+        print(e)
+        return Response('error')
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def edit_inward_transaction(request, id):
@@ -68,9 +85,9 @@ def edit_inward_transaction(request, id):
 @permission_classes([IsAuthenticated])
 def fetch_inward_transaction(request):
         
-        inwardtransaction_data = InwardTransaction.objects.values('part_name', 'locationmaster_id__name', 'locationmaster_id').annotate(total_inward_quantity=Sum('inward_quantity'))
-        print(inwardtransaction_data)
-        return Response(inwardtransaction_data)
+        inward_header = InwardHeader.objects.values('part_name', 'location_master_id__name', 'location_master_id', 'total_quantity')
+        print(inward_header)
+        return Response(inward_header)
 
 
 @api_view(['GET'])

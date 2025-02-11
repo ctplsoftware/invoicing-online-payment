@@ -525,7 +525,7 @@ function DispatchCredit() {
                       </Grid>
                   )}
 
-                  {formData?.order_header?.verified_status === "no" && formData?.order_header?.invoice_generated_status === "no" && (
+                  {formData?.order_header?.verified_status === "no" && formData?.order_header?.invoice_generated_status === "yes" && formData?.order_header?.location_master !== null && formData?.order_header?.dispatched_status !== "yes" && (
                     <Grid item>
                       <Button
                         variant="contained"
@@ -539,7 +539,7 @@ function DispatchCredit() {
                     </Grid>
                   )}          
 
-                  {formData?.order_header?.dispatched_status === "yes" && formData?.order_header?.verified_status === "no" && formData?.order_header.attached_status !== "no" && (
+                  {formData?.order_header?.dispatched_status === "yes" && formData?.order_header?.verified_status === "no" && formData?.order_header.attached_status !== "no" && formData?.order_header?.invoice_generated_status === "yes" && (
                     <Grid item>
                       <Button
                         variant="contained"
