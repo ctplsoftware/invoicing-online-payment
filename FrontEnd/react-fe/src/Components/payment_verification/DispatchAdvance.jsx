@@ -106,7 +106,7 @@ function DispatchAdvance() {
       showCancelButton: true,
         confirmButtonText: "Yes",
         cancelButtonText: "No",
-        width: "0p65x",
+        width: "650px",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -131,16 +131,6 @@ function DispatchAdvance() {
   };
 
 
-  function handleCreateEInvoice() {
-    var data = {
-      order_header_id: order_header_id,
-      order_number: formData.order_header?.order_number,
-    };
-    navigate(`/landingpage/generate-einvoice/${order_header_id}`, {
-      state: data,
-    });
-  }
-
   const handleVerify = async (e) => {
     const userDetails = localStorage.getItem("userDetails");
 
@@ -149,7 +139,11 @@ function DispatchAdvance() {
     let paidAmount = formData.order_header?.paid_amount || 0;
     const paymentAmount = parseFloat(paymentTable.payment_amount);
     if (isNaN(paymentAmount) || paymentAmount <= 0) {
-      alert("Invalid payment amount. Please enter a valid number.");
+      Swal.fire({
+        title: "Invalid payment amount. Please enter a valid number.",
+        confirmButtonText: "OK",
+        width: "700px",
+      });
       return;
     }
 
@@ -161,13 +155,29 @@ function DispatchAdvance() {
       };
 
       const response = await api.updateOrderHeaderVerifyStatus(orderheadedata);
-      if (response) {
-        alert("Working good");
-        setVerifyStatus(true);
-        window.location.reload();
+      console.log(response.verified_status,'response');
+      
+      if (response.verified_status == "yes") {
+        Swal.fire({
+          title: "Verified successfully! Do you want to generate an E-Invoice?",
+          showCancelButton: true,
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+          width: "700px",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            navigate(`/landingpage/generate-einvoice/${order_header_id}`, {
+            });
+          }else{
+            window.location.reload();
+          }
+        });
+        // setVerifyStatus(true);
       } else {
-        alert("Failed occurs");
+        window.location.reload();
       }
+
+      
     } catch (error) {
       console.error("Error adding part:", error);
     }
@@ -210,18 +220,11 @@ function DispatchAdvance() {
             api.update_dispatch_location(form_data)
                 .then(() => {
                     Swal.fire({
-                        title: "Location updated successfully! Do you want to generate an E-Invoice?",
-                        showCancelButton: true,
-                        confirmButtonText: "Yes",
-                        cancelButtonText: "No",
+                        title: "Location updated successfully!",
+                        confirmButtonText: "OK",
                         width: "700px",
                     }).then((result) => {
-                      if(result.isConfirmed){
-                        navigate(`/landingpage/generate-einvoice/${order_header_id}`, {
-                        });
-                      }else{
                         window.location.reload();
-                      }
                     });
                 })
                 .catch(() => {
@@ -341,14 +344,29 @@ function DispatchAdvance() {
                     ) : (
                         <p>No locations available</p>
                     )}
+                  <div style={{ marginRight: "110px", marginTop: "20px"}} >
+                    {/* show confirm button only for location */}
+                    {formData?.order_header?.location_master === null && (
+                        <Grid item>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => {
+                              handleLocation();
+                            }}
+                          >
+                          Confirm
+                          </Button>
+                        </Grid>
+                      )}
+                  </div>                   
                 </div>
-            )}
+                   )}
           </div>
 
             {/* Carts */}
-          {formData?.order_header?.payment_type === "credit" &&
+          {formData?.order_header?.payment_type === "advance" &&
           formData?.order_header?.location_master !== null &&
-          dispatchStatus &&
            (
 
             <div
@@ -475,9 +493,9 @@ function DispatchAdvance() {
           )}
         </div>
           {/* input fields */}
-        {formData?.order_header?.payment_type === "credit" &&
+        {formData?.order_header?.payment_type === "advance" &&
           formData?.order_header?.location_master !== null &&
-          dispatchStatus &&
+          formData?.order_header?.verified_status === "no" &&
           (
               <Card
                 sx={{
@@ -528,7 +546,7 @@ function DispatchAdvance() {
           )}
 
 
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", justifyContent: "space-between"}}>
           <div>
             <button
               style={{ marginLeft: "-40%", marginTop: "6%" }}
@@ -554,26 +572,29 @@ function DispatchAdvance() {
               marginLeft="-135px"
               marginTop="-60px"
             >
-              {/* For Credit Payment Type */}
-              {formData?.order_header?.payment_type === "credit" && (
+              {/* For advance Payment Type */}
+              {formData?.order_header?.payment_type === "advance" && (
                 <>
-                {/* show confirm button only for location */}
-                {formData?.order_header?.location_master === null && (
-                      <Grid item>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => {
-                            handleLocation();
-                          }}
-                        >
-                        Confirm
-                        </Button>
-                      </Grid>
+          
+                  {/* Show Verify button if dispatchStatus is true */}
+                  {formData?.order_header?.location_master !== null &&
+                  formData?.order_header?.verified_status === "no" && (
+                    <Grid item>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                          handleVerify();
+                        }}
+                      >
+                        VERIFY
+                      </Button>
+                    </Grid>
                   )}
 
                   {/* Show Dispatch button only if dispatchStatus is false */}
-                  {!dispatchStatus && generateStatus && (
+                  {!dispatchStatus && generateStatus &&
+                  formData?.order_header?.verified_status === "yes" && (
                     <Grid item>
                       <Button
                         variant="contained"
@@ -586,22 +607,6 @@ function DispatchAdvance() {
                       </Button>
                     </Grid>
                   )}          
-
-                  {/* Show Verify button if dispatchStatus is true */}
-                  {dispatchStatus && (
-                    <Grid item>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        disabled={isAttachVerifiying}
-                        onClick={() => {
-                          handleVerify();
-                        }}
-                      >
-                        VERIFY
-                      </Button>
-                    </Grid>
-                  )}
                 </>
               )}
 

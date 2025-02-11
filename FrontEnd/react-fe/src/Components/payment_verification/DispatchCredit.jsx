@@ -280,26 +280,41 @@ function DispatchCredit() {
             </div>
           </div>
 
-        {/* select Location */}
-          <div>            
-            {formData?.order_header?.location_master === null && (
-                <div className="location-container">
-                    <h2>Select Location</h2>
-                    {locationVal && Array.isArray(locationVal) && locationVal.length > 0 ? (
-                        <select id="location" name="location">
-                            {locationVal.map((loc) => (
-                                <option key={loc.id} value={loc.id}>
-                                    {loc.name}
-                                </option>
-                            ))}
-                        </select>
-                    ) : (
-                        <p>No locations available</p>
-                    )}
-                </div>
-            )}
-          </div>
-
+         {/* select Location */}
+                  <div>            
+                    {formData?.order_header?.location_master === null && (
+                        <div className="location-container">
+                            <h2>Select Location</h2>
+                            {locationVal && Array.isArray(locationVal) && locationVal.length > 0 ? (
+                                <select id="location" name="location">
+                                    {locationVal.map((loc) => (
+                                        <option key={loc.id} value={loc.id}>
+                                            {loc.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            ) : (
+                                <p>No locations available</p>
+                            )}
+                          <div style={{ marginRight: "110px", marginTop: "20px"}} >
+                            {/* show confirm button only for location */}
+                            {formData?.order_header?.location_master === null && (
+                                <Grid item>
+                                  <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => {
+                                      handleLocation();
+                                    }}
+                                  >
+                                  Confirm
+                                  </Button>
+                                </Grid>
+                              )}
+                          </div>                   
+                        </div>
+                           )}
+                  </div>
             {/* Carts */}
           {formData?.order_header?.payment_type === "credit" &&
           formData?.order_header?.location_master !== null &&
@@ -511,20 +526,6 @@ function DispatchCredit() {
             >
               {formData?.order_header?.payment_type === "credit" && (
                 <>
-                {formData?.order_header?.location_master === null && (
-                      <Grid item>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => {
-                            handleLocation();
-                          }}
-                        >
-                        Confirm
-                        </Button>
-                      </Grid>
-                  )}
-
                   {formData?.order_header?.verified_status === "no" && formData?.order_header?.invoice_generated_status === "yes" && formData?.order_header?.location_master !== null && formData?.order_header?.dispatched_status !== "yes" && (
                     <Grid item>
                       <Button

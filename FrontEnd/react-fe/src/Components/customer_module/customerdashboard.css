@@ -69,11 +69,14 @@ body, html {
     overflow-y: auto !important;
 }
 
-.input-border {
+.input-border, select {
     box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.2);
     padding: 10px;
     border-radius: 30px;
     border: 1px solid #81878d !important;
   }
+
+
+
   
 

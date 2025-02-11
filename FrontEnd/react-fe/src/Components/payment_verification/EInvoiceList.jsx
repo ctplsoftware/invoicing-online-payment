@@ -28,7 +28,7 @@ export default function EInvoiceList(){
             selector: (row) => {
               const isNavLink =
                 (row.payment_type === "credit" ||
-                (row.payment_type === "advanced" && row.verified_status === "yes")) && row.invoice_generated_status == 'no';
+                (row.payment_type === "advance" && row.verified_status === "yes")) && row.invoice_generated_status == 'no';
           
               return isNavLink ? (
                 <NavLink
