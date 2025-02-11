@@ -2,7 +2,7 @@ import Swal from "sweetalert2";
 import {API} from "./API";
 
 
-export async function generateEInvoiceAlert(form_data) {
+export async function generateEInvoiceAlert(form_data, navigate, payment_type) {
   const api = new API();
 
   try {
@@ -38,12 +38,15 @@ export async function generateEInvoiceAlert(form_data) {
         data: form_data
       };
 
+      const url = payment_type == 'advance' ? `/landingpage/dispatch/advance/${form_data.order_header_id}` : `/landingpage/dispatch/credit/${form_data.order_header_id}`;
+        
       const response = await api.generateEInvoice(data);
 
-
-
       if (response === "success") {
-        Swal.fire("Success!", "E-Invoice generated successfully!", "success");
+        Swal.fire("Success!", "E-Invoice generated successfully!", "success")
+        .then(() => {
+          navigate(url);
+        });
       } 
       else if(response == 'Invalid Credentials'){
         Swal.fire("Error!", "Invalid Credentials", "error");

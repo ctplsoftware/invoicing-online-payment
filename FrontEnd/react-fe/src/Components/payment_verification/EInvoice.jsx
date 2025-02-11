@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 
 import Container from "react-bootstrap/Container";
 import permissionList from "../../permission.js";
@@ -12,12 +12,24 @@ import { API } from "../../API.js";
 export default function EInvoice() {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const { id } = useParams();
+
   const api = new API();
   const permissions = permissionList();
 
-  const order_data = location.state || {};
-  const order_header_id = order_data?.order_header_id;
-  const order_number = order_data?.order_number;
+  const [orderData, setOrderData] = useState([]);
+
+  const order_header_id = id;
+
+  useEffect(() => {
+    async function get(){
+      const response = await api.fetch_dispatchById(id);      
+      setOrderData(response);
+    }
+    get();
+
+  }, []);
 
   const [data, setData] = useState({
     order_header_id: order_header_id,
@@ -52,7 +64,7 @@ export default function EInvoice() {
             <Form.Control
               type="text"
               name="name"
-              value={order_number}
+              value={orderData?.order_header?.order_number}
               className="input-border"
               readOnly
             />
@@ -152,8 +164,9 @@ export default function EInvoice() {
         </Row>
 
         <div style={{ marginRight: "80px" }}>
-          <button
-            onClick={() => generateEInvoiceAlert(data)}
+
+          {orderData?.order_header?.invoice_generated_status === 'no' && (<button
+            onClick={() => generateEInvoiceAlert(data, navigate, orderData?.order_header?.payment_type)}
             style={{
               padding: "10px 20px",
               backgroundColor: "#1976d2",
@@ -167,7 +180,7 @@ export default function EInvoice() {
             }}
           >
             GENERATE E-INVOICE
-          </button>
+          </button>)}
 
           <button
             onClick={() => handleBack()}

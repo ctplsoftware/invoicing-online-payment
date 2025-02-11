@@ -335,7 +335,7 @@ def get_order_list(request):
             status = request.query_params.get('status')
             completed_status = 'no' if status == 'pending' else 'yes'
             customer_id = request.query_params.get('customer_id')
-            order_list= list(OrderHeader.objects.filter(completed_status = completed_status, customer_master_id = customer_id).annotate(order_no = F('order_number')).values('order_no'))
+            order_list= list(OrderHeader.objects.filter(completed_status = completed_status, customer_master_id = customer_id).annotate(order_no = F('order_number')).values('order_no').order_by('-id'))
 
             
         

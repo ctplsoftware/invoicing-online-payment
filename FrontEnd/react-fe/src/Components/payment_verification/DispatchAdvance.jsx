@@ -24,19 +24,19 @@ import {
 } from "@mui/material";
 import { display, styled } from "@mui/system";
 import { API } from "../../API.js";
-import { useParams } from "react-router-dom";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import moment from "moment";
 import { BaseURL } from "../../utils.js";
 import { alertWarning, cancelEInvoiceAlert } from "../../alert.js";
 
 function DispatchAdvance() {
-  //const [selectedImage, setSelectedImage] = useState(vickyimg);
+  
 
   const api = new API();
   const navigate = useNavigate();
   const location = useLocation();
-  const order_header_id = location.state?.order_header_id;
+  const {id} = useParams();
+  const order_header_id = id;
   
 
   const [formData, setFormData] = useState({});  

@@ -21,7 +21,7 @@ import {
   getBottomNavigationUtilityClass,
 } from "@mui/material";
 import { API } from "../../API.js";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useNavigate, useLocation, useParams} from "react-router-dom";
 import moment from "moment";
 import { BaseURL } from "../../utils.js";
 
@@ -31,7 +31,7 @@ function DispatchCredit() {
   const navigate = useNavigate();
   const location = useLocation();
   const {id} = useParams();
-  const order_header_id = location.state?.order_header_id;
+  const order_header_id = id;
   
   const [formData, setFormData] = useState({});  
   const [paymentTable, setPaymentTable] = useState({});
@@ -445,7 +445,7 @@ function DispatchCredit() {
           {/* input fields */}
         {formData?.order_header?.payment_type === "credit" &&
           formData?.order_header?.location_master !== null &&
-          formData?.order_header?.dispatched_status === "yes" && formData?.order_header.attached_status !== "no" &&
+          formData?.order_header?.dispatched_status === "yes" && formData?.order_header.attached_status !== "no" && formData?.order_header.verified_status !== "yes" &&  
           (
               <Card
                 sx={{

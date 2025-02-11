@@ -119,6 +119,7 @@ def update_dispatched_completed(request):
                 part_master.allocated_stock -= round(float(order_header.quantity), 2)
                 part_master.stock -= round(float(order_header.quantity), 2)
 
+
                 part_master.save()
 
                 if order_header.payment_type == 'credit':
