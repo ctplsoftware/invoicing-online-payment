@@ -59,7 +59,6 @@ def get_order_details(request):
                     'location_master': location_master
                 }
 
-                print(response_data)
 
                 return Response(response_data)
 
@@ -239,6 +238,8 @@ def create_e_invoice(request):
 
                 order_header.save()
 
+                if order_header.invoice_generated_status == 'yes':
+                    return Response('Invoice already generated.')
                 
 
                 client_id = settings.CLIENT_ID

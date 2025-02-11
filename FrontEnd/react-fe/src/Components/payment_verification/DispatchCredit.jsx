@@ -31,7 +31,6 @@ import { BaseURL } from "../../utils.js";
 import { alertWarning, cancelEInvoiceAlert } from "../../alert.js";
 
 function DispatchCredit() {
-  //const [selectedImage, setSelectedImage] = useState(vickyimg);
 
   const api = new API();
   const navigate = useNavigate();
@@ -48,7 +47,6 @@ function DispatchCredit() {
   const [balanceLimit, setBalanceLimit] = useState(null);
   const [locationVal, setlocationVal] = useState(null);
   const [remainingAmount, setRemainingAmount] = useState(null);
-  const [isAttachVerifiying, setIsAttachVerifying] = useState(false);
   const [isusedLimit, setUsedLimit] = useState(null);
   const [isVisible, setIsVisible] = useState(true);
 
@@ -56,33 +54,20 @@ function DispatchCredit() {
     const fetchData = async () => {
       try {
         const ordermasterfetch = await api.fetch_dispatchById(order_header_id);
-        console.log(ordermasterfetch);
 
         setFormData(ordermasterfetch);
-        setDispatchStatus(
-          ordermasterfetch?.order_header?.dispatched_status === "yes"
-        );
+        setDispatchStatus(ordermasterfetch?.order_header?.dispatched_status === "yes");
         setLocationStatus (ordermasterfetch?.order_header?.location_id !== null);
-        setVerifyStatus(
-          ordermasterfetch?.order_header?.verified_status === "yes"
-        );
+        setVerifyStatus(ordermasterfetch?.order_header?.verified_status === "yes");
         setVerifyStatus(ordermasterfetch?.order_header?.location_name !== null);
-        setGenerateStatus(
-          ordermasterfetch?.order_header?.invoice_generated_status === "yes"
-        );
-        setIsAttachVerifying(
-          ordermasterfetch?.order_header?.attached_status === "no"
-        );
-        const balance_limit_calculate =
-          ordermasterfetch?.customer_data?.credit_limit -
-          ordermasterfetch?.customer_data?.used_limit;
+        setGenerateStatus(ordermasterfetch?.order_header?.invoice_generated_status === "yes");
+        
+
+        const balance_limit_calculate = ordermasterfetch?.customer_data?.credit_limit - ordermasterfetch?.customer_data?.used_limit;
         const locationVal = ordermasterfetch?.location_master;
-        console.log(locationVal, "locationVal");
         setlocationVal(locationVal);
         setBalanceLimit(balance_limit_calculate);
-        const reaming_balance =
-          ordermasterfetch?.order_header?.total_amount -
-          ordermasterfetch?.order_header?.paid_amount;
+        const reaming_balance = ordermasterfetch?.order_header?.total_amount - ordermasterfetch?.order_header?.paid_amount;
         setRemainingAmount(reaming_balance);
 
         const used_limit_balance = ordermasterfetch?.customer_data?.used_limit;
@@ -98,7 +83,6 @@ function DispatchCredit() {
   function formatToLocalTime(dateString) {
     return moment(dateString).format("LLLL");
   }
-
 
   const handleDispatch = async (e) => {
     Swal.fire({
@@ -129,17 +113,6 @@ function DispatchCredit() {
       }
     });
   };
-
-
-  function handleCreateEInvoice() {
-    var data = {
-      order_header_id: order_header_id,
-      order_number: formData.order_header?.order_number,
-    };
-    navigate(`/landingpage/generate-einvoice/${order_header_id}`, {
-      state: data,
-    });
-  }
 
   const handleVerify = async (e) => {
     const userDetails = localStorage.getItem("userDetails");
@@ -233,7 +206,7 @@ function DispatchCredit() {
                 });
         }
     });
-};
+  };
 
 
 
@@ -348,7 +321,7 @@ function DispatchCredit() {
             {/* Carts */}
           {formData?.order_header?.payment_type === "credit" &&
           formData?.order_header?.location_master !== null &&
-          dispatchStatus &&
+          dispatchStatus && formData?.order_header.attached_status !== "no" &&
            (
 
             <div
@@ -477,7 +450,7 @@ function DispatchCredit() {
           {/* input fields */}
         {formData?.order_header?.payment_type === "credit" &&
           formData?.order_header?.location_master !== null &&
-          dispatchStatus &&
+          dispatchStatus && formData?.order_header.attached_status !== "no" &&
           (
               <Card
                 sx={{
@@ -554,10 +527,8 @@ function DispatchCredit() {
               marginLeft="-135px"
               marginTop="-60px"
             >
-              {/* For Credit Payment Type */}
               {formData?.order_header?.payment_type === "credit" && (
                 <>
-                {/* show confirm button only for location */}
                 {formData?.order_header?.location_master === null && (
                       <Grid item>
                         <Button
@@ -572,7 +543,6 @@ function DispatchCredit() {
                       </Grid>
                   )}
 
-                  {/* Show Dispatch button only if dispatchStatus is false */}
                   {!dispatchStatus && generateStatus && (
                     <Grid item>
                       <Button
@@ -587,13 +557,11 @@ function DispatchCredit() {
                     </Grid>
                   )}          
 
-                  {/* Show Verify button if dispatchStatus is true */}
-                  {dispatchStatus && (
+                  {dispatchStatus && formData?.order_header?.verified_status === "no" && formData?.order_header.attached_status !== "no" && (
                     <Grid item>
                       <Button
                         variant="contained"
                         color="primary"
-                        disabled={isAttachVerifiying}
                         onClick={() => {
                           handleVerify();
                         }}
