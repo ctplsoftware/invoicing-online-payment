@@ -175,8 +175,12 @@ def update_verified_completed(request):
                     customer_master.save()
 
                 order_header.save()
+
+                response_data = {
+                    'verified_status': order_header.verified_status
+                }
                 
-                return Response('success')
+                return Response(response_data)
 
 
 
