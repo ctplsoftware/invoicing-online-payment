@@ -29,7 +29,7 @@ def get_order_list(request):
 def get_einvoice_order_list(request):
     try:
         with transaction.atomic():
-            response_data = EInvoiceHeader.objects.values('order_header_id', 'order_header_id__order_number', 'Irn', 'AckDt', 'order_header_id__customer_master_id__gstin_number', 'order_header_id__customer_name', 'order_header_id__amount_for_quantity', 'order_header_id__cgst_amount', 'order_header_id__sgst_amount', 'order_header_id__igst_amount', 'order_header_id__total_amount', 'order_header_id__delivery_address')
+            response_data = EInvoiceHeader.objects.values('order_header_id', 'order_header_id__order_number', 'Irn', 'AckDt', 'order_header_id__customer_master_id__gstin_number', 'order_header_id__customer_name', 'order_header_id__amount_for_quantity', 'order_header_id__cgst_amount', 'order_header_id__sgst_amount', 'order_header_id__igst_amount', 'order_header_id__total_amount', 'order_header_id__delivery_address', 'einvoice_status', 'order_header_id__completed_status')
             return Response(response_data)
     
     except Exception as e:

@@ -322,6 +322,19 @@ class API {
     }
   }
 
+  async cancel_order(data){
+    try {
+      const response = await axios.put(
+        `${BaseURL}/cancel-order`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error updating customer:", error);
+    }
+
+  }
+
   // E Invoice
 
   async get_einvoice_list() {

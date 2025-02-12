@@ -66,7 +66,8 @@ urlpatterns = [
     path('einvoice-list', TransactionView.get_einvoice_list),
     path('einvoice-create', TransactionView.create_e_invoice),
     path('einvoice-cancel', TransactionView.cancel_e_invoice),
- 
+    path('cancel-order', TransactionView.cancel_order),
+
 
 
     #android 

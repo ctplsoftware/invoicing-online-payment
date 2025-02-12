@@ -30,6 +30,9 @@ import EInvoiceReport from "./reports/EInvoiceReport.jsx";
 import EInvoiceList from "./payment_verification/EInvoiceList.jsx";
 import DispatchCredit from "./payment_verification/DispatchCredit.jsx";
 import DispatchAdvance from "./payment_verification/DispatchAdvance.jsx";
+import OrderList from "./payment_verification/OrderList.jsx";
+import CancelOrder from "./payment_verification/CancelOrder.jsx";
+import OrderDetailedReport from "./reports/OrderDetailedReport.jsx";
 
 import { LocationSearching } from "@mui/icons-material";
 
@@ -66,6 +69,9 @@ const LandingPage = () => {
         '/landingpage/generate-einvoice/': 'Generate E-Invoice',
         '/landingpage/order-reports': 'Order Reports',
         '/landingpage/einvoice-reports': 'E-Invoice Reports',
+        '/landingpage/cancel-orders': 'Cancel Order',
+        '/landingpage/cancel-order/': 'Cancel Order',
+        '/landingpage/order-details/': 'Detailed Order Report'
     };
 
     const getRouteTitle = (pathname) => {
@@ -120,6 +126,9 @@ const LandingPage = () => {
                     <Route path="/einvoice-print" element={<Invoice />} />
                     <Route path="/order-reports" element={<OrderReport />} />
                     <Route path="/einvoice-reports" element={<EInvoiceReport />} />
+                    <Route path="/cancel-orders" element={<OrderList />} />
+                    <Route path="/cancel-order/:id" element={<CancelOrder />} />
+                    <Route path="/order-details/:id" element={<OrderDetailedReport />} />
 
                     
                 </Routes>
