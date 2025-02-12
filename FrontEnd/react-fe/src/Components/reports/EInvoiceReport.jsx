@@ -33,6 +33,7 @@ export default function EInvoiceReport() {
         "Total Amount": row.order_header_id__total_amount ?? 0,
         "Tax Percentage": row.tax_percentage ?? "N/A",
         "Invoice Date": row.AckDt ? new Date(row.AckDt).toLocaleDateString("en-IN") : "N/A",
+        "Status": row.einvoice_status
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
@@ -154,6 +155,14 @@ export default function EInvoiceReport() {
       },
       flex: 1.5,
     },
+
+    {
+      name: "Status",
+      cell: (row) => row.einvoice_status ? row.einvoice_status.charAt(0).toUpperCase() + row.einvoice_status.slice(1) : 'Generated',
+      flex: 1.5,
+    },
+
+
   ];
 
   return (

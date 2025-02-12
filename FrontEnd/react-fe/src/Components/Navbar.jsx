@@ -163,6 +163,9 @@ const Navbar1 = ({ title }) => {
                     <NavDropdown.Item href="/landingpage/einvoice-list">
                       E-Invoice List Process{" "}
                     </NavDropdown.Item>
+                    <NavDropdown.Item href="/landingpage/cancel-orders">
+                      Cancel Order Process{" "}
+                    </NavDropdown.Item>
                     <NavDropdown.Item href="/landingpage/payment-list">
                       Payment List Process{" "}
                     </NavDropdown.Item>

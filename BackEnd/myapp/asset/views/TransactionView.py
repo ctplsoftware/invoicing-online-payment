@@ -711,24 +711,93 @@ def cancel_e_invoice(request):
 
 @api_view(['PUT'])
 def cancel_order(request):
+    julian_date = base33()
+    current_year = str(datetime.datetime.now().year)[-2:]
+    today_count = get_count_requestid(RequestHeader)
+
+    requestid = f"REQUESTID{julian_date}{current_year}{today_count+1:04}"
+    request_header = {
+            'request_id': requestid,
+            'purpose': 'cancel-irn'
+    }
+
+    RequestHeader.objects.create(**request_header)
+
+
 
     try:
         with transaction.atomic():
+
+            username = request.data.get('username')
+            password = request.data.get('password')
+
+            user = authenticate(username=username, password=password)
+
+            if not user:
+                return Response('Invalid Credentials')
+
             order_header = OrderHeader.objects.filter(id = request.data.get('order_header_id')).first()
             
-
-
             if order_header:
 
-                inward_transaction = InwardTransaction.objects.filter(locationmaster_id = order_header.location_master_id).first()
                 customer_master = CustomerMaster.objects.filter(id = order_header.customer_master_id).first()
                 part_master = PartMaster.objects.filter(id = order_header.part_master_id).first()
 
                 order_header.completed_status = 'cancelled'
+                irn = order_header.irn_invoice_number
 
                 e_invoice_header = EInvoiceHeader.objects.filter(order_header_id = order_header.id).first()
 
+
                 if e_invoice_header:
+
+                    client_id = settings.CLIENT_ID
+                    client_secret = settings.CLIENT_SECRET
+
+                    user_name = settings.USERNAME
+                    password = settings.PASSWORD
+                    gstin = settings.GSTIN
+
+                    authentication_url = settings.AUTHENTICATION_URL
+                    authentication_headers = {
+                        'Content-Type': 'application/json',
+                        'gspappid': client_id,
+                        'gspappsecret': client_secret
+                    }
+
+                    authentication_response_object = requests.post(authentication_url, headers = authentication_headers)
+                    authentication_response = authentication_response_object.json()
+
+                    
+
+                    access_token = authentication_response['access_token']
+
+
+                    # Cancel E-Invoice
+
+                    cancel_irn_url = settings.CANCEL_IRN_URL
+                    cancel_irn_headers = {
+                        'Content-Type': 'application/json',
+                        'Authorization': f"Bearer {str(access_token)}",
+                        'user_name': user_name,
+                        'password': password,
+                        'gstin': gstin,
+                        'requestid': requestid
+                    }
+
+                    cancel_irn_request_body = {
+                        'irn': irn,
+                        'cnlrsn': '1',
+                        'cnlrem': 'Wrong Entry'
+                    }
+
+
+
+                    cancel_irn_response_object = requests.post(cancel_irn_url, json = cancel_irn_request_body, headers = cancel_irn_headers)
+                    cancel_irn_response = cancel_irn_response_object.json()['message']
+
+                    print(cancel_irn_response)
+
 
                     e_invoice_header.einvoice_status = 'cancelled'
                     e_invoice_transaction = EInvoiceTransaction.objects.filter(e_invoice_header_id = e_invoice_header.id).first()
@@ -736,24 +805,30 @@ def cancel_order(request):
 
                     e_invoice_header.save()
                     e_invoice_transaction.save()
-
-                    response = cancel_e_invoice(request)
-
-                    if response == 'success':
-                        print('done')
+                
+                
+                if order_header.dispatched_status == 'yes':
+                    
+                    inward_header = InwardHeader.objects.filter(location_master_id = order_header.location_master_id).first()
+                    part_master.stock += round(float(order_header.quantity), 2)
+                    inward_header.total_quantity += round(float(order_header.quantity), 2)
+                    inward_header.save()
 
                 
+                else:
+                    part_master.allocated_stock -= round(float(order_header.quantity), 2)
 
-                part_master.allocated_stock = round(float(part_master.allocated_stock), 2) - round(float(order_header.quantity), 2)
-                customer_master.used_limit = round(float(customer_master.used_limit), 2) -  round(float(order_header.total_amount), 2) 
-                inward_transaction.inward_quantity = round(float(inward_transaction.inward_quantity), 2) + round(float(order_header.quantity), 2)
+                if order_header.payment_type == 'credit':
+                    customer_master.used_limit -= round(float(order_header.total_amount), 2)
+
 
 
                 
                 order_header.save()
-                inward_transaction.save()
                 customer_master.save()
                 part_master.save()
+
+                return Response('success')
 
 
             else:

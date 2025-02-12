@@ -62,12 +62,12 @@ export async function generateEInvoiceAlert(form_data, navigate, payment_type) {
   }
 }
 
-export async function cancelEInvoiceAlert(order_header_id, irn) {
+export async function cancelOrder(order_header_id) {
   const api = new API();
 
   try {
     const { value: formValues } = await Swal.fire({
-      title: "Are you sure you want to cancel the e-invoice?",
+      title: "Are you sure you want to cancel the order?",
       html:
         '<input id="swal-username" class="swal2-input" placeholder="Username">' +
         '<input id="swal-password" type="password" class="swal2-input" placeholder="Password">',
@@ -96,15 +96,16 @@ export async function cancelEInvoiceAlert(order_header_id, irn) {
         username: formValues.username,
         password: formValues.password,
         order_header_id: order_header_id,
-        irn: irn
       };
 
-      const response = await api.cancelEInvoice(data);
+      const response = await api.cancel_order(data);
 
 
 
       if (response === "success") {
-        Swal.fire("Success!", "E-Invoice and order cancelled successfully!", "success");
+        Swal.fire("Success!", "Order cancelled successfully!", "success").then(() => {
+          window.location.reload();
+        });
       } 
       else if(response == 'Invalid Credentials'){
         Swal.fire("Error!", "Invalid Credentials", "error");
