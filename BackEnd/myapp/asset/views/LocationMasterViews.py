@@ -8,6 +8,7 @@ from django.utils import timezone
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_locationmaster(request):
     data = request.data.copy() 
     data['created_by'] = request.data.get("user_id")
@@ -18,6 +19,7 @@ def create_locationmaster(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_locationmaster(request):
         
         locationMaster_data = LoactionMaster.objects.all()
@@ -25,6 +27,7 @@ def get_locationmaster(request):
         return Response(serializer.data)
     
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def editGet_locationmaster(request, id):
     try:
         LocationMaster = LoactionMaster.objects.get(id=id)
@@ -35,6 +38,7 @@ def editGet_locationmaster(request, id):
     return Response(serializer.data, status=status.HTTP_200_OK)    
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_locationmaster(request, id):
     try:
         LocationMasters = LoactionMaster.objects.get(id=id)

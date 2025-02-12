@@ -1,4 +1,5 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
 
@@ -21,6 +22,7 @@ from decimal import Decimal
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_order_details_all(request):
         orderheader_data = OrderHeader.objects.all().order_by('-id')
         serializer = OrderheaderSerializer(orderheader_data, many=True)
@@ -28,6 +30,7 @@ def get_order_details_all(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_order_details(request):
     response_data = {}
     try:
@@ -72,6 +75,7 @@ def get_order_details(request):
 
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_dispatch_location(request):
     try:
         with transaction.atomic():
@@ -102,6 +106,7 @@ def update_dispatch_location(request):
 
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_dispatched_completed(request):
     try:
         with transaction.atomic():
@@ -155,6 +160,7 @@ def update_dispatched_completed(request):
 
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_verified_completed(request):
     try:
         with transaction.atomic():
@@ -207,6 +213,7 @@ def update_verified_completed(request):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_e_invoice(request):
 
     julian_date = base33()
@@ -590,6 +597,7 @@ def create_e_invoice(request):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def cancel_e_invoice(request):
 
     julian_date = base33()
@@ -710,6 +718,7 @@ def cancel_e_invoice(request):
     
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def cancel_order(request):
     julian_date = base33()
     current_year = str(datetime.datetime.now().year)[-2:]
@@ -840,6 +849,7 @@ def cancel_order(request):
     
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_einvoice_list(request):
     try:
         with transaction.atomic():
