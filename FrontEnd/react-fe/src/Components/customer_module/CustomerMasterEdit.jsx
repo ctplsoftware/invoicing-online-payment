@@ -11,7 +11,7 @@ import permissionList from "../../permission.js";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
-import { alertWarning } from "../../alert.js";
+import { alertWarning, alertSuccess, alertError } from "../../alert.js";
 
 const EditCustomerForm = ({}) => {
   const { id } = useParams();
@@ -91,7 +91,6 @@ const EditCustomerForm = ({}) => {
       newErrors.contact_person = "Contact person is required";
     if (!/^\d{10}$/.test(currentCustomer.contact_number))
       newErrors.contact_number = "Contact number must be a 10-digit number";
-
     return newErrors;
 
     
@@ -120,11 +119,11 @@ const EditCustomerForm = ({}) => {
       await api.customermaster_update(
         updatedCustomer,
         (response) => {
-          console.log("Update successful:", response);
+          alertSuccess("Update successful:", response);
           navigate("/landingpage/customermasterdashboard");
         },
         (error) => {
-          console.error("Update failed:", error);
+          alertError("Update failed:", error);
         }
       );
       setEditMode(false);

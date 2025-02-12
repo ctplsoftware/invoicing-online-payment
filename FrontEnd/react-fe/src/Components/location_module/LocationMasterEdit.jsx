@@ -8,7 +8,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { alertWarning } from "../../alert.js";
+import { alertWarning, alertSuccess, alertError } from "../../alert.js";
 const LocationMasterEdit = () => {
   const api = new API();
   const navigate = useNavigate();
@@ -79,11 +79,11 @@ const LocationMasterEdit = () => {
     };
     try {
       await api.update_locationmaster(locationdetails);
-      alert("Update successful");
+      alertSuccess("Update successful");
       navigate("/landingpage/locationmasterlist");
     } catch (error) {
       console.error("Update failed:", error);
-      alert("Update failed. Please try again.");
+      alertError("Update failed. Please try again.");
     }
   };
 
@@ -156,6 +156,7 @@ const LocationMasterEdit = () => {
                     Save
                   </Button>
                   <Button
+                    onClick={handleBack}
                     style={{
                       padding: "10px 20px",
                       backgroundColor: "rgb(73 81 88)",

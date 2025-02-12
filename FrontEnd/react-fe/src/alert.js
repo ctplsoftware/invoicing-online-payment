@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 import {API} from "./API";
+import './alert.css';
 
 
 export async function generateEInvoiceAlert(form_data, navigate, payment_type) {
@@ -120,39 +121,56 @@ export async function cancelEInvoiceAlert(order_header_id, irn) {
   }
 }
 
-export function alertWarning(text){
+export function alertWarning(text) {
   Swal.fire({
     icon: 'warning',
-    title: `${text}`,
+    title: 'Warning!',
+    text: text,
+    confirmButtonText: 'OK',
     customClass: {
-      popup: 'custom-toast-popup-2',
-      icon: 'custom-toast-icon',
-      title: 'custom-toast-title',
-      confirmButton: 'custom-confirm-button',
+      popup: 'custom-alert-popup',
+      icon: 'custom-alert-icon',
+      title: 'custom-alert-title',
+      confirmButton: 'custom-alert-button',
     },
+    buttonsStyling: false,
   });
 }
 
-export function alertSuccess(successMessage, navigate, navigationComponent){
-  Swal.fire({
-      icon: 'success',
-      title: `${successMessage}`,
-      customClass: {
-        popup: 'custom-toast-popup',
-        icon: 'custom-toast-icon',
-        title: 'custom-toast-title',
-        confirmButton: 'custom-confirm-button',
-      },
 
-    }).then(() => {
-      if(navigationComponent != 0){
-        navigate(`${navigationComponent}`);
-      }
-      else{
-        window.location.reload();
-      }
-    });
+export function alertSuccess(successMessage, navigate, navigationComponent) {
+  Swal.fire({
+    icon: 'success',
+    title: 'Success!',
+    text: successMessage,
+    confirmButtonText: 'OK',
+    customClass: {
+      popup: 'custom-success-popup',
+      icon: 'custom-success-icon',
+      title: 'custom-success-title',
+      confirmButton: 'custom-success-button',
+    },
+    buttonsStyling: false,
+  });
 }
+
+export function alertError(text) {
+  Swal.fire({
+    icon: 'error',
+    title: 'Error!',
+    text: text,
+    confirmButtonText: 'OK',
+    customClass: {
+      popup: 'custom-alert-popup',
+      icon: 'custom-alert-icon',
+      title: 'custom-alert-title',
+      confirmButton: 'custom-alert-button',
+    },
+    buttonsStyling: false,
+  });
+}
+
+
 
     
 

@@ -9,7 +9,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { alertWarning } from "../../alert.js";
+import { alertSuccess, alertWarning, alertError } from "../../alert.js";
 
 const PartMasterEdit = () => {
   const api = new API();
@@ -37,14 +37,16 @@ const PartMasterEdit = () => {
 
   const validateForm = () => {
     const newErrors = {};
+    console.log(formData,'formData');
+    
 
     if (!formData.part_name.trim())
       newErrors.part_name = "Part name is required";
-    if (!formData.unit_price.trim())
+    if (!formData.unit_price)
       newErrors.unit_price = "Unit price is required";
     if (!formData.uom.trim()) newErrors.uom = "UOM is required";
-    if (!/^[0-9A-Za-z]{15}$/.test(formData.unit_price))
-      newErrors.unit_price = "Unit price must be a number!";
+    if (!/^\d+$/.test(formData.unit_price)) 
+      newErrors.unit_price = "Unit price must be a number!";    
     if (!formData.hsn_code.trim()) newErrors.hsn_code = "HSN code is required";
     if (formData.unit_price == 0 || formData.unit_price < 0)
       newErrors.hsn_code = "Unit price must be greater than 0.";
@@ -95,11 +97,11 @@ const PartMasterEdit = () => {
 
     try {
       await api.update_part_master(partmasterdatas);
-      alert("Update successful");
+      alertSuccess("Update successful");
       navigate("/landingpage/partmaster-fecthList");
     } catch (error) {
       console.error("Update failed:", error);
-      alert("Update failed. Please try again.");
+      alertError("Update failed. Please try again.");
     }
   };
 
@@ -201,6 +203,7 @@ const PartMasterEdit = () => {
                   </Col>
                   <Col md={1} className="d-flex justify-content-start">
                     <Button
+                        onClick={handleBack}
                         style={{
                           padding: "10px 20px",
                           backgroundColor: "rgb(73 81 88)",

@@ -1,0 +1,61 @@
+  /* warning Alert Styles */
+.custom-alert-popup {
+    width: 350px; /* Adjust width */
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .custom-alert-icon {
+    font-size: 24px; /* Bigger icon */
+  }
+  
+  .custom-alert-title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .custom-alert-button {
+    background-color: #ff9800;
+    color: white;
+    border-radius: 5px;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .custom-alert-button:hover {
+    background-color: #e68900;
+  }
+  
+  /* Success Alert Styles */
+  .custom-success-popup {
+    width: 350px;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid #28a745; /* Green border */
+  }
+  
+  .custom-success-icon {
+    font-size: 24px;
+    color: #28a745; /* Green icon */
+  }
+  
+  .custom-success-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #28a745;
+  }
+  
+  .custom-success-button {
+    background-color: #28a745; /* Green button */
+    color: white;
+    border-radius: 5px;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .custom-success-button:hover {
+    background-color: #218838; /* Darker green */
+  }
+  

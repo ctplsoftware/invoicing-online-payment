@@ -8,7 +8,7 @@ import permissionList from "../../permission.js";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
-import { alertWarning } from "../../alert.js";
+import { alertWarning, alertSuccess, alertError } from "../../alert.js";
 
 const LocationMaster = () => {
   const api = new API();
@@ -61,10 +61,10 @@ const LocationMaster = () => {
     try {
       const response = await api.createLocationMaster(locationdetails);
       if (response) {
-        alert("Location Added");
+        alertSuccess("Location Added");
         navigate("/landingpage/locationmasterlist");
       } else {
-        alert("Failed to add part");
+        alertError("Failed to add part");
       }
     } catch (error) {
       console.error("Error adding part:", error);
@@ -84,8 +84,18 @@ const LocationMaster = () => {
         </div>
       ) : (
         <>
-          <Container fluid>
-            <Form onSubmit={handleSubmit}>
+          <Container
+                fluid
+                style={{
+                  backgroundColor: "#f5f5f5",
+                  padding: "30px",
+                  borderRadius: "22px",
+                  maxWidth: "90%",
+                  marginTop: "80px",
+                  boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
+                }}
+              >            
+              <Form onSubmit={handleSubmit}>
               <div></div>
 
               <Row>
@@ -97,6 +107,7 @@ const LocationMaster = () => {
                     value={formData.name}
                     onChange={handleChange}
                     className="input-border"
+                    style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
                     required
                   />
                 </Col>
@@ -109,12 +120,28 @@ const LocationMaster = () => {
                     value={formData.location_address}
                     onChange={handleChange}
                     className="input-border"
+                    style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
                     required
                   />
                 </Col>
               </Row>
 
               <div style={{ marginRight: "80px" }}>
+              <button
+                  onClick={handleSubmit}
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "#1976d2",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "20px",
+                    cursor: "pointer",
+                    marginTop: "20px",
+                    marginRight: "10px",
+                  }}
+                >
+                  Save
+                </button>
                 <button
                   onClick={() => handleBack()}
                   style={{
@@ -125,26 +152,10 @@ const LocationMaster = () => {
                     borderRadius: "20px",
                     cursor: "pointer",
                     marginTop: "20px",
-                    marginRight: "10px",
-                  }}
-                >
-                  Back
-                </button>
-
-                <button
-                  onClick={handleSubmit}
-                  style={{
-                    padding: "10px 20px",
-                    backgroundColor: "#1976d2",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    marginTop: "20px",
                     marginRight: "200px",
                   }}
                 >
-                  Save
+                  Back
                 </button>
               </div>
             </Form>

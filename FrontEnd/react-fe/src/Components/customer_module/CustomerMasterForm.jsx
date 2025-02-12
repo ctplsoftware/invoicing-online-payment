@@ -7,7 +7,7 @@ import permissionList from "../../permission.js";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
-import { alertWarning } from "../../alert.js";
+import { alertError, alertSuccess, alertWarning } from "../../alert.js";
 
 const CustomerMaster = () => {
   const api = new API();
@@ -54,20 +54,31 @@ const CustomerMaster = () => {
 
   const validateForm = () => {
     const newErrors = {};
+    console.log(formData);
+    
 
     if (!formData.name.trim()) newErrors.name = "Customer name is required";
     if (!formData.delivery_address.trim())
       newErrors.delivery_address = "Delivery address is required";
     if (!formData.billing_address.trim())
       newErrors.billing_address = "Billing address is required";
-    if (!/^[0-9A-Za-z]{15}$/.test(formData.gstin_number))
-      newErrors.gstin_number = "GSTIN should be 15 characters";
+    if (!formData.delivery_address_state_code.trim())
+      newErrors.delivery_address_state_code = "Delivery address state code must be required"; 
+    if (!formData.billing_address_state_code.trim())
+      newErrors.billing_address_state_code = "Billing address state code must be required";
+    if (formData.delivery_address_state_code < 100000 || formData.delivery_address_state_code > 999999)
+      newErrors.delivery_address_state_code = "Delivery address state code must be a 6-digit number"; 
+    if (formData.billing_address_state_code < 100000 || formData.billing_address_state_code > 999999)
+      newErrors.billing_address_state_code = "Billing address state code must be a 6-digit number";
+    // if (!/^[0-9A-Za-z]{15}$/.test(formData.gstin_number))
+    //   newErrors.gstin_number = "GSTIN should be 15 characters";
     if (!formData.credit_limit || isNaN(formData.credit_limit))
       newErrors.credit_limit = "Credit limit must be a valid number";
     if (!formData.contact_person.trim())
       newErrors.contact_person = "Contact person is required";
     if (!/^\d{10}$/.test(formData.contact_number))
       newErrors.contact_number = "Contact number must be a 10-digit number";
+    
     return newErrors;
   };
 
@@ -98,15 +109,15 @@ const CustomerMaster = () => {
       const response = await api.save_customer(completeFormData);
       if (response) {
         console.log("Customer added:", response);
-        alert("Customer Added");
+        alertSuccess("Customer Added");
         navigate("/landingpage/customermasterdashboard");
         setAdditionalAddresses([]);
       } else {
         console.error("Error adding customer:", response.statusText);
-        alert("Couldn't add customer");
+        alertWarning("Couldn't add customer");
       }
     } catch (error) {
-      alert("Couldn't add customer");
+      alertError("Couldn't add customer");
       console.error("Error:", error);
     }
   };
@@ -416,21 +427,6 @@ const CustomerMaster = () => {
               </Row>
               <div style={{ marginRight: "180px" }}>
                 <button
-                  onClick={() => handleBack()}
-                  style={{
-                    padding: "10px 20px",
-                    backgroundColor: "rgb(73 81 88)",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "20px",
-                    cursor: "pointer",
-                    marginTop: "20px",
-                    marginRight: "10px",
-                  }}
-                >
-                  Back
-                </button>
-                <button
                   onClick={handleSubmit}
                   style={{
                     padding: "10px 20px",
@@ -440,9 +436,24 @@ const CustomerMaster = () => {
                     borderRadius: "20px",
                     cursor: "pointer",
                     marginTop: "20px",
+                    marginRight: "10px",
                   }}
                 >
                   Save
+                </button>
+                <button
+                  onClick={() => handleBack()}
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "rgb(73 81 88)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "20px",
+                    cursor: "pointer",
+                    marginTop: "20px",
+                  }}
+                >
+                  Back
                 </button>
               </div>
             </Form>

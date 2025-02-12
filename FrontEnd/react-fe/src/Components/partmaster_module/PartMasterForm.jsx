@@ -9,7 +9,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { alertWarning } from "../../alert.js";
+import { alertWarning, alertSuccess, alertError } from "../../alert.js";
 
 const PartMaster = () => {
   const api = new API();
@@ -74,10 +74,10 @@ const PartMaster = () => {
       };
       const response = await api.part_master_Create(partmasterdatas);
       if (response) {
-        alert("Part Added");
+        alertSuccess("Part Added");
         navigate("/landingpage/partmaster-fecthList");
       } else {
-        alert("Failed to add part");
+        alertError("Failed to add part");
       }
     } catch (error) {
       console.error("Error adding part:", error);
@@ -184,6 +184,7 @@ const PartMaster = () => {
           </Col>
           <Col md={1} className="d-flex justify-content-start">
             <Button
+              onClick={handleBack}
               style={{
                 padding: "10px 20px",
                 backgroundColor: "rgb(73 81 88)",
