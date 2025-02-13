@@ -2,6 +2,7 @@ from django.db import models
 
 class PartMaster(models.Model):
     part_name = models.CharField(max_length=255, null=True, blank=True)
+    part_description = models.CharField(max_length = 200, null = True)
     status = models.CharField(max_length=50)
     unit_price = models.FloatField()
     stock = models.FloatField(null=True, blank=True,default=0)
