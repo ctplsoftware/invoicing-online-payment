@@ -37,6 +37,7 @@ function OrderDetailedReport() {
   const location = useLocation();
   const {id} = useParams();
   const order_header_id = id;
+  const route = location?.state?.from == 'order' ? '/landingpage/order-reports': '/landingpage/einvoice-reports';
   
 
   const [formData, setFormData] = useState({});  
@@ -291,7 +292,7 @@ function OrderDetailedReport() {
             <button
               style={{ marginLeft: "-40%", marginTop: "6%" }}
               className="btn-save2"
-              onClick={() => navigate("/landingpage/order-reports")}
+              onClick={() => navigate(route)}
             >
               Back
             </button>

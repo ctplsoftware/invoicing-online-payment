@@ -252,6 +252,9 @@ def create_e_invoice(request):
                 if order_header.invoice_generated_status == 'yes':
                     return Response('Invoice already generated.')
                 
+                if order_header.payment_type == 'advance' and order_header.verified_status == 'no':
+                    return Response('Please complete payment for this order.')
+                
                 customer_master = CustomerMaster.objects.filter(id = order_header.customer_master_id).first()
                 part_master = PartMaster.objects.filter(id = order_header.part_master_id).first()
 
@@ -734,7 +737,7 @@ def cancel_order(request):
 def get_einvoice_list(request):
     try:
         with transaction.atomic():
-            order_header = OrderHeader.objects.filter(invoice_generated_status = 'no', completed_status = 'no').values('id', 'order_number', 'customer_name', 'payment_type', 'part_name', 'unit_price', 'quantity', 'total_amount', 'attached_status', 'verified_status', 'invoice_generated_status', 'dispatched_status', 'completed_status', 'ordered_at', 'ordered_by')
+            order_header = OrderHeader.objects.filter(invoice_generated_status = 'no', completed_status = 'no').values('id', 'order_number', 'customer_name', 'payment_type', 'part_name', 'unit_price', 'quantity', 'total_amount', 'attached_status', 'verified_status', 'invoice_generated_status', 'dispatched_status', 'completed_status', 'ordered_at', 'ordered_by').order_by('-id')
 
             for order in order_header:
                 order['ordered_by'] = User.objects.filter(id = order['ordered_by']).values_list('username', flat = True)

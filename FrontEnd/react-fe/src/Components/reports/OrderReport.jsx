@@ -42,9 +42,9 @@ export default function OrderReport() {
       "Customer Name": row.customer_name,
       "Part Name": row.part_name,
       "Unit Price": row.unit_price,
-      Quantity: row.quantity,
+      "Quantity": row.quantity,
       "Total Amount": row.total_amount,
-      "Dispatched Location": row.location_name,
+      "Dispatched Location": row.location_name == null ? "Not choosed" : row.location_name,
       "Delivery Address": row.delivery_address,
       "Ordered By": row.ordered_by,
       "Order Date": new Date(row.ordered_at.split(".")[0]).toLocaleDateString(
@@ -88,7 +88,7 @@ export default function OrderReport() {
       selector: (row) => (
         <NavLink
           to={`/landingpage/order-details/${row.id}`}
-          state={{ order_header_id: row.id }}
+          state={{ order_header_id: row.id, from: 'order' }}
         >
           {row.order_number}
         </NavLink>
@@ -135,7 +135,7 @@ export default function OrderReport() {
 
     {
       name: "Dispatched Location",
-      cell: (row) => row.location_name,
+      cell: (row) => row.location_name == null ? "Not choosed" : row.location_name,
       flex: 1.5,
     },
 
