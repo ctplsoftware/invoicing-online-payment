@@ -133,18 +133,36 @@ function DispatchAdvance() {
   const handleVerify = async (e) => {
     const userDetails = localStorage.getItem("userDetails");
 
-    const parsedDetails = JSON.parse(userDetails);
+    var total_amount = formData?.order_header?.total_amount;
+    
+    var paid_amount = formData?.order_header?.paid_amount;
 
-    let paidAmount = formData.order_header?.paid_amount || 0;
-    const paymentAmount = parseFloat(paymentTable.payment_amount);
+    var remaining = parseFloat(total_amount) - parseFloat(paid_amount); 
+    
+    const parsedDetails = JSON.parse(userDetails);  
+    
+    const paymentAmount = parseFloat(paymentTable.payment_amount);   
+    
     if (isNaN(paymentAmount) || paymentAmount <= 0) {
-      Swal.fire({
-        title: "Invalid payment amount. Please enter a valid number.",
-        confirmButtonText: "OK",
-        width: "700px",
-      });
+      alertWarning("Invalid payment amount. Please enter a valid number.");
       return;
     }
+    if(paymentAmount > remaining){
+      alertWarning("Payment amount should not be greater than remaining amount!");
+      return;
+    }
+
+    if (!paymentTable.payment_date) {
+      alertWarning("Payment date is required");
+      return;
+    }
+    
+    const today = new Date().toISOString().split("T")[0];
+    if (paymentTable.payment_date > today) {
+      alertWarning("Future dates are not allowed");
+      return;
+    }
+    
 
     try {
       const orderheadedata = {
@@ -509,34 +527,41 @@ function DispatchAdvance() {
                   <Grid container spacing={2}>
                     <Grid item xs={4}>
                       <TextField
+                        type="number"
                         name="payment_amount"
                         placeholder="Payment Amount"
                         onChange={handleChange}
                         value={paymentTable.payment_amount || ""}
-                        sx={{ width: "60%" }}
+                        sx={{ width: "90%" }}
                         required
                       />
                     </Grid>
                     <Grid item xs={4}>
-                      <TextField
-                        name="payment_date"
-                        placeholder="Date"
-                        type="date"
-                        InputLabelProps={{ shrink: true }}
-                        onChange={handleChange}
-                        value={paymentTable.payment_date || ""}
-                        required
-                      />
+                    <TextField
+                      name="payment_date"
+                      placeholder="Date"
+                      type="date"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={handleChange}
+                      value={paymentTable.payment_date || ""}
+                      inputProps={{
+                        max: new Date().toISOString().split("T")[0]
+                      }}
+                      required
+                      error={!paymentTable.payment_date} 
+                      helperText={!paymentTable.payment_date ? "Payment date is required" : ""}
+                    />
+
                     </Grid>
                     <Grid item xs={4}>
                       <TextField
+                        type="text"
                         name="payment_comments"
                         placeholder="Comments"
                         variant="outlined"
                         onChange={handleChange}
                         value={paymentTable.payment_comments || ""}
-                        sx={{ width: "60%" }}
-                        required
+                        style={{ width: "60%"}}
                       />
                     </Grid>
                   </Grid>

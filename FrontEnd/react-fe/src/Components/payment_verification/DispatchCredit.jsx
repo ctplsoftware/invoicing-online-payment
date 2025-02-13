@@ -24,6 +24,8 @@ import { API } from "../../API.js";
 import { useNavigate, useLocation, useParams} from "react-router-dom";
 import moment from "moment";
 import { BaseURL } from "../../utils.js";
+import { alertWarning, alertError, alertSuccess, cancelEInvoiceAlert } from "../../alert.js";
+
 
 function DispatchCredit() {
 
@@ -101,38 +103,71 @@ function DispatchCredit() {
   const handleVerify = async (e) => {
     const userDetails = localStorage.getItem("userDetails");
 
-    const parsedDetails = JSON.parse(userDetails);
-
-    let paidAmount = formData.order_header?.paid_amount || 0;
-    const paymentAmount = parseFloat(paymentTable.payment_amount);
-    if (isNaN(paymentAmount) || paymentAmount <= 0) {
-      Swal.fire({
-              title: "Invalid payment amount. Please enter a valid number.",
-              confirmButtonText: "OK",
-              width: "700px",
-            });
-            return;
-    }
+     var total_amount = formData?.order_header?.total_amount;
+        
+        var paid_amount = formData?.order_header?.paid_amount;
+    
+        var remaining = parseFloat(total_amount) - parseFloat(paid_amount); 
+        
+        const parsedDetails = JSON.parse(userDetails);  
+        
+        const paymentAmount = parseFloat(paymentTable.payment_amount);   
+        
+        if (isNaN(paymentAmount) || paymentAmount <= 0) {
+          alertWarning("Invalid payment amount. Please enter a valid number.");
+          return;
+        }
+        if(paymentAmount > remaining){
+          alertWarning("Payment amount should not be greater than remaining amount!");
+          return;
+        }
+    
+        if (!paymentTable.payment_date) {
+              alertWarning("Payment date is required");
+              return;
+            }
+            
+            const today = new Date().toISOString().split("T")[0];
+            if (paymentTable.payment_date > today) {
+              alertWarning("Future dates are not allowed");
+              return;
+            }
 
     try {
-      const orderheadedata = {
-        ...paymentTable,
-        order_header_id: formData.order_header.id,
-        updated_by: parsedDetails.user.id,
+          const orderheadedata = {
+            ...paymentTable,
+            order_header_id: formData.order_header.id,
+            updated_by: parsedDetails.user.id,
+          };
+    
+          const response = await api.updateOrderHeaderVerifyStatus(orderheadedata);
+          console.log(response.verified_status,'response');
+          
+          if (response.verified_status == "yes") {
+            Swal.fire({
+              title: "Verified successfully! Do you want to generate an E-Invoice?",
+              showCancelButton: true,
+              confirmButtonText: "Yes",
+              cancelButtonText: "No",
+              width: "700px",
+            }).then(async (result) => {
+              if (result.isConfirmed) {
+                navigate(`/landingpage/generate-einvoice/${order_header_id}`, {
+                });
+              }else{
+                window.location.reload();
+              }
+            });
+            // setVerifyStatus(true);
+          } else {
+            window.location.reload();
+          }
+    
+          
+        } catch (error) {
+          console.error("Error adding part:", error);
+        }
       };
-
-      const response = await api.updateOrderHeaderVerifyStatus(orderheadedata);
-      if (response) {
-        Swal.fire("Success!", "Payment verified successfully.", "success").then(() => {
-          navigate('/landingpage/payment-list');
-        });
-      } else {
-        alert("Failed occurs");
-      }
-    } catch (error) {
-      console.error("Error adding part:", error);
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -215,71 +250,71 @@ function DispatchCredit() {
             </div>
             <div className="orderDetailsContent">
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Order Number:</span>
+                <span className="orderDetailKey align-left">Order Number:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.order_number}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Quantity:</span>
+                <span className="orderDetailKey align-left">Quantity:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.quantity}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Part Name:</span>
+                <span className="orderDetailKey align-left">Part Name:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.part_name}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">UOM:</span>
+                <span className="orderDetailKey align-left">UOM:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.uom}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Unit Price:</span>
+                <span className="orderDetailKey align-left">Unit Price:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.unit_price}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">IRN:</span>
+                <span className="orderDetailKey align-left">IRN:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.irn_invoice_number}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Customer Name:</span>
+                <span className="orderDetailKey align-left">Customer Name:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.customer_name}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Delivery Address:</span>
+                <span className="orderDetailKey align-left">Delivery Address:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.delivery_address}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Purchase Amount:</span>
+                <span className="orderDetailKey align-left">Purchase Amount:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.total_amount}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Credit Limit:</span>
+                <span className="orderDetailKey align-left">Credit Limit:</span>
                 <span className="orderDetailValue">
                   {formData.customer_data?.credit_limit}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Balance Limit:</span>
+                <span className="orderDetailKey align-left">Balance Limit:</span>
                 <span className="orderDetailValue">{balanceLimit}</span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Used Limit:</span>
+                <span className="orderDetailKey align-left">Used Limit:</span>
                 <span className="orderDetailValue">{isusedLimit}</span>
               </div>
             </div>
@@ -465,11 +500,12 @@ function DispatchCredit() {
                   <Grid container spacing={2}>
                     <Grid item xs={4}>
                       <TextField
+                        type="number"
                         name="payment_amount"
                         placeholder="Payment Amount"
                         onChange={handleChange}
                         value={paymentTable.payment_amount || ""}
-                        sx={{ width: "60%" }}
+                        sx={{ width: "90%" }}
                         required
                       />
                     </Grid>
@@ -481,19 +517,24 @@ function DispatchCredit() {
                         InputLabelProps={{ shrink: true }}
                         onChange={handleChange}
                         value={paymentTable.payment_date || ""}
+                        inputProps={{
+                          max: new Date().toISOString().split("T")[0]
+                        }}
                         required
+                        error={!paymentTable.payment_date} 
+                        helperText={!paymentTable.payment_date ? "Payment date is required" : ""}
                       />
                     </Grid>
                     <Grid item xs={4}>
-                      <TextField
-                        name="payment_comments"
-                        placeholder="Comments"
-                        variant="outlined"
-                        onChange={handleChange}
-                        value={paymentTable.payment_comments || ""}
-                        sx={{ width: "60%" }}
-                        required
-                      />
+                       <TextField
+                          type="text"
+                          name="payment_comments"
+                          placeholder="Comments"
+                          variant="outlined"
+                          onChange={handleChange}
+                          value={paymentTable.payment_comments || ""}
+                          style={{ width: "60%"}}
+                        />
                     </Grid>
                   </Grid>
                 </form>

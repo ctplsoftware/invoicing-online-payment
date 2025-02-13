@@ -89,72 +89,75 @@ function OrderDetailedReport() {
             </div>
             <div className="orderDetailsContent">
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Order Number:</span>
+                <span className="orderDetailKey align-left">Order Number:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.order_number}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Quantity:</span>
+                <span className="orderDetailKey align-left">Quantity:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.quantity}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Part Name:</span>
+                <span className="orderDetailKey align-left">Part Name:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.part_name}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">UOM:</span>
+                <span className="orderDetailKey align-left">UOM:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.uom}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Unit Price:</span>
+                <span className="orderDetailKey align-left">Unit Price:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.unit_price}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">IRN:</span>
+                <span className="orderDetailKey align-left">IRN:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.irn_invoice_number}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Customer Name:</span>
+                <span className="orderDetailKey align-left">Customer Name:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.customer_name}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Delivery Address:</span>
+                <span className="orderDetailKey align-left">Delivery Address:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.delivery_address}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Purchase Amount:</span>
+                <span className="orderDetailKey align-left">Purchase Amount:</span>
                 <span className="orderDetailValue">
                   {formData.order_header?.total_amount}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Credit Limit:</span>
+                <span className="orderDetailKey align-left">Credit Limit:</span>
                 <span className="orderDetailValue">
                   {formData.customer_data?.credit_limit}
                 </span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Balance Limit:</span>
+                <span className="orderDetailKey align-left">Balance Limit:</span>
                 <span className="orderDetailValue">{balanceLimit}</span>
               </div>
               <div className="orderDetailRow">
-                <span className="orderDetailKey">Used Limit:</span>
+                <span className="orderDetailKey align-left">Used Limit:</span>
                 <span className="orderDetailValue">{isusedLimit}</span>
+              </div>
+              <div style={{ marginRight: "41px", justifyContent: "center"}}>
+              <button style={{ backgroundColor: "#63b183", padding: "5px",  width: "105px"}}>Download📥</button>
               </div>
             </div>
           </div>
@@ -179,7 +182,7 @@ function OrderDetailedReport() {
                     "rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset",
                 }}
               >
-                <TableContainer component={Paper}>
+                <TableContainer component={Paper} style={{ maxHeight: "200px",overflow: "auto",}}>
                   <Table sx={{ marginBottom: "0px" }}>
                     <TableHead>
                       <TableRow>
@@ -230,7 +233,7 @@ function OrderDetailedReport() {
                     "rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset",
                 }}
               >
-                <TableContainer component={Paper}>
+                <TableContainer component={Paper} style={{ maxHeight: "200px",overflow: "auto",}}>
                   <Table sx={{ marginBottom: "0px" }}>
                     <TableHead>
                       <TableRow>
