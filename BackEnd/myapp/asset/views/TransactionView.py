@@ -245,10 +245,18 @@ def create_e_invoice(request):
             
             else:
 
-
                 order_header_id = request.data.get('data')['order_header_id']
-
                 order_header = OrderHeader.objects.filter(id = order_header_id).first()
+
+
+                if order_header.invoice_generated_status == 'yes':
+                    return Response('Invoice already generated.')
+                
+                customer_master = CustomerMaster.objects.filter(id = order_header.customer_master_id).first()
+                part_master = PartMaster.objects.filter(id = order_header.part_master_id).first()
+
+                today_date = datetime.datetime.today().strftime("%d/%m/%Y")
+                
                 order_header.delivery_note = request.data.get('data')['delivery_note']
                 order_header.other_references = request.data.get('data')['other_references']
                 order_header.buyer_order_number = request.data.get('data')['buyer_order_number']
@@ -262,8 +270,6 @@ def create_e_invoice(request):
 
                 order_header.save()
 
-                if order_header.invoice_generated_status == 'yes':
-                    return Response('Invoice already generated.')
                 
 
                 client_id = settings.CLIENT_ID
@@ -272,6 +278,14 @@ def create_e_invoice(request):
                 user_name = settings.USERNAME
                 password = settings.PASSWORD
                 gstin = settings.GSTIN
+                legal_name = settings.LEGAL_NAME
+                trade_name = settings.TRADE_NAME
+                address = settings.COMPANY_ADDRESS
+                location = settings.LOCATION
+                pin_code = settings.PIN_CODE
+                state_code = settings.STATE_CODE
+                phone_number = settings.PHONE_NUMBER
+                email_id = settings.EMAIL_ID
 
                 
 
@@ -326,40 +340,38 @@ def create_e_invoice(request):
                 DocDtls = {
                     "Typ": "INV",
                     "No": str(document_number),
-                    "Dt": "18/03/2023"
+                    "Dt": today_date
                 }
 
                 # Mandatory
                 SellerDtls = {
                     "Gstin": str(gstin),
-                    "LglNm": "NIC company pvt ltd",
-                    "TrdNm": "NIC Industries",
-                    "Addr1": "5th block, kuvempu layout",
-                    "Addr2": "kuvempu layout",
-                    "Loc": "GANDHINAGAR",
-                    "Pin": 172001,
-                    "Stcd": "02",
-                    "Ph": "9000000000",
-                    "Em": "abc@gmail.com"
+                    "LglNm": str(legal_name),
+                    "TrdNm": str(trade_name),
+                    "Addr1": str(address),
+                    "Addr2": str(address),
+                    "Loc": str(location),
+                    "Pin": '172001',
+                    "Stcd": f"{str(gstin)[0]}{str(gstin)[1]}",
+                    "Ph": str(phone_number),
+                    "Em": str(email_id)
                 }
 
                 # Mandatory
                 BuyerDtls = {
-                    "Gstin": "36AAGCT1587Q1ZJ",
+                    "Gstin": customer_master.gstin_number,
                     # Legal Name
-                    "LglNm": "XYZ company pvt ltd",
-                    "TrdNm": "XYZ Industries",
-                    # Point of sales (state code) company's state code.
+                    "LglNm": customer_master.LegalName,
+                    "TrdNm": customer_master.TradeName,
+                    # Point of sales (state code) company's state code. (seller)
                     "Pos": "12",
-                    "Addr1": "7th block, kuvempu layout",
-                    "Addr2": "kuvempu layout",
+                    "Addr1": customer_master.billing_address,
+                    "Addr2": customer_master.billing_address,
                     # Location (city)
-                    "Loc": "GANDHINAGAR",
+                    "Loc": order_header.delivery_address_city,
                     "Pin": 500055,
                     # State code -- first two digits of the gstin
-                    "Stcd": "36",
-                    "Ph": "91111111111",
-                    "Em": "xyz@yahoo.com"
+                    "Stcd": f"{str(customer_master.gstin_number)[0]}{str(customer_master.gstin_number[1])}",
                 }
 
                 # Mandatory
@@ -368,155 +380,35 @@ def create_e_invoice(request):
                     {
 
                         "SlNo": "1", 
-                        "PrdDesc": "Rice",
+                        "PrdDesc": part_master.part_description,
                         "IsServc": "N",
-                        "HsnCd": "30049099",
-                        "Barcde": "123456",
-                        "Qty": 100.345,
-                        "FreeQty": 10,
-                        "Unit": "BAG",
-                        "UnitPrice": 99.545,
-                        "TotAmt": 9988.84,
-                        "Discount": 10,
-                        "PreTaxVal": 1,
-                        "AssAmt": 9978.84,
-                        "GstRt": 12,
-                        "IgstAmt": 1197.46,
-                        "CgstAmt": 0,
-                        "SgstAmt": 0,
-                        "CesRt": 5,
-                        "CesAmt": 498.94,
-                        "CesNonAdvlAmt": 10,
-                        "StateCesRt": 12,
-                        "StateCesAmt": 1197.46,
-                        "StateCesNonAdvlAmt": 5,
-                        "OthChrg": 10,
-                        "TotItemVal": 12897.7,
-                        "OrdLineRef": "3256",
-                        "OrgCntry": "AG",
-                        "PrdSlNo": "12345",
-
-                        # Conditionally Mandatory
-
-                        "BchDtls": {
-                            "Nm": "123456",
-                            "Expdt": "01/08/2020",
-                            "wrDt": "01/09/2020"
-                        },
-
-                        # Optional
-
-                        "AttribDtls": [
-                            {
-                            "Nm": "Rice",
-                            "Val": "10000"
-                            }
-                        ]
+                        "HsnCd": part_master.hsn_code,
+                        "Qty": str(order_header.quantity),
+                        "Unit": part_master.uom,
+                        "UnitPrice": part_master.unit_price,
+                        "TotAmt": order_header.amount_for_quantity,
+                        "AssAmt": order_header.amount_for_quantity,
+                        "Discount": 0,
+                        "GstRt": 18,
+                        "IgstAmt": order_header.igst_amount,
+                        "CgstAmt": order_header.cgst_amount,
+                        "SgstAmt": order_header.sgst_amount,
+                        "TotItemVal": order_header.total_amount,
                     }
                 ]
 
                 # Mandatory
                 ValDtls = {
                     # Bill value - subtotal without gst
-                    "AssVal": 9978.84,
-                    "CgstVal": 0,
-                    "SgstVal": 0,
+                    "AssVal": order_header.amount_for_quantity,
+                    "CgstVal": order_header.cgst_amount,
+                    "SgstVal": order_header.sgst_amount,
                     # IGST is required for inter state supply.
-                    "IgstVal": 1197.46,
+                    "IgstVal": order_header.igst_amount,
+                    "Discount": 0,
                     # Not needed
-                    "CesVal": 508.94,
-                    "StCesVal": 1202.46,
-                    "Discount": 10,
-                    "OthChrg": 20,
-                    "RndOffAmt": 0.3,
-                    "TotInvVal": 12908
+                    "TotInvVal": order_header.total_amount
                 }
-
-                # Optional
-                PayDtls = {
-                    "Nm": "ABCDE",
-                    "Accdet": "5697389713210",
-                    "Mode": "Cash",
-                    "Fininsbr": "SBIN11000",
-                    "Payterm": "100",
-                    "Payinstr": "Gift",
-                    "Crtrn": "test",
-                    "Dirdr": "test",
-                    "Crday": 100,
-                    "Paidamt": 10000,
-                    "Paymtdue": 5000
-                }
-
-                # Conditionally Mandatory
-                RefDtls = {
-                    "InvRm": "TEST",
-
-                    "DocPerdDtls": {
-                    "InvStDt": "01/08/2020",
-                    "InvEndDt": "01/09/2020"
-                    },
-
-                    "PrecDocDtls": [
-                        {
-                            "InvNo": "DOC/002",
-                            "InvDt": "01/08/2020",
-                            "OthRefNo": "123456"
-                        }
-
-                    ],
-
-                    "ContrDtls": [
-                        {
-
-                            "RecAdvRefr": "Doc/003",
-                            "RecAdvDt": "01/08/2020",
-                            "Tendrefr": "Abc001",
-                            "Contrrefr": "Co123",
-                            "Extrefr": "Yo456",
-                            "Projrefr": "Doc-456",
-                            "Porefr": "Doc-789",
-                            "PoRefDt": "01/08/2020"
-
-                        }
-                    ]
-
-                }
-
-                # Optional
-                AddlDocDtls = [
-                    {
-                        "Url": "https://einv-apisandbox.nic.in",
-                        "Docs": "Test Doc",
-                        "Info": "Document Test"
-                    }
-                ]
-                
-                # Optional
-                ExpDtls = {
-
-                    "ShipBNo": "A-248",
-                    "ShipBDt": "01/08/2020",
-                    "Port": "INABG1",
-                    "RefClm": "N",
-                    "ForCur": "AED",
-                    "CntCode": "AE",
-                    "ExpDuty": None
-                }
-
-                # Above 50K amount e way bill details to be generated compulsory.
-                # Conditionally Mandatory
-                EwbDtls = {
-
-                    "Transid": "37AMBPG7773M002",
-                    "Transname": "XYZ EXPORTS",
-                    "Distance": 2502,
-                    "Transdocno": None,
-                    "TransdocDt": None,
-                    "Vehno": "ka123456",
-                    "Vehtype": "R",
-                    "TransMode": "1"
-                }
-                
                 
                 generate_irn_request_body = {
                     "Version": "1.1",
@@ -526,20 +418,15 @@ def create_e_invoice(request):
                     "BuyerDtls": BuyerDtls,
                     "ItemList": ItemList,
                     "ValDtls": ValDtls,
-                    "PayDtls": PayDtls,
-                    "RefDtls": RefDtls,
-                    "AddlDocDtls": AddlDocDtls,
-                    "ExpDtls": ExpDtls,
-                    "EwbDtls": EwbDtls,
                 }
 
-                
+
 
                 
                 generate_irn_response_object = requests.post(generate_irn_url, json = generate_irn_request_body, headers = generate_irn_headers)
+
                 generate_irn_response = generate_irn_response_object.json()['result']
 
-                
 
 
                 e_invoice_header = {
@@ -561,7 +448,6 @@ def create_e_invoice(request):
                 header = EInvoiceHeader.objects.create(**e_invoice_header)
 
                 ItemList_dict = {item['SlNo']: item for item in ItemList}
-                AddlDocDtls_dict = {item['Info']: item for item in AddlDocDtls}
 
                 
 
@@ -573,12 +459,7 @@ def create_e_invoice(request):
                     "SellerDtls": SellerDtls,
                     "BuyerDtls": BuyerDtls,
                     "ItemList": ItemList_dict,
-                    "ValDtls": ValDtls,
-                    "PayDtls": PayDtls,
-                    "RefDtls": RefDtls,
-                    "AddlDocDtls": AddlDocDtls_dict,
-                    "ExpDtls": ExpDtls,
-                    "EwbDtls": EwbDtls,
+                    "ValDtls": ValDtls
                 }
 
                 EInvoiceTransaction.objects.create(**e_invoice_transaction)
