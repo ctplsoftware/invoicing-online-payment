@@ -31,9 +31,9 @@ export default function EInvoiceReport() {
         "SGST Amount": row.order_header_id__sgst_amount ?? 0,
         "IGST Amount": row.order_header_id__igst_amount ?? 0,
         "Total Amount": row.order_header_id__total_amount ?? 0,
-        "Tax Percentage": row.tax_percentage ?? "N/A",
+        "Tax Percentage": "18%",
         "Invoice Date": row.AckDt ? new Date(row.AckDt).toLocaleDateString("en-IN") : "N/A",
-        "Status": row.einvoice_status
+        "Status": row.einvoice_status ? row.einvoice_status.charAt(0).toUpperCase() + row.einvoice_status.slice(1) : 'Generated'
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
@@ -71,8 +71,8 @@ export default function EInvoiceReport() {
       name: "Order Number",
       selector: (row) => (
         <NavLink
-          to={`/landingpage/order-details/${row.id}`}
-          state={{ order_header_id: row.id }}
+          to={`/landingpage/order-details/${row.order_header_id}`}
+          state={{ order_header_id: row.id, from: 'e-invoice' }}
         >
           {row.order_header_id__order_number}
         </NavLink>
