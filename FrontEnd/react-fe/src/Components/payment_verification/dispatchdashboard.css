@@ -39,6 +39,10 @@
     font-weight: bold;
     width: 150px;
   }
+
+  .align-left{
+    text-align: justify;
+  }
   
   .orderDetailValue {
     margin-left: 10px;

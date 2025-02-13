@@ -54,33 +54,40 @@ const CustomerMaster = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    console.log(formData);
+    console.log(!formData.name?.trim());
     
+    if (!formData.name?.trim()) newErrors.name = "Customer name is required";
+    if (!formData.delivery_address?.trim()) newErrors.delivery_address = "Delivery address is required";
+    if (!formData.billing_address?.trim()) newErrors.billing_address = "Billing address is required";
+    
+    // State Code Validation
+    const deliveryStateCode = formData.delivery_address_state_code?.toString().trim();
+    const billingStateCode = formData.billing_address_state_code?.toString().trim();
 
-    if (!formData.name.trim()) newErrors.name = "Customer name is required";
-    if (!formData.delivery_address.trim())
-      newErrors.delivery_address = "Delivery address is required";
-    if (!formData.billing_address.trim())
-      newErrors.billing_address = "Billing address is required";
-    if (!formData.delivery_address_state_code.trim())
-      newErrors.delivery_address_state_code = "Delivery address state code must be required"; 
-    if (!formData.billing_address_state_code.trim())
-      newErrors.billing_address_state_code = "Billing address state code must be required";
-    if (formData.delivery_address_state_code < 100000 || formData.delivery_address_state_code > 999999)
-      newErrors.delivery_address_state_code = "Delivery address state code must be a 6-digit number"; 
-    if (formData.billing_address_state_code < 100000 || formData.billing_address_state_code > 999999)
-      newErrors.billing_address_state_code = "Billing address state code must be a 6-digit number";
-    // if (!/^[0-9A-Za-z]{15}$/.test(formData.gstin_number))
-    //   newErrors.gstin_number = "GSTIN should be 15 characters";
-    if (!formData.credit_limit || isNaN(formData.credit_limit))
-      newErrors.credit_limit = "Credit limit must be a valid number";
-    if (!formData.contact_person.trim())
-      newErrors.contact_person = "Contact person is required";
-    if (!/^\d{10}$/.test(formData.contact_number))
-      newErrors.contact_number = "Contact number must be a 10-digit number";
+    if (!deliveryStateCode) newErrors.delivery_address_state_code = "Delivery address state code is required"; 
+    else if (!/^\d{6}$/.test(deliveryStateCode)) newErrors.delivery_address_state_code = "Delivery address state code must be a 6-digit number"; 
     
+    if (!billingStateCode) newErrors.billing_address_state_code = "Billing address state code is required";
+    else if (!/^\d{6}$/.test(billingStateCode)) newErrors.billing_address_state_code = "Billing address state code must be a 6-digit number";
+
+    // GSTIN Validation
+    if (!formData.gstin_number?.trim()) newErrors.gstin_number = "GSTIN is required";
+    else if (!/^[0-9A-Za-z]{15}$/.test(formData.gstin_number)) newErrors.gstin_number = "GSTIN should be exactly 15 alphanumeric characters";
+
+    // Credit Limit Validation
+    if (formData.credit_limit === undefined || formData.credit_limit === null || isNaN(formData.credit_limit) || formData.credit_limit < 0)
+        newErrors.credit_limit = "Credit limit must be a valid positive number";
+
+    // Contact Person
+    if (!formData.contact_person?.trim()) newErrors.contact_person = "Contact person is required";
+
+    // Contact Number Validation
+    if (!formData.contact_number?.trim()) newErrors.contact_number = "Contact number is required";
+    else if (!/^\d{10}$/.test(formData.contact_number)) newErrors.contact_number = "Contact number must be a 10-digit number";
+
     return newErrors;
-  };
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -125,6 +132,13 @@ const CustomerMaster = () => {
   function handleBack() {
     navigate("/landingpage/customermasterdashboard");
   }
+
+  // Prevent users from typing `-`, `e`, `E`
+  const handleKeyDown = (e) => {
+    if (e.key === "-" || e.key === "e" || e.key === "E") {
+      e.preventDefault();
+    }
+  };
 
   return (
     <div style={{ maxHeight: "115vh", overflow: "auto" }}>
@@ -171,6 +185,8 @@ const CustomerMaster = () => {
                   <Form.Label>Credit Limit</Form.Label>
                   <Form.Control
                     type="number"
+                    min="0"
+                    onKeyDown={handleKeyDown}          
                     name="credit_limit"
                     value={formData.credit_limit}
                     onChange={handleChange}
@@ -183,6 +199,8 @@ const CustomerMaster = () => {
                   <Form.Label>Credit Days</Form.Label>
                   <Form.Control
                     type="number"
+                    min="0"
+                    onKeyDown={handleKeyDown}
                     name="credit_days"
                     value={formData.credit_days}
                     onChange={handleChange}
@@ -207,7 +225,9 @@ const CustomerMaster = () => {
                 <Col md={3} style={{ marginTop: "20px" }}>
                   <Form.Label>Contact Number</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="number"
+                    min="0"
+                    onKeyDown={handleKeyDown}
                     name="contact_number"
                     value={formData.contact_number}
                     onChange={handleChange}
@@ -259,7 +279,9 @@ const CustomerMaster = () => {
                 <Col md={3} style={{ marginTop: "20px" }}>
                   <Form.Label>Billing Address State Pin Code</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="number"
+                    min="0"
+                    onKeyDown={handleKeyDown}
                     name="billing_address_state_code"
                     value={formData.billing_address_state_code}
                     onChange={handleChange}
@@ -311,7 +333,9 @@ const CustomerMaster = () => {
                 <Col md={3} style={{ marginTop: "20px" }}>
                   <Form.Label>Delivery Address Pin Code</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="number"
+                    min="0"
+                    onKeyDown={handleKeyDown}
                     name="delivery_address_state_code"
                     value={formData.delivery_address_state_code}
                     onChange={handleChange}
@@ -363,7 +387,9 @@ const CustomerMaster = () => {
                 <Col md={3} style={{ marginTop: "20px" }}>
                   <Form.Label>Additional Address Pin Code</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="number"
+                    min="0"
+                    onKeyDown={handleKeyDown}
                     name="additional_address1_state_code"
                     value={formData.additional_address1_state_code}
                     onChange={handleChange}
@@ -402,7 +428,9 @@ const CustomerMaster = () => {
                 <Col md={3} style={{ marginTop: "20px" }}>
                   <Form.Label>Additional Address State</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="number"
+                    min="0"
+                    onKeyDown={handleKeyDown}
                     name="additional_address2_state"
                     value={formData.additional_address2_state}
                     onChange={handleChange}

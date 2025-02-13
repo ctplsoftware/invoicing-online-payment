@@ -20,6 +20,7 @@ const PartMasterEdit = () => {
 
   const [formData, setFormData] = useState({
     part_name: "",
+    part_desc: "",
     status: "active",
     unit_price: "",
     hsn_code: "",
@@ -42,6 +43,8 @@ const PartMasterEdit = () => {
 
     if (!formData.part_name.trim())
       newErrors.part_name = "Part name is required";
+    if (!formData.part_desc.trim())
+      newErrors.part_desc = "Part description is required";
     if (!formData.unit_price)
       newErrors.unit_price = "Unit price is required";
     if (!formData.uom.trim()) newErrors.uom = "UOM is required";
@@ -62,6 +65,7 @@ const PartMasterEdit = () => {
           setFormData({
             id: partmasterData.id,
             part_name: partmasterData.part_name,
+            part_desc: partmasterData.part_desc,
             status: partmasterData.status,
             unit_price: partmasterData.unit_price,
             hsn_code: partmasterData.hsn_code,
@@ -137,6 +141,19 @@ const PartMasterEdit = () => {
                       type="text"
                       name="part_name"
                       value={formData.part_name}
+                      onChange={handleChange}
+                      className="input-border"
+                      required
+                      style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
+                    />
+                  </Col>
+
+                  <Col md={4}>
+                    <Form.Label>Part Description</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="part_desc"
+                      value={formData.part_desc}
                       onChange={handleChange}
                       className="input-border"
                       required

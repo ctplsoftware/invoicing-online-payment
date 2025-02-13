@@ -135,7 +135,7 @@ const Usercreate = () => {
             width: '816px',
             maxWidth: 'max-content',
             margin: '0 auto',
-            marginTop: '11vh',
+            marginTop: '5vh',
             padding: '20px',
             backgroundColor: '#f9f9f9',
             borderRadius: '31px',
@@ -151,9 +151,11 @@ const Usercreate = () => {
                         <input
                             type="text"
                             name="username"
+                            className="input-border"
                             placeholder="Enter Username"
                             value={formData.username}
                             onChange={handleChange}
+                            style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px"}}
                             required
                             autoFocus
                         />
@@ -163,9 +165,11 @@ const Usercreate = () => {
                         <input
                             type="password"
                             name="password"
+                            className="input-border"
                             placeholder="Enter Password"
                             value={formData.password}
                             onChange={handleChange}
+                            style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px"}}
                             required
                         />
                     </label>
@@ -177,9 +181,11 @@ const Usercreate = () => {
                         <input
                             type="password"
                             name="confirm_password"
+                            className="input-border"
                             placeholder="Confirm Password"
                             value={formData.confirm_password}
                             onChange={handleChange}
+                            style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px"}}
                             required
                         />
                     </label>
@@ -188,8 +194,10 @@ const Usercreate = () => {
                         <input
                             type="email"
                             name="email"
+                            className="input-border"
                             placeholder="Enter Email"
                             value={formData.email}
+                            style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px"}}
                             onChange={handleChange}
                             required
                         />
@@ -203,6 +211,7 @@ const Usercreate = () => {
                             name="role"
                             value={formData.role}
                             onChange={handleChange}
+                            style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px"}}
                             required
                         >
                             <option value="">Select Role</option>
@@ -219,6 +228,7 @@ const Usercreate = () => {
                             name="customer"
                             value={formData.customer}
                             onChange={handleChange}
+                            style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px"}}
                             required
                             disabled={formData.role !== "Customer"}
                         >
@@ -239,6 +249,7 @@ const Usercreate = () => {
                             name="status"
                             value={formData.status}
                             onChange={handleChange}
+                            style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px"}}
                             required
                         >
                             <option value="">Select Status</option>

@@ -147,7 +147,7 @@ const StockReport = () => {
                         style: {
                             fontSize: '12px',
                             padding: '10px',
-                            justifyContent: 'flex-end', // Align pagination to the left
+                            justifyContent: 'flex-start', // Align pagination to the left
                         },
                     },
                 }}

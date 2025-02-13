@@ -22,6 +22,7 @@ function PartMasterList() {
               {row.part_name}
               </a>), width: "auto"
     },
+    { name: "Part Description", selector: (row) => row.part_desc, width: "auto" },
     { name: "Unit Price", selector: (row) => row.unit_price, width: "auto" },
     {
       name: "UOM (Unit of Measure)",
@@ -67,6 +68,7 @@ function PartMasterList() {
           id: item.id,
           Sno: index + 1,
           part_name: item.part_name,
+          part_desc: item.part_desc,
           status: item.status,
           unit_price: item.unit_price,
           uom: item.uom,

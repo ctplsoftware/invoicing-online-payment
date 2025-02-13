@@ -19,6 +19,7 @@ const PartMaster = () => {
 
   const [formData, setFormData] = useState({
     part_name: "",
+    part_desc: "",
     status: "active",
     unit_price: "",
     uom: "",
@@ -38,6 +39,8 @@ const PartMaster = () => {
 
     if (!formData.part_name.trim()) 
       newErrors.part_name = "Part name is required";
+    if (!formData.part_desc.trim()) 
+      newErrors.part_desc = "Part description is required";
     if (!formData.unit_price.trim())
       newErrors.unit_price = "Unit price is required";
     if (!formData.uom.trim())
@@ -117,6 +120,20 @@ const PartMaster = () => {
               type="text"
               name="part_name"
               value={formData.part_name}
+              onChange={handleChange}
+              className="input-border"
+              required
+              style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
+              autoFocus
+            />
+          </Col>
+
+          <Col md={4}>
+            <Form.Label>Part Description</Form.Label>
+            <Form.Control
+              type="text"
+              name="part_desc"
+              value={formData.part_desc}
               onChange={handleChange}
               className="input-border"
               required

@@ -167,6 +167,7 @@ export default function EInvoiceReport() {
 
   return (
     <>
+    <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
       <div
         style={{
           width: "91%",
@@ -221,11 +222,13 @@ export default function EInvoiceReport() {
             style: {
               fontSize: "12px",
               padding: "10px",
-              justifyContent: "flex-end", // Align pagination to the left
+              justifyContent: "flex-start",
             },
           },
         }}
       />
+    
+    </div>
     </>
   );
 }

@@ -77,25 +77,35 @@ const EditCustomerForm = ({}) => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!currentCustomer.name.trim())
-      newErrors.name = "Customer name is required";
-    if (!currentCustomer.delivery_address.trim())
-      newErrors.delivery_address = "Delivery address is required";
-    if (!currentCustomer.billing_address.trim())
-      newErrors.billing_address = "Billing address is required";
-    if (!/^[0-9A-Za-z]{15}$/.test(currentCustomer.gstin_number))
-      newErrors.gstin_number = "GSTIN should be 15 digits";
-    if (!currentCustomer.credit_limit || isNaN(currentCustomer.credit_limit))
-      newErrors.credit_limit = "Credit limit must be a valid number";
-    if (!currentCustomer.contact_person.trim())
-      newErrors.contact_person = "Contact person is required";
-    if (!/^\d{10}$/.test(currentCustomer.contact_number))
-      newErrors.contact_number = "Contact number must be a 10-digit number";
-    return newErrors;
-
+    if (!currentCustomer.name?.trim()) newErrors.name = "Customer name is required";
+    if (!currentCustomer.delivery_address?.trim()) newErrors.delivery_address = "Delivery address is required";
+    if (!currentCustomer.billing_address?.trim()) newErrors.billing_address = "Billing address is required";
     
+    // State Code Validation
+    const deliveryStateCode = currentCustomer.delivery_address_state_code?.toString().trim();
+    const billingStateCode = currentCustomer.billing_address_state_code?.toString().trim();
 
+    if (!deliveryStateCode) newErrors.delivery_address_state_code = "Delivery address state code is required"; 
+    else if (!/^\d{6}$/.test(deliveryStateCode)) newErrors.delivery_address_state_code = "Delivery address state code must be a 6-digit number"; 
+    
+    if (!billingStateCode) newErrors.billing_address_state_code = "Billing address state code is required";
+    else if (!/^\d{6}$/.test(billingStateCode)) newErrors.billing_address_state_code = "Billing address state code must be a 6-digit number";
 
+    // GSTIN Validation
+    if (!currentCustomer.gstin_number?.trim()) newErrors.gstin_number = "GSTIN is required";
+    else if (!/^[0-9A-Za-z]{15}$/.test(currentCustomer.gstin_number)) newErrors.gstin_number = "GSTIN should be exactly 15 alphanumeric characters";
+
+    // Credit Limit Validation
+    if (currentCustomer.credit_limit === undefined || currentCustomer.credit_limit === null || isNaN(currentCustomer.credit_limit) || currentCustomer.credit_limit < 0)
+        newErrors.credit_limit = "Credit limit must be a valid positive number";
+
+    // Contact Person
+    if (!currentCustomer.contact_person?.trim()) newErrors.contact_person = "Contact person is required";
+
+    // Contact Number Validation
+    if (!currentCustomer.contact_number?.trim()) newErrors.contact_number = "Contact number is required";
+    else if (!/^\d{10}$/.test(currentCustomer.contact_number)) newErrors.contact_number = "Contact number must be a 10-digit number";
+    return newErrors;
   };
 
   const handleSubmit = async (event) => {
@@ -137,6 +147,13 @@ const EditCustomerForm = ({}) => {
   function handleBack() {
     navigate("/landingpage/customermasterdashboard");
   }
+
+  // Prevent users from typing `-`, `e`, `E`
+  const handleKeyDown = (e) => {
+    if (e.key === "-" || e.key === "e" || e.key === "E") {
+      e.preventDefault();
+    }
+  };
 
   return (
     <div style={{ maxHeight: "115vh", overflow: "auto" }}>
@@ -190,6 +207,8 @@ const EditCustomerForm = ({}) => {
                   <Form.Label>Credit Limit</Form.Label>
                   <Form.Control
                     type="number"
+                    min="0"
+                    onKeyDown={handleKeyDown}
                     name="credit_limit"
                     value={currentCustomer.credit_limit}
                     onChange={handleChange}
@@ -202,6 +221,8 @@ const EditCustomerForm = ({}) => {
                   <Form.Label>Credit Days</Form.Label>
                   <Form.Control
                     type="number"
+                    min="0"
+                    onKeyDown={handleKeyDown}
                     name="credit_days"
                     value={currentCustomer.credit_days}
                     onChange={handleChange}
@@ -226,7 +247,9 @@ const EditCustomerForm = ({}) => {
                 <Col md={3} style={{ marginTop: "20px" }}>
                   <Form.Label>Contact Number</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="number"
+                    min="0"
+                    onKeyDown={handleKeyDown}
                     name="contact_number"
                     value={currentCustomer.contact_number}
                     onChange={handleChange}
@@ -278,7 +301,9 @@ const EditCustomerForm = ({}) => {
                 <Col md={3} style={{ marginTop: "20px" }}>
                   <Form.Label>Billing Address State Pin Code</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="number"
+                    min="0"
+                    onKeyDown={handleKeyDown}
                     name="billing_address_state_code"
                     value={currentCustomer.billing_address_state_code}
                     onChange={handleChange}
@@ -330,7 +355,9 @@ const EditCustomerForm = ({}) => {
                 <Col md={3} style={{ marginTop: "20px" }}>
                   <Form.Label>Delivery Address Pin Code</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="number"
+                    min="0"
+                    onKeyDown={handleKeyDown}
                     name="delivery_address_state_code"
                     value={currentCustomer.delivery_address_state_code}
                     onChange={handleChange}
@@ -382,7 +409,9 @@ const EditCustomerForm = ({}) => {
                 <Col md={3} style={{ marginTop: "20px" }}>
                   <Form.Label>Additional Address Pin Code</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="number"
+                    min="0"
+                    onKeyDown={handleKeyDown}
                     name="additional_address1_state_code"
                     value={currentCustomer.additional_address1_state_code}
                     onChange={handleChange}
@@ -434,7 +463,9 @@ const EditCustomerForm = ({}) => {
                 <Col md={3} style={{ marginTop: "20px" }}>
                   <Form.Label>Additional Address Pin Code</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="number"
+                    min="0"
+                    onKeyDown={handleKeyDown}
                     name="additional_address2_state_code"
                     value={currentCustomer.additional_address2_state_code}
                     onChange={handleChange}
@@ -446,21 +477,6 @@ const EditCustomerForm = ({}) => {
               </Row>
               <div style={{ marginRight: "80px" }}>
                 <button
-                  onClick={() => handleBack()}
-                  style={{
-                    padding: "10px 20px",
-                    backgroundColor: "rgb(73 81 88)",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "20px",
-                    cursor: "pointer",
-                    marginTop: "20px",
-                    marginRight: "10px",
-                  }}
-                >
-                  Back
-                </button>
-                <button
                   onClick={handleSubmit}
                   style={{
                     padding: "10px 20px",
@@ -470,10 +486,25 @@ const EditCustomerForm = ({}) => {
                     borderRadius: "20px",
                     cursor: "pointer",
                     marginTop: "20px",
-                    marginRight: "200px",
+                    marginRight: "10px",
                   }}
                 >
                   Update
+                </button>
+                <button
+                  onClick={() => handleBack()}
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "rgb(73 81 88)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "20px",
+                    cursor: "pointer",
+                    marginTop: "20px",
+                    marginRight: "200px",
+                  }}
+                >
+                  Back
                 </button>
               </div>
             </Form>

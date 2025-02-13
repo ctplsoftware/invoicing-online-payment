@@ -138,7 +138,6 @@ export default function EInvoiceList(){
         <>
            <div style={{ width: '91%', marginLeft: '63px', marginTop: '30px', marginBottom: '10px' }}>
     
-           </div>
            
           <DataTable
             columns={columns}
@@ -184,12 +183,15 @@ export default function EInvoiceList(){
                 style: {
                   fontSize: "12px",
                   padding: "10px",
-                  justifyContent: "flex-end", // Align pagination to the left
+                  justifyContent: "flex-start", // Align pagination to the left
                 },
               },
             }}
           />
+        </div>
+
         </>
+
       );
 
 

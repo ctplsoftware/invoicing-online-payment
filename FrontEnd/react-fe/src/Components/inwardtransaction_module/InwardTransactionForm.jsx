@@ -7,7 +7,7 @@ import permissionList from "../../permission.js";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
-import { alertWarning } from "../../alert.js";
+import { alertWarning, alertSuccess, alertError } from "../../alert.js";
 
 const InwardTransactionForm = () => {
   const api = new API();
@@ -40,6 +40,8 @@ const InwardTransactionForm = () => {
 
     if (!formData.part_name.trim())
       newErrors.part_name = "Part name is required";
+    if (!formData.location_id.trim())
+      newErrors.location_id = "Location name is required";
     if (!formData.uom.trim()) newErrors.uom = "UOM is required";
     if (!formData.inward_quantity) newErrors.uom = "Quantity is required";
     if (formData.inward_quantity == 0 || formData.inward_quantity < 0)
@@ -98,7 +100,7 @@ const InwardTransactionForm = () => {
 
       const response = await api.inwardTransactioncreate(dataToSubmit);
       if (response) {
-        alert("Inward Added");
+        alertSuccess("Inward Added");
         navigate("/landingpage/inwardtransactionlist");
         setFormData({
           part_name: "",
@@ -107,7 +109,7 @@ const InwardTransactionForm = () => {
           uom: "",
         });
       } else {
-        alert("Failed to add part");
+        alertError("Failed to add part");
       }
     } catch (error) {
       console.error("Error adding part:", error);
@@ -118,6 +120,13 @@ const InwardTransactionForm = () => {
     navigate("/landingpage/inwardtransactionlist");
   }
 
+  // Prevent users from typing `-`, `e`, `E`
+  const handleKeyDown = (e) => {
+    if (e.key === "-" || e.key === "e" || e.key === "E") {
+      e.preventDefault();
+    }
+  };
+
   return (
     <>
       {permissions.includes("asset.view_sampleform") ? (
@@ -126,8 +135,17 @@ const InwardTransactionForm = () => {
         </div>
       ) : (
         <>
-          <Container fluid>
-            <Form>
+              <Container
+                fluid
+                style={{
+                  backgroundColor: "#f5f5f5",
+                  padding: "30px",
+                  borderRadius: "22px",
+                  maxWidth: "90%",
+                  marginTop: "80px",
+                  boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
+                }}
+              >            <Form>
               <Row>
                 <Col md={4} style={{ marginTop: "20px" }}>
                   <Form.Group controlId="partName">
@@ -179,6 +197,7 @@ const InwardTransactionForm = () => {
                     value={formData.uom}
                     onChange={handleChange}
                     className="input-border"
+                    style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
                     required
                   />
                 </Col>
@@ -189,6 +208,8 @@ const InwardTransactionForm = () => {
                   <Form.Label>Inward Quantity</Form.Label>
                   <Form.Control
                     type="number"
+                    min="0"
+                    onKeyDown={handleKeyDown}
                     name="inward_quantity"
                     value={formData.inward_quantity}
                     onChange={handleChange}
@@ -205,12 +226,28 @@ const InwardTransactionForm = () => {
                     value={formData.comments}
                     onChange={handleChange}
                     className="input-border"
+                    style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
                     required
                   />
                 </Col>
               </Row>
 
               <div style={{ marginRight: "80px" }}>
+              <button
+                  onClick={handleSubmit}
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "#1976d2",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "20px",
+                    cursor: "pointer",
+                    marginTop: "20px",
+                    marginRight: "10px",
+                  }}
+                >
+                  Save
+                </button>
                 <button
                   onClick={() => handleBack()}
                   style={{
@@ -221,27 +258,13 @@ const InwardTransactionForm = () => {
                     borderRadius: "20px",
                     cursor: "pointer",
                     marginTop: "20px",
-                    marginRight: "10px",
+                    marginRight: "200px",
                   }}
                 >
                   Back
                 </button>
 
-                <button
-                  onClick={handleSubmit}
-                  style={{
-                    padding: "10px 20px",
-                    backgroundColor: "#1976d2",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    marginTop: "20px",
-                    marginRight: "200px",
-                  }}
-                >
-                  Save
-                </button>
+               
               </div>
             </Form>
           </Container>

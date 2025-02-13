@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
-import { FaEdit } from 'react-icons/fa';
+import { NavLink, useNavigate } from "react-router-dom";
 import { API } from '../../API';
 import DataTable from 'react-data-table-component';
 
@@ -17,21 +16,28 @@ function Userlist() {
     const navigate = useNavigate();
     const columns = [
         { name: 'S No', selector: row => row.Sno, width: '90px' },
-        { name: 'Username', selector: row => row.username, flex: 0.5 },
+        {
+            name: "Username",
+            selector: (row) => (
+              <a 
+                to="#" 
+                onClick={(e) => {
+                  e.preventDefault(); 
+                  handleEditClick(row);
+                }}
+                style={{ textDecoration: 'none', color: 'blue', cursor: 'pointer' }}
+              >
+                {row.username}
+              </a>
+            ),
+            flex: 0.5 
+          },
+          
+
+
         { name: 'Email', selector: row => row.email, width: '250px' },
         { name: 'Roles', selector: row => row.groups, width: '300px' },
         { name: 'Status', selector: row => row.is_active, flex: 1.5 },
-        {
-            name: 'Actions',
-            selector: row => row.id,
-            cell: row => (
-                <FaEdit
-                    onClick={() => handleEditClick(row)}
-                    style={{ height: '20px', width: '50px', cursor: 'pointer' }}
-                />
-            ),
-            width: '80px',
-        },
     ];
     
     useEffect(() => {
@@ -81,6 +87,11 @@ function Userlist() {
 
     return (
         <div style={{ display: 'contents' }}>
+
+            <div style={{marginTop: "20px"}}>
+                <strong><h2>User Management List</h2></strong>
+            </div>
+
             <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
 
                 <div style={{ marginRight: '48px',marginBottom:'-45px' }}>
@@ -112,7 +123,6 @@ function Userlist() {
                 </div>
 
                 <DataTable
-                title="User Management List"
                 columns={columns}
                 data={filteredRows}
                 pagination
@@ -158,7 +168,7 @@ function Userlist() {
                         style: {
                             fontSize: '12px',
                             padding: '10px',
-                            justifyContent: 'flex-end', // Align pagination to the left
+                            justifyContent: 'flex-start', // Align pagination to the left
                         },
                     },
                 }}
