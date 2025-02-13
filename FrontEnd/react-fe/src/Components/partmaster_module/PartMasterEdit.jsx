@@ -20,6 +20,7 @@ const PartMasterEdit = () => {
 
   const [formData, setFormData] = useState({
     part_name: "",
+    part_desc: "",
     status: "active",
     unit_price: "",
     hsn_code: "",
@@ -42,6 +43,8 @@ const PartMasterEdit = () => {
 
     if (!formData.part_name.trim())
       newErrors.part_name = "Part name is required";
+    if (!formData.part_desc.trim())
+      newErrors.part_desc = "Part description is required";
     if (!formData.unit_price)
       newErrors.unit_price = "Unit price is required";
     if (!formData.uom.trim()) newErrors.uom = "UOM is required";
@@ -62,6 +65,7 @@ const PartMasterEdit = () => {
           setFormData({
             id: partmasterData.id,
             part_name: partmasterData.part_name,
+            part_desc: partmasterData.part_desc,
             status: partmasterData.status,
             unit_price: partmasterData.unit_price,
             hsn_code: partmasterData.hsn_code,
@@ -143,6 +147,19 @@ const PartMasterEdit = () => {
                       style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
                     />
                   </Col>
+
+                  <Col md={4}>
+                    <Form.Label>Part Description</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="part_desc"
+                      value={formData.part_desc}
+                      onChange={handleChange}
+                      className="input-border"
+                      required
+                      style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
+                    />
+                  </Col>
   
                   <Col md={4}>
                     <Form.Label>Unit Price</Form.Label>
@@ -169,9 +186,7 @@ const PartMasterEdit = () => {
                       style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
                     />
                   </Col>
-                </Row>
-  
-                <Row className="align-items-end mt-3">
+                
                   <Col md={4}>
                     <Form.Label>HSN Code</Form.Label>
                     <Form.Control
@@ -185,7 +200,7 @@ const PartMasterEdit = () => {
                     />
                   </Col>
                   
-                  <Col md={2} className="d-flex justify-content-start">
+                  <Col md={1}>
                     <Button
                         onClick={handleSubmit}
                         style={{
@@ -201,7 +216,7 @@ const PartMasterEdit = () => {
                         Update
                     </Button>
                   </Col>
-                  <Col md={1} className="d-flex justify-content-start">
+                  <Col md={2}>
                     <Button
                         onClick={handleBack}
                         style={{
@@ -212,6 +227,7 @@ const PartMasterEdit = () => {
                           borderRadius: "8px",
                           cursor: "pointer",
                           minWidth: "120px",
+                          marginRight: "60px"
                         }}
                       >
                         Back

@@ -108,13 +108,7 @@ const PaymentList = () => {
   };
 
   return (
-    <div
-      style={{
-        width: "51.1%",
-        margin: "40px auto",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
+    <div style={{ width: '91%', marginLeft: '63px', marginTop: '30px', marginBottom: '10px' }}>
       {/* DataTable */}
       <DataTable
         columns={columns}
@@ -163,7 +157,7 @@ const PaymentList = () => {
             style: {
               fontSize: "12px",
               padding: "30px",
-              justifyContent: "flex-end", // Align pagination to the left
+              justifyContent: "flex-start", // Align pagination to the left
             },
           },
         }}

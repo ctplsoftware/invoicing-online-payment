@@ -19,6 +19,7 @@ const PartMaster = () => {
 
   const [formData, setFormData] = useState({
     part_name: "",
+    part_desc: "",
     status: "active",
     unit_price: "",
     uom: "",
@@ -38,6 +39,8 @@ const PartMaster = () => {
 
     if (!formData.part_name.trim()) 
       newErrors.part_name = "Part name is required";
+    if (!formData.part_desc.trim()) 
+      newErrors.part_desc = "Part description is required";
     if (!formData.unit_price.trim())
       newErrors.unit_price = "Unit price is required";
     if (!formData.uom.trim())
@@ -126,6 +129,19 @@ const PartMaster = () => {
           </Col>
 
           <Col md={4}>
+            <Form.Label>Part Description</Form.Label>
+            <Form.Control
+              type="text"
+              name="part_desc"
+              value={formData.part_desc}
+              onChange={handleChange}
+              className="input-border"
+              required
+              style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
+            />
+          </Col>
+
+          <Col md={4}>
             <Form.Label>Unit Price</Form.Label>
             <Form.Control
               type="text"
@@ -138,7 +154,7 @@ const PartMaster = () => {
             />
           </Col>
 
-          <Col md={3}>
+          <Col md={4}>
             <Form.Label>UOM (Unit of Measure)</Form.Label>
             <Form.Control
               type="text"
@@ -150,9 +166,7 @@ const PartMaster = () => {
               style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
             />
           </Col>
-        </Row>
-
-        <Row className="align-items-end mt-3">
+        
           <Col md={4}>
             <Form.Label>HSN Code</Form.Label>
             <Form.Control
@@ -166,7 +180,7 @@ const PartMaster = () => {
             />
           </Col>
 
-          <Col md={2} className="d-flex justify-content-start">
+          <Col md={1}>
             <Button
               onClick={handleSubmit}
               style={{
@@ -182,7 +196,7 @@ const PartMaster = () => {
               Save
             </Button>
           </Col>
-          <Col md={1} className="d-flex justify-content-start">
+          <Col md={2}>
             <Button
               onClick={handleBack}
               style={{
@@ -193,6 +207,7 @@ const PartMaster = () => {
                 borderRadius: "8px",
                 cursor: "pointer",
                 minWidth: "120px",
+                marginRight: "60px"
               }}
             >
               Back

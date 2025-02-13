@@ -131,7 +131,7 @@ const Useredit = () => {
             width: '816px',
             maxWidth: 'max-content',
             margin: '0 auto',
-            marginTop: '11vh',
+            marginTop: '5vh',
             padding: '20px',
             backgroundColor: '#f9f9f9',
             borderRadius: '31px',
@@ -147,8 +147,10 @@ const Useredit = () => {
                             type="text"
                             name="username"
                             placeholder="Enter Username"
+                            className="input-border"
                             value={formData.username}
                             onChange={handleChange}
+                            style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px"}}
                             required
                             autoFocus
                         />
@@ -159,7 +161,9 @@ const Useredit = () => {
                             type="password"
                             name="password"
                             placeholder="Enter Password"
+                            className="input-border"
                             value={formData.password}
+                            style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px"}}
                             onChange={handleChange}
                             required
                         />
@@ -173,7 +177,9 @@ const Useredit = () => {
                             type="password"
                             name="confirm_password"
                             placeholder="Confirm Password"
+                            className="input-border"
                             value={formData.confirm_password}
+                            style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px"}}
                             onChange={handleChange}
                             required
                         />
@@ -184,7 +190,9 @@ const Useredit = () => {
                             type="email"
                             name="email"
                             placeholder="Enter Email"
+                            className="input-border"
                             value={formData.email}
+                            style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px"}}
                             onChange={handleChange}
                             required
                         />
@@ -198,6 +206,7 @@ const Useredit = () => {
                             name="role_id"
                             value={formData.role_id}
                             onChange={handleChange}
+                            style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px"}}
                             required
                         >
                             <option value="">Select Role</option>
@@ -214,6 +223,7 @@ const Useredit = () => {
                             name="customer_id"
                             value={formData.customer_id}
                             onChange={handleChange}
+                            style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px"}}
                             required
                             disabled={!isCustomerDropdownEnabled}
 
@@ -237,6 +247,7 @@ const Useredit = () => {
                             name="status"
                             value={formData.status}
                             onChange={handleChange}
+                            style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px"}}
                             required
                         >
                             <option value="">Select Status</option>

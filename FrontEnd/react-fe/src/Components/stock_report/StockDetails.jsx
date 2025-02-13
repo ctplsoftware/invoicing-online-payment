@@ -42,15 +42,15 @@ const StockDetails = () => {
   }, [partname]);
 
   const columns = [
-    { name: "Sno", selector: (row, index) => index + 1, width: "70px" },
-    { name: "Part Name", selector: (row) => row.part_name, width: "150px" },
+    { name: "Sno", selector: (row, index) => index + 1, width: "auto" },
+    { name: "Part Name", selector: (row) => row.part_name, width: "auto" },
     {
       name: "Quantity",
       selector: (row) => row.inward_quantity,
-      width: "150px",
+      width: "auto",
     },
-    { name: "UOM", selector: (row) => row.uom, width: "100px" },
-    { name: "Comments", selector: (row) => row.comments, width: "200px" },
+    { name: "UOM", selector: (row) => row.uom, width: "auto" },
+    { name: "Comments", selector: (row) => row.comments, width: "auto" },
     {
       name: "Inward date",
       selector: (row) => row.inward_date,
@@ -65,25 +65,18 @@ const StockDetails = () => {
         );
         return formattedDate;
       },
-      width: "180px",
+      width: "auto",
     },
-    { name: "Inward By", selector: (row) => row.inward_by, width: "173px" },
+    { name: "Inward By", selector: (row) => row.inward_by, width: "auto" },
   ];
 
   return (
-    <div
-      style={{
-        height: 268,
-        width: "60%",
-        marginLeft: "278px",
-        marginTop: "29px",
-      }}
-    >   
-        <div style={{'marginBottom': '20px', 'font-size': '20px'}} className="">
-        <span ><b>Details for Part : {part_name} and Location: {location_name}</b></span>
-
-
+    <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
+ 
+        <div className="mb-3 fs-5 fw-bold">
+          Details for Part: <strong>{part_name}</strong> & Location: <strong>{location_name}</strong>
         </div>
+
         
      
       <DataTable
@@ -134,7 +127,7 @@ const StockDetails = () => {
             style: {
               fontSize: "12px",
               padding: "10px",
-              justifyContent: "flex-end", // Align pagination to the left
+              justifyContent: "flex-start", // Align pagination to the left
             },
           },
         }}

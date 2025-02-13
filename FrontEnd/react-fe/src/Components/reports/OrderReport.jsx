@@ -177,6 +177,7 @@ export default function OrderReport() {
 
   return (
     <>
+    <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
       <div
         style={{
           width: "91%",
@@ -187,8 +188,8 @@ export default function OrderReport() {
       >
         <button onClick={() => exportToExcel(data)}>Download Excel</button>
       </div>
-
-      <span style={{ paddingLeft: "30px", paddingRight: "15px" }}>
+        <div>
+        <span style={{ paddingLeft: "30px", paddingRight: "15px" }}>
         <b> Start Date</b>
       </span>
       <input
@@ -208,6 +209,8 @@ export default function OrderReport() {
         placeholder="End Date"
         required
       />
+        </div>
+      
       <span
         style={{
           paddingLeft: "35px",
@@ -265,6 +268,7 @@ export default function OrderReport() {
           },
         }}
       />
+    </div>
     </>
   );
 }

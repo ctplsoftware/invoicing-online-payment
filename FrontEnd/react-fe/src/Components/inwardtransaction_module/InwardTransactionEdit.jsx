@@ -1,6 +1,8 @@
 import { API } from '../../API.js';
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
+import { alertWarning, alertSuccess, alertError } from "../../alert.js";
+
 
 const InwardTransactionEdit = () => {
     const api = new API();
@@ -47,11 +49,11 @@ const InwardTransactionEdit = () => {
         event.preventDefault();
         try {
             await api.update_inwardtransaction(formData);
-            alert("Update successful");
+            alertSuccess("Update successful");
             navigate('/landingpage/inwardtransactionlist');
         } catch (error) {
             console.error("Update failed:", error);
-            alert("Update failed. Please try again.");
+            alertError("Update failed. Please try again.");
         }
     };
 

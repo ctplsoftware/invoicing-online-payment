@@ -71,7 +71,7 @@ function DispatchCredit() {
 
   const handleDispatch = async (e) => {
     Swal.fire({
-      text: "Do you want to dispatch this order?",
+      html: `<strong>Are you sure you want to dispatch this order?</strong>`,
       showCancelButton: true,
         confirmButtonText: "Yes",
         cancelButtonText: "No",

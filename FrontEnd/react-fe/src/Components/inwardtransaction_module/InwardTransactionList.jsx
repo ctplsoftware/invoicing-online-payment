@@ -15,6 +15,7 @@ function InwardTransactionList() {
     const navigate = useNavigate();
 
     const columns = [
+        
         { name: 'S No', selector: row => row.Sno, width: '70px' },
         { name: 'Part Name', selector: row => row.part_name, flex: 1 },
         { name: 'Inward Quantity', selector: row => row.inward_quantity, flex: 1.5 },
@@ -44,6 +45,8 @@ function InwardTransactionList() {
             setLoading(true); // Start loading
             try {
                 const inwardtransactionfecth = await api.get_inward_transaction();
+                console.log(inwardtransactionfecth,'inwardtransactionfecth');
+                
 
                 const fetchedata = inwardtransactionfecth.map((item, index) => ({
                     id: item.id,
@@ -169,7 +172,7 @@ function InwardTransactionList() {
                         style: {
                             fontSize: '12px',
                             padding: '10px',
-                            justifyContent: 'flex-end', // Align pagination to the left
+                            justifyContent: 'flex-start', // Align pagination to the left
                         },
                     },
                 }}

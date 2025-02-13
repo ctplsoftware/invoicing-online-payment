@@ -57,8 +57,18 @@ export default function EInvoice() {
 
   return (
     <>
-      <Container fluid>
-        <Row>
+        <Container
+              fluid
+              style={{
+                backgroundColor: "#f5f5f5",
+                padding: "30px",
+                borderRadius: "22px",
+                maxWidth: "90%",
+                marginTop: "80px",
+                boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
+              }}
+            >
+          <Row>
           <Col md={4} style={{ marginTop: "20px" }}>
             <Form.Label>Order Number</Form.Label>
             <Form.Control
@@ -66,6 +76,7 @@ export default function EInvoice() {
               name="name"
               value={orderData?.order_header?.order_number}
               className="input-border"
+              style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
               readOnly
             />
           </Col>
@@ -77,6 +88,7 @@ export default function EInvoice() {
               name="delivery_note"
               value={data.delivery_note}
               className="input-border"
+              style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
               onChange={handleChange}
             />
           </Col>
@@ -89,6 +101,7 @@ export default function EInvoice() {
               value={data.other_references}
               className="input-border"
               onChange={handleChange}
+              style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
             />
           </Col>
         </Row>
@@ -102,6 +115,7 @@ export default function EInvoice() {
               value={data.buyer_order_number}
               className="input-border"
               onChange={handleChange}
+              style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
             />
           </Col>
 
@@ -113,6 +127,7 @@ export default function EInvoice() {
               value={data.buyer_order_date}
               className="input-border"
               onChange={handleChange}
+              style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
             />
           </Col>
 
@@ -124,6 +139,7 @@ export default function EInvoice() {
               value={data.dispatch_document_number}
               className="input-border"
               onChange={handleChange}
+              style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
             />
           </Col>
         </Row>
@@ -137,6 +153,7 @@ export default function EInvoice() {
               value={data.delivery_note_date}
               className="input-border"
               onChange={handleChange}
+              style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
             />
           </Col>
 
@@ -148,6 +165,7 @@ export default function EInvoice() {
               value={data.dispatched_through}
               className="input-border"
               onChange={handleChange}
+              style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
             />
           </Col>
 
@@ -159,13 +177,13 @@ export default function EInvoice() {
               value={data.terms_of_delivery}
               className="input-border"
               onChange={handleChange}
+              style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
             />
           </Col>
         </Row>
-
-        <div style={{ marginRight: "80px" }}>
-
-          {orderData?.order_header?.invoice_generated_status === 'no' && (<button
+        <div style={{display: "flex", columnGap: "10px", justifyContent: "center", marginRight: "200px"}}>
+          {orderData?.order_header?.invoice_generated_status === 'no' && (
+            <button
             onClick={() => generateEInvoiceAlert(data, navigate, orderData?.order_header?.payment_type)}
             style={{
               padding: "10px 20px",
@@ -173,10 +191,9 @@ export default function EInvoice() {
               color: "#fff",
               border: "none",
               width: "250px",
-              borderRadius: "4px",
+              borderRadius: "20px",
               cursor: "pointer",
               marginTop: "20px",
-              marginRight: "200px",
             }}
           >
             GENERATE E-INVOICE
@@ -192,7 +209,6 @@ export default function EInvoice() {
               borderRadius: "20px",
               cursor: "pointer",
               marginTop: "20px",
-              float: "left",
             }}
           >
             Back
