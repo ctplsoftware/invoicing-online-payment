@@ -138,7 +138,6 @@ const PartMaster = () => {
               className="input-border"
               required
               style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
-              autoFocus
             />
           </Col>
 
@@ -155,7 +154,7 @@ const PartMaster = () => {
             />
           </Col>
 
-          <Col md={3}>
+          <Col md={4}>
             <Form.Label>UOM (Unit of Measure)</Form.Label>
             <Form.Control
               type="text"
@@ -167,9 +166,7 @@ const PartMaster = () => {
               style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
             />
           </Col>
-        </Row>
-
-        <Row className="align-items-end mt-3">
+        
           <Col md={4}>
             <Form.Label>HSN Code</Form.Label>
             <Form.Control
@@ -183,7 +180,7 @@ const PartMaster = () => {
             />
           </Col>
 
-          <Col md={2} className="d-flex justify-content-start">
+          <Col md={1}>
             <Button
               onClick={handleSubmit}
               style={{
@@ -199,7 +196,7 @@ const PartMaster = () => {
               Save
             </Button>
           </Col>
-          <Col md={1} className="d-flex justify-content-start">
+          <Col md={2}>
             <Button
               onClick={handleBack}
               style={{
@@ -210,6 +207,7 @@ const PartMaster = () => {
                 borderRadius: "8px",
                 cursor: "pointer",
                 minWidth: "120px",
+                marginRight: "60px"
               }}
             >
               Back

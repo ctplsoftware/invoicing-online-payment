@@ -186,9 +186,7 @@ const PartMasterEdit = () => {
                       style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
                     />
                   </Col>
-                </Row>
-  
-                <Row className="align-items-end mt-3">
+                
                   <Col md={4}>
                     <Form.Label>HSN Code</Form.Label>
                     <Form.Control
@@ -202,7 +200,7 @@ const PartMasterEdit = () => {
                     />
                   </Col>
                   
-                  <Col md={2} className="d-flex justify-content-start">
+                  <Col md={1}>
                     <Button
                         onClick={handleSubmit}
                         style={{
@@ -218,7 +216,7 @@ const PartMasterEdit = () => {
                         Update
                     </Button>
                   </Col>
-                  <Col md={1} className="d-flex justify-content-start">
+                  <Col md={2}>
                     <Button
                         onClick={handleBack}
                         style={{
@@ -229,6 +227,7 @@ const PartMasterEdit = () => {
                           borderRadius: "8px",
                           cursor: "pointer",
                           minWidth: "120px",
+                          marginRight: "60px"
                         }}
                       >
                         Back
