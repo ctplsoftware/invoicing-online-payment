@@ -46,10 +46,14 @@ TAXPAYER_DETAILS_URL = 'https://gsp.adaequare.com/test/enriched/ei/api/master/gs
 
 COMPANY_NAME = 'Chakravarthy Commercials'
 COMPANY_ADDRESS = '161 A ETTAYAPURAM ROAD, Thoothukudi, Tamil Nadu, 628002'
+LOCATION = 'Thoothukudi'
+PIN_CODE = '628002'
 STATE_NAME = 'Tamil Nadu'
 STATE_CODE = '33'
 EMAIL_ID = 'sample@gmail.com'
 PHONE_NUMBER = '1234567890'
+LEGAL_NAME = 'RAMAIAH THEVAR PERUMAL'
+TRADE_NAME = 'CHAKRAVARTHY COMMERCIALS'
 
 BANK_ACCOUNT_NUMBER = '0708102000012120'
 BANK_NAME = 'IDBI Bank'

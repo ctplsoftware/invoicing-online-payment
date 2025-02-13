@@ -220,7 +220,7 @@ class API {
 
   async createLocationMaster(data) {
     try {
-      const response = await axios.post(`${BaseURL}/location-create`, data);
+      const response = await apiClient.post(`${BaseURL}/location-create`, data);
       return response.data;
     } catch (error) {
       console.error("Error updating customer:", error);
@@ -228,14 +228,14 @@ class API {
   }
 
   async fetch_locationmasterdata() {
-    const response = await axios.get(`${BaseURL}/locationmaster_list`);
+    const response = await apiClient.get(`${BaseURL}/locationmaster_list`);
 
     return response.data;
   }
 
   async edit_location_fetch(id) {
     try {
-      const response = await axios.get(`${BaseURL}/locationmaster_edit/${id}`);
+      const response = await apiClient.get(`${BaseURL}/locationmaster_edit/${id}`);
       return response.data;
     } catch (error) {
       console.error("Error fetching assets data:", error);
@@ -249,7 +249,7 @@ class API {
     onFailure = () => {}
   ) {
     try {
-      const response = await axios.put(
+      const response = await apiClient.put(
         `${BaseURL}/edit_locationmaster_update/${location_master.id}`,
         location_master
       );
@@ -269,14 +269,14 @@ class API {
   // order_transaction data and header also
 
   async fetch_ordertransactiondata() {
-    const response = await axios.get(`${BaseURL}/order-details-all`);
+    const response = await apiClient.get(`${BaseURL}/order-details-all`);
 
     return response.data;
   }
 
   async fetch_dispatchById(id) {
     try {
-      const response = await axios.get(`${BaseURL}/order-details-get`, {
+      const response = await apiClient.get(`${BaseURL}/order-details-get`, {
         params: { order_header_id: id },
       });
       return response.data;
@@ -288,7 +288,7 @@ class API {
 
   async updateOrderHeaderDispatchStatus(data) {
     try {
-      const response = await axios.put(
+      const response = await apiClient.put(
         `${BaseURL}/disptach-completed-update`,
         data
       );
@@ -300,7 +300,7 @@ class API {
 
   async updateOrderHeaderVerifyStatus(data) {
     try {
-      const response = await axios.put(
+      const response = await apiClient.put(
         `${BaseURL}/verified-completed-update`,
         data
       );
@@ -312,7 +312,7 @@ class API {
 
   async update_dispatch_location(data) {
     try {
-      const response = await axios.put(
+      const response = await apiClient.put(
         `${BaseURL}/dispatch-location-update`,
         data
       );
@@ -324,7 +324,7 @@ class API {
 
   async cancel_order(data){
     try {
-      const response = await axios.put(
+      const response = await apiClient.put(
         `${BaseURL}/cancel-order`,
         data
       );
@@ -345,7 +345,7 @@ class API {
 
   async generateEInvoice(data) {
     try {
-      const response = await axios.post(`${BaseURL}/einvoice-create`, data);
+      const response = await apiClient.post(`${BaseURL}/einvoice-create`, data);
       return response.data;
     } catch (error) {
       console.error("Error updating customer:", error);
@@ -354,7 +354,7 @@ class API {
 
   async cancelEInvoice(data) {
     try {
-      const response = await axios.post(`${BaseURL}/einvoice-cancel`, data);
+      const response = await apiClient.post(`${BaseURL}/einvoice-cancel`, data);
       return response.data;
     } catch (error) {
       console.error("Error updating customer:", error);

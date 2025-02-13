@@ -8,6 +8,7 @@ from django.utils import timezone
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_order_transaction(request):
         order_data = OrderTransaction.objects.all()
         serializer = OrderTransactionSerializer(order_data, many=True)

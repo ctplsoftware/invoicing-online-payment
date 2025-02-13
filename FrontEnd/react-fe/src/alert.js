@@ -68,7 +68,7 @@ export async function cancelOrder(order_header_id) {
 
   try {
     const { value: formValues } = await Swal.fire({
-      title: "Are you sure you want to cancel the order?",
+      title: "Are you sure you want to cancel the order and e-invoice?",
       html:
         '<input id="swal-username" class="swal2-input" placeholder="Username">' +
         '<input id="swal-password" type="password" class="swal2-input" placeholder="Password">',
@@ -104,7 +104,7 @@ export async function cancelOrder(order_header_id) {
 
 
       if (response === "success") {
-        Swal.fire("Success!", "Order cancelled successfully!", "success").then(() => {
+        Swal.fire("Success!", "Order and E-Invoice cancelled successfully!", "success").then(() => {
           window.location.reload();
         });
       } 
