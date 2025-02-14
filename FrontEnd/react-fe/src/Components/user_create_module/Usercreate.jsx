@@ -53,6 +53,9 @@ const Usercreate = () => {
                 const rolesfetch = await api.fetch_rolesdata();
                 const customerNamefetch = await api.customermaster_fetch();
 
+                console.log(customerNamefetch, 'customerNamefetch');
+                
+
                 const fetchedata = rolesfetch.map((item, index) => ({
                     id: item.id,
                     name: item.name,
@@ -143,7 +146,7 @@ const Usercreate = () => {
 
         }}>
 
-            <h3 class="nonheadingfont-bold">User Create</h3>
+            <h3 className="nonheadingfont-bold">User Create</h3>
             <form onSubmit={handleSubmit} className="admin-create-form">
                 <div className="form-row">
                     <label>

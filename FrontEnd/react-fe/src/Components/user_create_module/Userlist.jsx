@@ -89,13 +89,12 @@ function Userlist() {
         <div style={{ display: 'contents' }}>
 
             <div style={{marginTop: "20px"}}>
-                <strong><h2>User Management List</h2></strong>
             </div>
 
             <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
 
                 <div style={{ marginRight: '48px',marginBottom:'-45px' }}>
-                    <button onClick={() => navigate("/landingpage/usercreate")}>User Create</button>
+                    <button onClick={() => navigate("/landingpage/usercreate")}>Create</button>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>

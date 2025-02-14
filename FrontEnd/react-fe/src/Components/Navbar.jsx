@@ -152,7 +152,7 @@ const Navbar1 = ({ title }) => {
                     </NavDropdown.Item>
                   </>
                 ) : title === "User Management" ? (
-                  <NavDropdown.Item href="/landingpage/usercreate">
+                  <NavDropdown.Item href="/landingpage/userlist">
                     User
                   </NavDropdown.Item>
                 ) : title === "Process" ? (
