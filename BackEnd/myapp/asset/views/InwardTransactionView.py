@@ -17,8 +17,8 @@ def create_inwardTransaction(request):
     try:
         with transaction.atomic():
 
-            inward_header = InwardHeader.objects.filter(location_master_id = request.data.get('location_id')).first()
             part_master = PartMaster.objects.filter(part_name = request.data.get('part_name')).first()
+            inward_header = InwardHeader.objects.filter(location_master_id = request.data.get('location_id'), part_master_id = part_master.id).first()
 
             part_master.stock += round(float(request.data.get('inward_quantity')), 2)
 

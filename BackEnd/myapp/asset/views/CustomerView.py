@@ -17,11 +17,19 @@ import requests
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_customer(request):
-        
+
     julian_date = base33()
     current_year = str(datetime.datetime.now().year)[-2:]
     today_count = get_count_requestid(RequestHeader)
 
+    requestid = f"REQUESTID{julian_date}{current_year}{today_count+1:04}"
+
+    request_header = {
+        'request_id': requestid,
+        'purpose': 'get-taxpayer-details'
+    }
+
+    RequestHeader.objects.create(**request_header)
 
 
     client_id = settings.CLIENT_ID
@@ -60,36 +68,10 @@ def create_customer(request):
         'gstin': request.data.get('gstin_number')
     }
 
-    request_header = {
-        'request_id': requestid,
-        'purpose': 'get-taxpayer-details'
-    }
-
-    RequestHeader.objects.create(**request_header)
-
-    get_taxpayer_details_response_object = requests.get(get_taxpayer_details_url, headers = get_taxpayer_details_headers, params = get_taxpayer_details_params)
-
-    print(get_taxpayer_details_response_object) 
     
 
-   
-
-
-
-
-
-
-
-    requestid = f"REQUESTID{julian_date}{current_year}{today_count+1:04}"
-
-
-
-    get_taxpayer_details_headers = {
-        'Content-Type': 'application/json',
-
-    }
-
-
+    get_taxpayer_details_response_object = requests.get(get_taxpayer_details_url, headers = get_taxpayer_details_headers, params = get_taxpayer_details_params)
+    get_taxpayer_details_response = get_taxpayer_details_response_object.json()['result']
 
 
     validated_data = {
@@ -122,10 +104,19 @@ def create_customer(request):
             'additional_address2_city': request.data.get('additional_address2_city', '').strip(),
             'additional_address2_state': request.data.get('additional_address2_state', '').strip(),
             'additional_address2_state_code': request.data.get('additional_address2_pin_code', '').strip(),
-
-
-           
-            
+            'TradeName': get_taxpayer_details_response['TradeName'],
+            'LegalName': get_taxpayer_details_response['LegalName'],
+            'AddrBnm': get_taxpayer_details_response['AddrBnm'],
+            'AddrFlno': get_taxpayer_details_response['AddrFlno'],
+            'AddrSt': get_taxpayer_details_response['AddrSt'],
+            'AddrBno': get_taxpayer_details_response['AddrBno'],
+            'AddrLoc': get_taxpayer_details_response['AddrLoc'],
+            'StateCode': get_taxpayer_details_response['StateCode'],
+            'AddrPncd': get_taxpayer_details_response['AddrPncd'],
+            'TaxType': get_taxpayer_details_response['TxpType'],
+            'CustomerStatus': get_taxpayer_details_response['Status'],
+            'BlkStatus': get_taxpayer_details_response['BlkStatus'],
+             
             'status': 'active',  
             'created_by': request.data.get('user_id'),
         }.items() if value  

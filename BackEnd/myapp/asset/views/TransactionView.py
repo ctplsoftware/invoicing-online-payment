@@ -368,13 +368,13 @@ def create_e_invoice(request):
                     "TrdNm": customer_master.TradeName,
                     # Point of sales (state code) company's state code. (seller)
                     "Pos": "12",
-                    "Addr1": customer_master.billing_address,
-                    "Addr2": customer_master.billing_address,
+                    "Addr1": f"{customer_master.AddrFlno}, {customer_master.AddrBno}, {customer_master.AddrBnm}",
+                    "Addr2": f"{customer_master.AddrSt}, {customer_master.AddrPncd}",
                     # Location (city)
-                    "Loc": order_header.delivery_address_city,
-                    "Pin": 500055,
+                    "Loc": customer_master.billing_address_city,
+                    "Pin": customer_master.AddrPncd,
                     # State code -- first two digits of the gstin
-                    "Stcd": f"{str(customer_master.gstin_number)[0]}{str(customer_master.gstin_number[1])}",
+                    "Stcd": customer_master.StateCode,
                 }
 
                 # Mandatory
