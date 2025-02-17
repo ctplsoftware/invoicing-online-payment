@@ -22,6 +22,7 @@ const PartMaster = () => {
     part_desc: "",
     status: "active",
     unit_price: "",
+    allocated_stock: 0.0,
     uom: "",
     hsn_code: "",
   });
