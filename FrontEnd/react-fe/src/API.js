@@ -6,12 +6,12 @@ class API {
   // Customer_master
 
   async save_customer(data) {
-    const response = await apiClient.post(`${BaseURL}/save-customer`, data);
+    const response = await apiClient.post(`/save-customer`, data);
     return response.data;
   }
 
   async customermaster_fetch() {
-    const response = await apiClient.get(`${BaseURL}/customermaster_fetch`);
+    const response = await apiClient.get(`/customermaster_fetch`);
 
     return response.data;
   }
@@ -19,7 +19,7 @@ class API {
   async customerMasterEditFetch(id) {
     try {
       const response = await apiClient.get(
-        `${BaseURL}/customerMasterEditFetch/${id}`
+        `/customerMasterEditFetch/${id}`
       );
       return response.data;
     } catch (error) {
@@ -32,7 +32,7 @@ class API {
     try {
       await apiClient
         .put(
-          `${BaseURL}/customermaster_update/${currentCustomer.id}`,
+          `/customermaster_update/${currentCustomer.id}`,
           currentCustomer
         )
         .then((response) => {
@@ -49,14 +49,14 @@ class API {
 
   async part_master_Create(data) {
     const response = await apiClient.post(
-      `${BaseURL}/part_master_Create`,
+      `/part_master_Create`,
       data
     );
     return response.data;
   }
 
   async get_part_master() {
-    const response = await apiClient.get(`${BaseURL}/get_part_master`);
+    const response = await apiClient.get(`/get_part_master`);
 
     return response.data;
   }
@@ -64,7 +64,7 @@ class API {
   async editGet_part_master(id) {
     try {
       const response = await apiClient.get(
-        `${BaseURL}/editGet_part_master/${id}`
+        `/editGet_part_master/${id}`
       );
       return response.data;
     } catch (error) {
@@ -76,7 +76,7 @@ class API {
   async update_part_master(part_master, onSuccess, onFailure) {
     try {
       await apiClient
-        .put(`${BaseURL}/update_part_master/${part_master.id}`, part_master)
+        .put(`/update_part_master/${part_master.id}`, part_master)
         .then((response) => {
           onSuccess(response);
         })
@@ -94,7 +94,7 @@ class API {
   async inwardTransactioncreate(data) {
     try {
       const response = await apiClient.post(
-        `${BaseURL}/create_inwardTransaction`,
+        `/create_inwardTransaction`,
         data
       );
 
@@ -105,13 +105,13 @@ class API {
   }
 
   async fetch_inward_transaction() {
-    const response = await apiClient.get(`${BaseURL}/fetch_inward_transaction`);
+    const response = await apiClient.get(`/fetch_inward_transaction`);
 
     return response.data;
   }
 
   async get_inward_transaction() {
-    const response = await apiClient.get(`${BaseURL}/get-inward-transaction`);
+    const response = await apiClient.get(`/get-inward-transaction`);
 
     return response.data;
   }
@@ -119,7 +119,7 @@ class API {
   async get_inward_part_location_details(data) {
     try {
       const response = await apiClient.get(
-        `${BaseURL}/get-inward-part-location-details`, {params: data}
+        `/get-inward-part-location-details`, {params: data}
       );
 
       return response.data;
@@ -131,7 +131,7 @@ class API {
   async edit_inward_transaction(id) {
     try {
       const response = await apiClient.get(
-        `${BaseURL}/edit_inward_transaction/${id}`
+        `/edit_inward_transaction/${id}`
       );
       return response.data;
     } catch (error) {
@@ -144,7 +144,7 @@ class API {
     try {
       await apiClient
         .put(
-          `${BaseURL}/update_inwardtransaction/${inward_master.id}`,
+          `/update_inwardtransaction/${inward_master.id}`,
           inward_master
         )
         .then((response) => {
@@ -164,7 +164,7 @@ class API {
     try {
       console.log("datasss in api", data);
 
-      const response = await apiClient.post(`${BaseURL}/user_create`, data);
+      const response = await apiClient.post(`/user_create`, data);
 
       return response.data;
     } catch (error) {
@@ -173,20 +173,20 @@ class API {
   }
 
   async fetch_rolesdata() {
-    const response = await apiClient.get(`${BaseURL}/rolesfetch`);
+    const response = await apiClient.get(`/rolesfetch`);
 
     return response.data;
   }
 
   async fetch_usermasterdata() {
-    const response = await apiClient.get(`${BaseURL}/user-master-get`);
+    const response = await apiClient.get(`/user-master-get`);
 
     return response.data;
   }
 
   async edit_usermaster_fetch(id) {
     try {
-      const response = await apiClient.get(`${BaseURL}/edit_usermaster/${id}`);
+      const response = await apiClient.get(`/edit_usermaster/${id}`);
       return response.data;
     } catch (error) {
       console.error("Error fetching assets data:", error);
@@ -201,7 +201,7 @@ class API {
   ) {
     try {
       const response = await apiClient.put(
-        `${BaseURL}/edit_usermaster_update/${user_master.id}`,
+        `/edit_usermaster_update/${user_master.id}`,
         user_master
       );
 
@@ -220,7 +220,7 @@ class API {
 
   async createLocationMaster(data) {
     try {
-      const response = await apiClient.post(`${BaseURL}/location-create`, data);
+      const response = await apiClient.post(`/location-create`, data);
       return response.data;
     } catch (error) {
       console.error("Error updating customer:", error);
@@ -228,14 +228,14 @@ class API {
   }
 
   async fetch_locationmasterdata() {
-    const response = await apiClient.get(`${BaseURL}/locationmaster_list`);
+    const response = await apiClient.get(`/locationmaster_list`);
 
     return response.data;
   }
 
   async edit_location_fetch(id) {
     try {
-      const response = await apiClient.get(`${BaseURL}/locationmaster_edit/${id}`);
+      const response = await apiClient.get(`/locationmaster_edit/${id}`);
       return response.data;
     } catch (error) {
       console.error("Error fetching assets data:", error);
@@ -250,7 +250,7 @@ class API {
   ) {
     try {
       const response = await apiClient.put(
-        `${BaseURL}/edit_locationmaster_update/${location_master.id}`,
+        `/edit_locationmaster_update/${location_master.id}`,
         location_master
       );
       console.log("response...api", response.data);
@@ -269,14 +269,14 @@ class API {
   // order_transaction data and header also
 
   async fetch_ordertransactiondata() {
-    const response = await apiClient.get(`${BaseURL}/order-details-all`);
+    const response = await apiClient.get(`/order-details-all`);
 
     return response.data;
   }
 
   async fetch_dispatchById(id) {
     try {
-      const response = await apiClient.get(`${BaseURL}/order-details-get`, {
+      const response = await apiClient.get(`/order-details-get`, {
         params: { order_header_id: id },
       });
       return response.data;
@@ -289,7 +289,7 @@ class API {
   async updateOrderHeaderDispatchStatus(data) {
     try {
       const response = await apiClient.put(
-        `${BaseURL}/disptach-completed-update`,
+        `/disptach-completed-update`,
         data
       );
       return response.data;
@@ -301,7 +301,7 @@ class API {
   async updateOrderHeaderVerifyStatus(data) {
     try {
       const response = await apiClient.put(
-        `${BaseURL}/verified-completed-update`,
+        `/verified-completed-update`,
         data
       );
       return response.data;
@@ -313,7 +313,7 @@ class API {
   async update_dispatch_location(data) {
     try {
       const response = await apiClient.put(
-        `${BaseURL}/dispatch-location-update`,
+        `/dispatch-location-update`,
         data
       );
       return response.data;
@@ -325,7 +325,7 @@ class API {
   async cancel_order(data){
     try {
       const response = await apiClient.put(
-        `${BaseURL}/cancel-order`,
+        `/cancel-order`,
         data
       );
       return response.data;
@@ -339,13 +339,13 @@ class API {
 
   async get_einvoice_list() {
     
-    const response = await apiClient.get(`${BaseURL}/einvoice-list`);
+    const response = await apiClient.get(`/einvoice-list`);
     return response.data;
   }
 
   async generateEInvoice(data) {
     try {
-      const response = await apiClient.post(`${BaseURL}/einvoice-create`, data);
+      const response = await apiClient.post(`/einvoice-create`, data);
       return response.data;
     } catch (error) {
       console.error("Error updating customer:", error);
@@ -354,7 +354,7 @@ class API {
 
   async cancelEInvoice(data) {
     try {
-      const response = await apiClient.post(`${BaseURL}/einvoice-cancel`, data);
+      const response = await apiClient.post(`/einvoice-cancel`, data);
       return response.data;
     } catch (error) {
       console.error("Error updating customer:", error);
@@ -367,7 +367,7 @@ class API {
   async get_order_list(data) {
     try {
       const response = await apiClient.get(
-        `${BaseURL}/get-order-list`
+        `/get-order-list`
       );
 
       return response.data;
@@ -379,7 +379,7 @@ class API {
   async get_einvoice_order_list(data) {
     try {
       const response = await apiClient.get(
-        `${BaseURL}/get-einvoice-order-list`
+        `/get-einvoice-order-list`
       );
 
       return response.data;
@@ -391,7 +391,7 @@ class API {
   async get_order_list_filtered(data) {
     try {
       const response = await apiClient.get(
-        `${BaseURL}/get-order-list`, {params: data}
+        `/get-order-list`, {params: data}
       );
 
       return response.data;
@@ -404,7 +404,7 @@ class API {
   async get_einvoice_details(data) {
     try {
       const response = await apiClient.get(
-        `${BaseURL}/einvoice-details-get`, {params: data}
+        `/einvoice-details-get`, {params: data}
       );
 
       return response.data;

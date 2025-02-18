@@ -1,6 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import '../../Styles/Loginpage.css';
 import axios from 'axios';
+import apiClient from "../../AxiosInterceptor/interceptor.js"; // Import your interceptor
 import { useNavigate } from 'react-router-dom';
 import { fetchAndStorePermissions } from '../Permissions/PermissionsProvider';
 import { BaseURL } from "../../utils";
@@ -56,7 +57,7 @@ const LoginPage = () => {
         const data = { username: l_username, password: l_password };
     
         try {
-            const res = await axios.post(`${BaseURL}/login/`, data);
+            const res = await apiClient.post(`/login/`, data);
     
             // Store tokens and user details
             localStorage.setItem("accessToken", res.data.access);
@@ -76,7 +77,7 @@ const LoginPage = () => {
     const forgotPassword = (e) => {
         e.preventDefault();
         const data = { username: fpUsername, new_password: fpNewPassword };
-        axios.post("http://localhost:8000/forgot_password/", data)
+        apiClient.post("/forgot_password/", data)
             .then(() => {
                 alert("Password updated successfully!");
                 setIsLogin(true);
