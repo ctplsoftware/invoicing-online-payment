@@ -17,6 +17,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from datetime import timedelta
 from datetime import datetime
 from django.conf import settings
+from num2words import num2words
 
 
 
@@ -560,7 +561,7 @@ def get_einvoice_details(request):
         with transaction.atomic():
             order_header = OrderHeader.objects.filter(order_number = request.query_params.get('order_no')).first()
             
-            if order_header.irn_invoice_number == None or order_header.irn_invoice_number == '' or order_header.completed_status == 'invalid':
+            if order_header.irn_invoice_number == None or order_header.irn_invoice_number == '' or order_header.completed_status == 'cancelled':
                 response_data = {
                     'data': None,
                     'message': 'E-Invoice not yet generated/cancelled for this order.',
@@ -574,6 +575,8 @@ def get_einvoice_details(request):
 
 
                 formatted_date = e_invoice_header.AckDt.strftime("%d-%b-%Y")
+                words = num2words(order_header.total_amount, lang='en')
+
 
                 data = {
                     'ack_no': e_invoice_header.AckNo,
@@ -596,7 +599,7 @@ def get_einvoice_details(request):
                     'buyer_company_address': order_header.delivery_address,
                     'buyer_company_gstin': customer_master.gstin_number,
                     'buyer_state_name': order_header.delivery_address_state,
-                    'buyer_state_code': order_header.delivery_address_state_code,
+                    'buyer_state_code': order_header.customer_master.StateCode,
 
                     'invoice_no': order_header.order_number,
                     'delivery_note': order_header.delivery_note,
@@ -624,7 +627,7 @@ def get_einvoice_details(request):
                     'igst_amount': order_header.igst_amount,
 
                     'total_amount': order_header.total_amount,
-                    'amount_in_words': '',
+                    'amount_in_words': words.title(),
                     'total_tax_amount': order_header.total_tax_amount,
 
                     'qr_code_data': e_invoice_header.SignedQRCode,

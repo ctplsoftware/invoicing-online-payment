@@ -86,6 +86,9 @@ const LandingPage = () => {
     };
 
     const currentTitle = getRouteTitle(location.pathname);
+
+    console.log(location.pathname);
+    
     
 
     return (
@@ -97,7 +100,10 @@ const LandingPage = () => {
             )}
 
             
-            <div className="components" style={{maxHeight: "115vh", overflow: "auto"}}>
+        <div 
+            className="components" 
+            style={location.pathname.startsWith("/landingpage/einvoice-print/") ? {} : { maxHeight: "115vh", overflow: "auto" }}
+        >
                 <Routes>
                     <Route path='/customermastercreate' element={<CustomerMaster />} />
                     <Route path='/customermasterdashboard' element={<CustomerMasterdashboard />} />
@@ -123,7 +129,7 @@ const LandingPage = () => {
                     <Route path="/einvoice-list" element={<EInvoiceList />} />
                     <Route path="/payment-view/:order_no" element={<PaymentView />} />
                     <Route path="/generate-einvoice/:id" element={<EInvoice />} />
-                    <Route path="/einvoice-print" element={<Invoice />} />
+                    <Route path="/einvoice-print/:id" element={<Invoice />} />
                     <Route path="/order-reports" element={<OrderReport />} />
                     <Route path="/einvoice-reports" element={<EInvoiceReport />} />
                     <Route path="/cancel-orders" element={<OrderList />} />

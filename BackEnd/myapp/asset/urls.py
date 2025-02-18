@@ -67,6 +67,7 @@ urlpatterns = [
     path('einvoice-create', TransactionView.create_e_invoice),
     path('einvoice-cancel', TransactionView.cancel_e_invoice),
     path('cancel-order', TransactionView.cancel_order),
+    path('einvoice-details-get', ReportViews.get_einvoice_details),
 
 
 

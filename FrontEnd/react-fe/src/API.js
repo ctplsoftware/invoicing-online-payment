@@ -401,6 +401,19 @@ class API {
 
   }
 
+  async get_einvoice_details(data) {
+    try {
+      const response = await apiClient.get(
+        `${BaseURL}/einvoice-details-get`, {params: data}
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
+
 
 
 

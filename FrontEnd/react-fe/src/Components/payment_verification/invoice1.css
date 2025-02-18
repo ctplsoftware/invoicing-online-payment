@@ -1,3 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+
+.dashboard-start{
+    display: flex;
+    justify-content: space-between;
+
+}
+
+
+
+.header-name {
+    text-align: left;
+    padding: 52px;
+        font-family: "Roboto Mono", monospace;
+        font-optical-sizing: auto;
+    
+      
+}
+
+.master-cards{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+/* From Uiverse.io by EmmaxPlay */
+.card {
+    width: 453px;
+    height: 254px;
+    /* margin: 0 auto; */
+    background-color:  #ffffff;;
+    border-radius: 8px;
+    z-index: 1;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+
+}
+
+.tools {
+    display: flex;
+    align-items: center;
+    padding: 9px;
+}
+
+.circle {
+    padding: 0 4px;
+}
+
+.box {
+    display: inline-block;
+    align-items: center;
+    width: 10px;
+    height: 10px;
+    padding: 1px;
+    border-radius: 50%;
+}
+thead {
+    background-color: #ffffff !important;
+    color: rgb(0, 0, 0);
+    border: 1px solid #4d4d4d;
+  
+  }
+.red {
+    background-color: #ff605c;
+}
+
+.yellow {
+    background-color: #ffbd44;
+}
+
+.green {
+    background-color: #00ca4e;
+}
 /* Make the entire page scrollable */
 
   /* Styling for the QR code */
@@ -22,6 +94,8 @@
   /* Other styles */
   .invoice-section {
     margin-bottom: 20px;
+    font-size: large;
+    font-weight: 600;
   }
   
   .invoice-header, .invoice-content, .invoice-footer {
@@ -40,6 +114,22 @@
   max-height: 120vh ;
   overflow-y: auto;
 }
+.invoice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 129%;
+  /* border: 1px solid black; */
+
+
+}
+
+.invoice-cell {
+  padding: 2px;
+  border: 0.5px solid rgb(66, 66, 66);
+  text-align: left;
+  
+
+}
 
 /* Media query for printing on A4 size */
 @media print {
@@ -56,18 +146,29 @@
     margin-top: -9%;
 
   }
+  .invoice-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 129%;
+    /* border: 1px solid black; */
+  
+  
+  }
+  
+  .invoice-cell {
+    padding: 2px;
+    border: 0.5px solid rgb(66, 66, 66);
+    text-align: left;
+    
+  
+  }
+  
   
   body {
     /* transform: scale(0.9); Set scale to 90% */
     margin-top: -8%; /* Remove body margin */
     padding: 0; /* Remove padding */
-    
-  }
-
-  .components {
-    max-height: 100vh !important;
-    overflow: hidden !important;
-
+    max-height: 100vh ;
   }
   
   /* Remove non-printable elements */
@@ -91,6 +192,8 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
+  line-height: 1.2;
+
 }
   
   .seller-details, .buyer-details {
@@ -98,14 +201,15 @@
     padding: 10px;
     text-align: justify;
     border: 1px solid #000;
+    line-height: 1.2;
+
   }
   .invoice-info{
-    width: 45%;
+    width: 100%;
     padding: 10px;
     text-align: justify;
     border: 1px solid #000;
   }
-  
   .invoice-info p {
     margin: 2px 0; /* Reduce space between paragraphs */
   }
@@ -139,8 +243,9 @@
   
   .invoice-footer {
     margin-top: 20px;
-    font-size: 14px;
+    font-size: 16px;
     text-align: left;
     border-top: 1px solid #000;
     padding-top: 10px;
   }
+  
