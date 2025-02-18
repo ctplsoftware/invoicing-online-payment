@@ -50,6 +50,8 @@ function OrderDetailedReport() {
     const fetchData = async () => {
       try {
         const ordermasterfetch = await api.fetch_dispatchById(order_header_id);
+        console.log(ordermasterfetch, 'ordermasterfetch');
+        
 
         setFormData(ordermasterfetch);
         const balance_limit_calculate =
@@ -170,7 +172,7 @@ function OrderDetailedReport() {
               <span className="orderDetailValue">{isusedLimit}</span>
             </div>
 
-            {formData.invoice_generated_status === "yes" && (
+            {formData?.order_header?.invoice_generated_status === "yes" && (
               <div style={{ marginRight: "41px", justifyContent: "center" }}>
                 <button
                   style={{
