@@ -748,7 +748,7 @@ def cancel_order(request):
 def get_einvoice_list(request):
     try:
         with transaction.atomic():
-            order_header = OrderHeader.objects.filter(invoice_generated_status = 'no', completed_status = 'no').values('id', 'order_number', 'customer_name', 'payment_type', 'part_name', 'unit_price', 'quantity', 'total_amount', 'attached_status', 'verified_status', 'invoice_generated_status', 'dispatched_status', 'completed_status', 'ordered_at', 'ordered_by', 'location_master_id').order_by('-id')
+            order_header = OrderHeader.objects.filter(invoice_generated_status = 'no', completed_status = 'no').values('id', 'order_number', 'customer_name', 'payment_type', 'part_name', 'unit_price', 'quantity', 'total_amount', 'attached_status', 'verified_status', 'invoice_generated_status', 'dispatched_status', 'completed_status', 'ordered_at', 'ordered_by', 'location_master_id', 'location_name', 'location_address', 'delivery_address').order_by('-id')
 
             for order in order_header:
                 order['ordered_by'] = User.objects.filter(id = order['ordered_by']).values_list('username', flat = True)

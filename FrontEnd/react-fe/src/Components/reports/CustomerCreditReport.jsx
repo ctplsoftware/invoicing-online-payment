@@ -95,19 +95,19 @@ export default function CustomerCreditReport() {
 
     {
       name: "Credit Limit",
-      cell: (row) => `₹${row.credit_limit.toLocaleString("en-IN")}`,
+      cell: (row) => row.credit_limit ? `₹${row.credit_limit.toLocaleString("en-IN")}` : 'Limit not entered.',
       flex: 1.5,
     },
 
     {
       name: "Used Limit",
-      cell: (row) => `₹${row.used_limit.toLocaleString("en-IN")}`,
+      cell: (row) => row.credit_limit ? `₹${row.used_limit.toLocaleString("en-IN")}` : 'Limit not entered.',
       flex: 1.5,
     },
 
     {
       name: "Available Limit",
-      cell: (row) => `₹${(row.credit_limit - row.used_limit).toLocaleString("en-IN")}`,
+      cell: (row) => row.credit_limit ? `₹${(row.credit_limit - row.used_limit).toLocaleString("en-IN")}` : 'Limit not entered.',
       flex: 1.5,
     },
 

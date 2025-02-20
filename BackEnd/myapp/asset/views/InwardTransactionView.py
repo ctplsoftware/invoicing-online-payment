@@ -9,6 +9,8 @@ from ..models.PartMasterModel import PartMaster
 from django.db.models import Sum
 from django.db import transaction
 
+from django.contrib.auth.models import User
+
 from asset.models import *
 
 @api_view(['POST'])
@@ -19,6 +21,7 @@ def create_inwardTransaction(request):
 
             part_master = PartMaster.objects.filter(part_name = request.data.get('part_name')).first()
             inward_header = InwardHeader.objects.filter(location_master_id = request.data.get('location_id'), part_master_id = part_master.id).first()
+            user_id = User.objects.filter(username = request.data.get('inward_by')).first().id
 
             part_master.stock += round(float(request.data.get('inward_quantity')), 2)
 
@@ -29,10 +32,11 @@ def create_inwardTransaction(request):
                     'part_name': request.data.get('part_name'),
                     'inward_quantity': round(float(request.data.get('inward_quantity')), 2),
                     'comments': request.data.get('comments'),
-                    'uom': 'tons',
+                    'uom': request.data.get('uom'),
                     'locationmaster_id': request.data.get('location_id'),
-                    'created_by': request.data.get('inward_by'),
-                    'updated_by': 1
+                    'inward_by': request.data.get('inward_by'),
+                    'created_by': user_id,
+                    'updated_by': user_id
                 }
 
                 inward_header.total_quantity += round(float(request.data.get('inward_quantity')), 2)
@@ -54,7 +58,7 @@ def create_inwardTransaction(request):
                     'part_name': request.data.get('part_name'),
                     'inward_quantity': round(float(request.data.get('inward_quantity')), 2),
                     'comments': request.data.get('comments'),
-                    'uom': 'tons',
+                    'uom': request.data.get('uom'),
                     'locationmaster_id': request.data.get('location_id'),
                     'inward_by': request.data.get('inward_by'),
                     'created_by': 1,
@@ -87,7 +91,6 @@ def edit_inward_transaction(request, id):
 def fetch_inward_transaction(request):
         
         inward_header = InwardHeader.objects.values('part_name', 'location_master_id__name', 'location_master_id', 'total_quantity')
-        print(inward_header)
         return Response(inward_header)
 
 
@@ -96,7 +99,6 @@ def get_inward_transaction(request):
     try:
         with transaction.atomic():
             inwardtransaction_data = InwardTransaction.objects.values('part_name', 'locationmaster_id__name', 'inward_quantity', 'uom', 'comments', 'inward_by', 'inward_date').order_by('-id')
-            print(inwardtransaction_data)
             # serializer = InwardTransactionSerializer(inwardtransaction_data, many = True)
 
             return Response(inwardtransaction_data)
