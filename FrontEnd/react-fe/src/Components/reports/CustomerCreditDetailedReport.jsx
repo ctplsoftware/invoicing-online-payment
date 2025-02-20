@@ -98,7 +98,7 @@ export default function CustomerCreditReport() {
 
     {
         name: "Unit Price",
-        cell: (row) => row.quantity,
+        cell: (row) => `₹${row.unit_price.toLocaleString("en-IN")}`,
         flex: 1.5,
     },
 

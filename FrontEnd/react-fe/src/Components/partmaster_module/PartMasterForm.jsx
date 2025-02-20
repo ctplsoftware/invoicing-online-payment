@@ -40,8 +40,8 @@ const PartMaster = () => {
 
     if (!formData.part_name.trim()) 
       newErrors.part_name = "Part name is required";
-    if (!formData.part_desc.trim()) 
-      newErrors.part_desc = "Part description is required";
+    if (!formData.part_description.trim()) 
+      newErrors.part_description = "Part description is required";
     if (!formData.unit_price.trim())
       newErrors.unit_price = "Unit price is required";
     if (!formData.uom.trim())
@@ -63,6 +63,7 @@ const PartMaster = () => {
     const parsedDetails = JSON.parse(userDetails);
 
     const validationErrors = validateForm();
+    
         if (Object.keys(validationErrors).length > 0) {
           setErrors(validationErrors);
           Object.values(validationErrors).forEach((erroMessage) => {

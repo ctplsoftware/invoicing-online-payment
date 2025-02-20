@@ -112,21 +112,18 @@ export default function EInvoiceList(){
         },
     
         {
-            name: "Ordered Date",
-            cell: (row) => {
-                const date = new Date(row.ordered_at.split(".")[0]); 
-        
-                return date.toLocaleString("en-IN", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: true
-                });
-            },
-            flex: 1.5,
-        }
+          name: 'Ordered Date',
+          selector: row => row.ordered_at,
+          cell: row => {
+              const formattedDate = new Date(row.ordered_at).toLocaleString('en-IN', {
+                  dateStyle: 'medium',
+                  timeStyle: 'short',
+                  timeZone: 'Asia/Kolkata',
+              });
+              return formattedDate;
+          },
+          width: '180px',
+      },
         
     
         
