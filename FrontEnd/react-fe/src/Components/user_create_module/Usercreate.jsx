@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { API } from '../../API.js';
 import { useNavigate } from "react-router-dom";
 import '../../Styles/AdminMaster.css'; // Make sure to import the CSS file
+import { alertSuccess, alertError, alertWarning } from '../../alert.js';
 
 const Usercreate = () => {
     const api = new API();
@@ -95,14 +96,14 @@ const Usercreate = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (formData.password !== formData.confirm_password) {
-            alert('Passwords do not match');
+            alertWarning('Passwords do not match');
             return;
         }
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length > 0) {
 
             Object.values(validationErrors).forEach(erroMessage => {
-                alert(erroMessage);
+                alertWarning(erroMessage);
             });
 
             return;
@@ -122,11 +123,11 @@ const Usercreate = () => {
         try {
             const response = await api.user_create(submitData);
             if (response) {
-                alert("Added");
+                alertSuccess("Added");
                 navigate('/landingpage/userlist');
 
             } else {
-                alert("Failed to add part");
+                alertError("Failed to add user");
             }
         } catch (error) {
             console.error("Error adding part:", error);

@@ -20,12 +20,13 @@ const PartMasterEdit = () => {
 
   const [formData, setFormData] = useState({
     part_name: "",
-    part_desc: "",
+    part_description: "",
     status: "active",
     unit_price: "",
     hsn_code: "",
     uom: "",
     hsn_code: "",
+    status: ""
   });
 
   const handleChange = (e) => {
@@ -38,18 +39,16 @@ const PartMasterEdit = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    console.log(formData,'formData');
-    
+    console.log(formData, "formData");
 
     if (!formData.part_name.trim())
       newErrors.part_name = "Part name is required";
-    if (!formData.part_desc.trim())
-      newErrors.part_desc = "Part description is required";
-    if (!formData.unit_price)
-      newErrors.unit_price = "Unit price is required";
+    if (!formData.part_description.trim())
+      newErrors.part_description = "Part description is required";
+    if (!formData.unit_price) newErrors.unit_price = "Unit price is required";
     if (!formData.uom.trim()) newErrors.uom = "UOM is required";
-    if (!/^\d+$/.test(formData.unit_price)) 
-      newErrors.unit_price = "Unit price must be a number!";    
+    if (!/^\d+$/.test(formData.unit_price))
+      newErrors.unit_price = "Unit price must be a number!";
     if (!formData.hsn_code.trim()) newErrors.hsn_code = "HSN code is required";
     if (formData.unit_price == 0 || formData.unit_price < 0)
       newErrors.hsn_code = "Unit price must be greater than 0.";
@@ -61,11 +60,13 @@ const PartMasterEdit = () => {
     const fetchPartMaster = async () => {
       try {
         const partmasterData = await api.editGet_part_master(id);
+        console.log(partmasterData, 'partmasterData');
+        
         if (partmasterData) {
           setFormData({
             id: partmasterData.id,
             part_name: partmasterData.part_name,
-            part_desc: partmasterData.part_desc,
+            part_description: partmasterData.part_description,
             status: partmasterData.status,
             unit_price: partmasterData.unit_price,
             hsn_code: partmasterData.hsn_code,
@@ -113,135 +114,172 @@ const PartMasterEdit = () => {
     navigate("/landingpage/partmaster-fecthList");
   }
 
-    return (
-      <>
-        {permissions.includes("asset.view_sampleform") ? (
-          <div className="empty-state">
-            <h3 style={{ marginTop: "15%" }}>No access to this page</h3>
-            {/* Optionally add more details or links */}
-          </div>
-        ) : (
-          <>
+  return (
+    <>
+      {permissions.includes("asset.view_sampleform") ? (
+        <div className="empty-state">
+          <h3 style={{ marginTop: "15%" }}>No access to this page</h3>
+          {/* Optionally add more details or links */}
+        </div>
+      ) : (
+        <>
           <Container
-                fluid
-                style={{
-                  backgroundColor: "#f5f5f5",
-                  padding: "30px",
-                  borderRadius: "22px",
-                  maxWidth: "90%",
-                  marginTop: "80px",
-                  boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
-                }}
-              >
-              <Form>
-                <Row>
-                  <Col md={4}>
-                    <Form.Label>Part Name</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="part_name"
-                      value={formData.part_name}
-                      onChange={handleChange}
-                      className="input-border"
-                      required
-                      style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
-                    />
-                  </Col>
+            fluid
+            style={{
+              backgroundColor: "#f5f5f5",
+              padding: "30px",
+              borderRadius: "22px",
+              maxWidth: "90%",
+              marginTop: "80px",
+              boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
+            }}
+          >
+            <Form>
+              <Row>
+                <Col md={4}>
+                  <Form.Label>Part Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="part_name"
+                    value={formData.part_name}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                    style={{
+                      borderRadius: "8px",
+                      padding: "10px",
+                      borderRadius: "30px",
+                    }}
+                  />
+                </Col>
 
-                  <Col md={4}>
-                    <Form.Label>Part Description</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="part_desc"
-                      value={formData.part_desc}
-                      onChange={handleChange}
-                      className="input-border"
-                      required
-                      style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
-                    />
-                  </Col>
-  
-                  <Col md={4}>
-                    <Form.Label>Unit Price</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="unit_price"
-                      value={formData.unit_price}
-                      onChange={handleChange}
-                      className="input-border"
-                      required
-                      style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
-                    />
-                  </Col>
-  
-                  <Col md={3}>
-                    <Form.Label>UOM (Unit of Measure)</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="uom"
-                      value={formData.uom}
-                      onChange={handleChange}
-                      className="input-border"
-                      required
-                      style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
-                    />
-                  </Col>
-                
-                  <Col md={4}>
-                    <Form.Label>HSN Code</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="hsn_code"
-                      value={formData.hsn_code}
-                      onChange={handleChange}
-                      className="input-border"
-                      required
-                      style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
-                    />
-                  </Col>
-                  
-                  <Col md={1}>
-                    <Button
-                        onClick={handleSubmit}
-                        style={{
-                          padding: "10px 20px",
-                          backgroundColor: "#1976d2",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "8px",
-                          cursor: "pointer",
-                          minWidth: "120px",
-                        }}
-                      >
-                        Update
-                    </Button>
-                  </Col>
-                  <Col md={2}>
-                    <Button
-                        onClick={handleBack}
-                        style={{
-                          padding: "10px 20px",
-                          backgroundColor: "rgb(73 81 88)",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "8px",
-                          cursor: "pointer",
-                          minWidth: "120px",
-                          marginRight: "60px"
-                        }}
-                      >
-                        Back
-                    </Button>
-                  </Col>
-                </Row>
-              </Form>
-            </Container>
-          </>
-        )}
-      </>
+                <Col md={4}>
+                  <Form.Label>Part Description</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="part_description"
+                    value={formData.part_description}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                    style={{
+                      borderRadius: "8px",
+                      padding: "10px",
+                      borderRadius: "30px",
+                    }}
+                  />
+                </Col>
 
+                <Col md={4}>
+                  <Form.Label>Unit Price</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="unit_price"
+                    value={formData.unit_price}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                    style={{
+                      borderRadius: "8px",
+                      padding: "10px",
+                      borderRadius: "30px",
+                    }}
+                  />
+                </Col>
 
-      );
+                <Col md={3}>
+                  <Form.Label>UOM (Unit of Measure)</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="uom"
+                    value={formData.uom}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                    style={{
+                      borderRadius: "8px",
+                      padding: "10px",
+                      borderRadius: "30px",
+                    }}
+                  />
+                </Col>
+
+                <Col md={4}>
+                  <Form.Label>HSN Code</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="hsn_code"
+                    value={formData.hsn_code}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                    style={{
+                      borderRadius: "8px",
+                      padding: "10px",
+                      borderRadius: "30px",
+                    }}
+                  />
+                </Col>
+
+                <Col md={4}>
+                  <Form.Label>Status</Form.Label>
+                  <Form.Select
+                    name="status"
+                    value={formData.status}
+                    onChange={handleChange}
+                    className="input-border"
+                    required
+                    style={{
+                      borderRadius: "8px",
+                      padding: "10px",
+                      borderRadius: "30px",
+                    }}
+                  >
+                    <option value="active">active</option>
+                    <option value="inactive">inactive</option>
+                  </Form.Select>
+                </Col>
+
+                <Col md={1}>
+                  <Button
+                    onClick={handleSubmit}
+                    style={{
+                      padding: "10px 20px",
+                      backgroundColor: "#1976d2",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "8px",
+                      cursor: "pointer",
+                      minWidth: "120px",
+                    }}
+                  >
+                    Update
+                  </Button>
+                </Col>
+                <Col md={2}>
+                  <Button
+                    onClick={handleBack}
+                    style={{
+                      padding: "10px 20px",
+                      backgroundColor: "rgb(73 81 88)",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "8px",
+                      cursor: "pointer",
+                      minWidth: "120px",
+                      marginRight: "60px",
+                    }}
+                  >
+                    Back
+                  </Button>
+                </Col>
+              </Row>
+            </Form>
+          </Container>
+        </>
+      )}
+    </>
+  );
 };
 
 export default PartMasterEdit;

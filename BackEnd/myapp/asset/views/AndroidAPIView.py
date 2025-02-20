@@ -102,7 +102,7 @@ def get_generate_order(request):
             response_data = {}
 
             customer_id = request.query_params.get('customer_id')
-            part_master = PartMaster.objects.values('id', 'part_name', 'uom', 'unit_price', 'stock', 'allocated_stock')
+            part_master = PartMaster.objects.filter(status = 'active').values('id', 'part_name', 'uom', 'unit_price', 'stock', 'allocated_stock')
             total_addresses = list(CustomerMaster.objects.filter(id = customer_id).values_list('delivery_address', 'additional_address1', 'additional_address2').first())
 
             limits = CustomerMaster.objects.filter(id = customer_id).first()

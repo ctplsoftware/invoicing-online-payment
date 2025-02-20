@@ -19,7 +19,7 @@ const PartMaster = () => {
 
   const [formData, setFormData] = useState({
     part_name: "",
-    part_desc: "",
+    part_description: "",
     status: "active",
     unit_price: "",
     allocated_stock: 0.0,
@@ -133,8 +133,8 @@ const PartMaster = () => {
             <Form.Label>Part Description</Form.Label>
             <Form.Control
               type="text"
-              name="part_desc"
-              value={formData.part_desc}
+              name="part_description"
+              value={formData.part_description}
               onChange={handleChange}
               className="input-border"
               required

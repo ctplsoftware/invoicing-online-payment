@@ -18,16 +18,11 @@ const StockReport = () => {
     const columns = [
         { name: 'S No', selector: (row, index) => index + 1, width: '70px' },
 
-        {
-            name: 'Location',
-            selector: row => (
-              <NavLink 
-                to={`/landingpage/stock-part-details/${row.id}`} 
-                state={{location_master_id: row.location_master_id, part_name: row.part_name, location_name: row.location_master_id__name}}>
-                {row.location_master_id__name}
-              </NavLink>
-            ),
-            flex: 1
+    
+        { 
+            name: 'Location', 
+            cell: row => row.location_master_id__name, 
+            flex: 1 
         },
           
         { 
@@ -38,7 +33,7 @@ const StockReport = () => {
 
 
 
-        { name: 'Quantity', selector: row => row.total_quantity, flex: 1 },
+        { name: 'Available Quantity', selector: row => row.total_quantity, flex: 1 },
         
     ];
 

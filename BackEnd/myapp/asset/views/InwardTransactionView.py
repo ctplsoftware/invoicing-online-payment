@@ -31,7 +31,7 @@ def create_inwardTransaction(request):
                     'comments': request.data.get('comments'),
                     'uom': 'tons',
                     'locationmaster_id': request.data.get('location_id'),
-                    'created_by': 1,
+                    'created_by': request.data.get('inward_by'),
                     'updated_by': 1
                 }
 
@@ -56,6 +56,7 @@ def create_inwardTransaction(request):
                     'comments': request.data.get('comments'),
                     'uom': 'tons',
                     'locationmaster_id': request.data.get('location_id'),
+                    'inward_by': request.data.get('inward_by'),
                     'created_by': 1,
                     'updated_by': 1
                 }
@@ -94,10 +95,11 @@ def fetch_inward_transaction(request):
 def get_inward_transaction(request):
     try:
         with transaction.atomic():
-            inwardtransaction_data = InwardTransaction.objects.all().order_by('-id')
-            serializer = InwardTransactionSerializer(inwardtransaction_data, many = True)
+            inwardtransaction_data = InwardTransaction.objects.values('part_name', 'locationmaster_id__name', 'inward_quantity', 'uom', 'comments', 'inward_by', 'inward_date').order_by('-id')
+            print(inwardtransaction_data)
+            # serializer = InwardTransactionSerializer(inwardtransaction_data, many = True)
 
-            return Response(serializer.data)
+            return Response(inwardtransaction_data)
             
     
     except Exception as e:

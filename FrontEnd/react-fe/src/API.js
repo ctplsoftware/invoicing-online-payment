@@ -415,6 +415,32 @@ class API {
   }
 
 
+  async get_customer_list(data) {
+    try {
+      const response = await apiClient.get(
+        `/customer-list-get`
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async get_customer(data) {
+    try {
+
+      const response = await apiClient.get(
+        `/customer-get`, {params: {customer_master_id: data}}
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
 
 
 

@@ -33,7 +33,7 @@ function Userlist() {
             flex: 0.5 
           },
           
-
+        { name: 'Customer Name', selector: row => row.customer_name, width: '250px' },
 
         { name: 'Email', selector: row => row.email, width: '250px' },
         { name: 'Roles', selector: row => row.groups, width: '300px' },
@@ -55,6 +55,7 @@ function Userlist() {
                     username: item.username,
                     email: item.email,
                     groups: item.groups,
+                    customer_name: item.customer_name,
                     is_active :item.is_active?'Active':'Inactive',
                     created_at: item.created_at,
                     updated_at: item.updated_at,

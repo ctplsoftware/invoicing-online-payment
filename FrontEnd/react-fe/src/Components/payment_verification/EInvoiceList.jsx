@@ -27,8 +27,8 @@ export default function EInvoiceList(){
             name: "Order Number",
             selector: (row) => {
               const isNavLink =
-                (row.payment_type === "credit" ||
-                (row.payment_type === "advance" && row.verified_status === "yes")) && row.invoice_generated_status == 'no';
+                (row.payment_type === "credit" && row.location_master_id != null ||
+                (row.payment_type === "advance" && row.verified_status === "yes" && row.location_master_id != null)) && row.invoice_generated_status == 'no';
           
               return isNavLink ? (
                 <NavLink

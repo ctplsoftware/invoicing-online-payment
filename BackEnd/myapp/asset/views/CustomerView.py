@@ -168,12 +168,13 @@ def update_customer(request, id):
         return Response({"error": "Customer not found"}, status=status.HTTP_404_NOT_FOUND)
     
     
+    
     validated_data = {
         key: value for key, value in {
             'name': request.data.get('name', '').strip(),
             'gstin_number': request.data.get('gstin_number', '').strip(),
 
-            'credit_limit': request.data.get('credit_limit', '').strip(),
+            'credit_limit': request.data.get('credit_limit', ''),
             'credit_days': request.data.get('credit_days', '').strip(),
 
             'contact_person': request.data.get('contact_person', '').strip(),
@@ -191,14 +192,14 @@ def update_customer(request, id):
             
             
             'additional_address1': request.data.get('additional_address1', '').strip() if request.data.get('additional_address1') != None  else None,
-            'additional_address1': request.data.get('additional_address1_city', '').strip() if request.data.get('additional_address1_city') != None  else None,
-            'additional_address1': request.data.get('additional_address1_state', '').strip() if request.data.get('additional_address1_state') != None  else None,
-            'additional_address1': request.data.get('additional_address1_state_code', '').strip() if request.data.get('additional_address1_state_code') != None  else None,
+            'additional_address1_city': request.data.get('additional_address1_city', '').strip() if request.data.get('additional_address1_city') != None  else None,
+            'additional_address1_state': request.data.get('additional_address1_state', '').strip() if request.data.get('additional_address1_state') != None  else None,
+            'additional_address1_state_code': request.data.get('additional_address1_state_code', '').strip() if request.data.get('additional_address1_state_code') != None  else None,
 
             'additional_address2': request.data.get('additional_address2', '').strip() if request.data.get('additional_address2') != None  else None,
-            'additional_address2': request.data.get('additional_address2_city', '').strip() if request.data.get('additional_address2_city') != None  else None,
-            'additional_address2': request.data.get('additional_address2_state', '').strip() if request.data.get('additional_address2_state') != None  else None,
-            'additional_address2': request.data.get('additional_address2_state_code', '').strip() if request.data.get('additional_address2_state_code') != None  else None,
+            'additional_address2_city': request.data.get('additional_address2_city', '').strip() if request.data.get('additional_address2_city') != None  else None,
+            'additional_address2_state': request.data.get('additional_address2_state', '').strip() if request.data.get('additional_address2_state') != None  else None,
+            'additional_address2_state_code': request.data.get('additional_address2_state_code', '').strip() if request.data.get('additional_address2_state_code') != None  else None,
             
             
             'status': 'active',  

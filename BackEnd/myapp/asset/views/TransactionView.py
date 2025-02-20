@@ -424,8 +424,6 @@ def create_e_invoice(request):
                 }
 
 
-
-                
                 generate_irn_response_object = requests.post(generate_irn_url, json = generate_irn_request_body, headers = generate_irn_headers)
 
                 generate_irn_response = generate_irn_response_object.json()['result']
@@ -636,7 +634,7 @@ def cancel_order(request):
                 customer_master = CustomerMaster.objects.filter(id = order_header.customer_master_id).first()
                 part_master = PartMaster.objects.filter(id = order_header.part_master_id).first()
 
-                order_header.completed_status = 'cancelled'
+                
                 irn = order_header.irn_invoice_number
 
                 e_invoice_header = EInvoiceHeader.objects.filter(order_header_id = order_header.id).first()
@@ -689,6 +687,16 @@ def cancel_order(request):
                     cancel_irn_response_object = requests.post(cancel_irn_url, json = cancel_irn_request_body, headers = cancel_irn_headers)
                     cancel_irn_response = cancel_irn_response_object.json()['message']
 
+
+                    if (cancel_irn_response['CancelDate'] - e_invoice_header.AckDt).days > 1:
+                        order_header.completed_status = 'cancelled'
+                        order_header.invoice_generated_status = 'marked as cancelled'
+                    
+                    else:
+                        order_header.completed_status = 'cancelled'
+                        order_header.invoice_generated_status = 'cancelled'
+
+
                     print(cancel_irn_response)
 
 
@@ -699,6 +707,10 @@ def cancel_order(request):
                     e_invoice_header.save()
                     e_invoice_transaction.save()
                 
+                else:
+                    order_header.completed_status = 'cancelled'
+                    order_header.invoice_generated_status = 'cancelled'
+
                 
                 if order_header.dispatched_status == 'yes':
                     
@@ -707,7 +719,6 @@ def cancel_order(request):
                     inward_header.total_quantity += round(float(order_header.quantity), 2)
                     inward_header.save()
 
-                
                 else:
                     part_master.allocated_stock -= round(float(order_header.quantity), 2)
 
@@ -737,7 +748,7 @@ def cancel_order(request):
 def get_einvoice_list(request):
     try:
         with transaction.atomic():
-            order_header = OrderHeader.objects.filter(invoice_generated_status = 'no', completed_status = 'no').values('id', 'order_number', 'customer_name', 'payment_type', 'part_name', 'unit_price', 'quantity', 'total_amount', 'attached_status', 'verified_status', 'invoice_generated_status', 'dispatched_status', 'completed_status', 'ordered_at', 'ordered_by').order_by('-id')
+            order_header = OrderHeader.objects.filter(invoice_generated_status = 'no', completed_status = 'no').values('id', 'order_number', 'customer_name', 'payment_type', 'part_name', 'unit_price', 'quantity', 'total_amount', 'attached_status', 'verified_status', 'invoice_generated_status', 'dispatched_status', 'completed_status', 'ordered_at', 'ordered_by', 'location_master_id').order_by('-id')
 
             for order in order_header:
                 order['ordered_by'] = User.objects.filter(id = order['ordered_by']).values_list('username', flat = True)

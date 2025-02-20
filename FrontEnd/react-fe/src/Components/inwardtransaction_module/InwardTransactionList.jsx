@@ -18,6 +18,7 @@ function InwardTransactionList() {
         
         { name: 'S No', selector: row => row.Sno, width: '70px' },
         { name: 'Part Name', selector: row => row.part_name, flex: 1 },
+        { name: 'Location Name', selector: row => row.location_name, flex: 1 },
         { name: 'Inward Quantity', selector: row => row.inward_quantity, flex: 1.5 },
         { name: 'UOM (unit of measure) ', selector: row => row.uom , width: '220px' },
         { name: 'comments ', selector: row => row.comments , width: '320px' },
@@ -52,6 +53,7 @@ function InwardTransactionList() {
                     id: item.id,
                     Sno: index + 1,
                     part_name: item.part_name,
+                    location_name: item.locationmaster_id__name,
                     inward_quantity: item.inward_quantity,
                     comments : item.comments ,
                     uom :item.uom,

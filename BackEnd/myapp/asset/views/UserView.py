@@ -20,7 +20,6 @@ def login(request):
     user = authenticate(username=username, password=password) 
 
     if user is not None:
-        auth_login(request._request, user)  # This line is still useful for session-based login, can be removed if not needed
         
         # Generate the JWT tokens
         refresh = RefreshToken.for_user(user)

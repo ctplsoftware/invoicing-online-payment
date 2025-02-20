@@ -54,6 +54,8 @@ const InwardTransactionForm = () => {
     const fetchData = async () => {
       try {
         const inwardTransactioncreate = await api.get_part_master();
+        console.log(inwardTransactioncreate, "inwardTransactioncreate");
+
         const locationnamefetch = await api.fetch_locationmasterdata();
         const activeParts = inwardTransactioncreate.filter(
           (part) => part.status === "active"
@@ -109,10 +111,10 @@ const InwardTransactionForm = () => {
           uom: "",
         });
       } else {
-        alertError("Failed to add part");
+        alertError("Failed to add inward");
       }
     } catch (error) {
-      console.error("Error adding part:", error);
+      console.error("Error adding inward:", error);
     }
   };
 
@@ -135,17 +137,19 @@ const InwardTransactionForm = () => {
         </div>
       ) : (
         <>
-              <Container
-                fluid
-                style={{
-                  backgroundColor: "#f5f5f5",
-                  padding: "30px",
-                  borderRadius: "22px",
-                  maxWidth: "90%",
-                  marginTop: "80px",
-                  boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
-                }}
-              >            <Form>
+          <Container
+            fluid
+            style={{
+              backgroundColor: "#f5f5f5",
+              padding: "30px",
+              borderRadius: "22px",
+              maxWidth: "90%",
+              marginTop: "80px",
+              boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
+            }}
+          >
+            {" "}
+            <Form>
               <Row>
                 <Col md={4} style={{ marginTop: "20px" }}>
                   <Form.Group controlId="partName">
@@ -155,7 +159,19 @@ const InwardTransactionForm = () => {
                       name="part_name"
                       value={formData.part_name}
                       className="input-border"
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        const selectedPartName = e.target.value;
+                        const selectedPart = partdatafetch.find(
+                          (row) => row.part_name === selectedPartName
+                        );
+
+                        // Update formData with part_name and its corresponding UOM
+                        setFormData({
+                          ...formData,
+                          part_name: selectedPartName,
+                          uom: selectedPart ? selectedPart.uom : "", // Set UOM or empty if not found
+                        });
+                      }}
                       required
                     >
                       <option value="">Select Part Name</option>
@@ -197,8 +213,13 @@ const InwardTransactionForm = () => {
                     value={formData.uom}
                     onChange={handleChange}
                     className="input-border"
-                    style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
+                    style={{
+                      borderRadius: "8px",
+                      padding: "10px",
+                      borderRadius: "30px",
+                    }}
                     required
+                    readOnly
                   />
                 </Col>
               </Row>
@@ -226,14 +247,18 @@ const InwardTransactionForm = () => {
                     value={formData.comments}
                     onChange={handleChange}
                     className="input-border"
-                    style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px",  }}
+                    style={{
+                      borderRadius: "8px",
+                      padding: "10px",
+                      borderRadius: "30px",
+                    }}
                     required
                   />
                 </Col>
               </Row>
 
               <div style={{ marginRight: "80px" }}>
-              <button
+                <button
                   onClick={handleSubmit}
                   style={{
                     padding: "10px 20px",
@@ -263,8 +288,6 @@ const InwardTransactionForm = () => {
                 >
                   Back
                 </button>
-
-               
               </div>
             </Form>
           </Container>

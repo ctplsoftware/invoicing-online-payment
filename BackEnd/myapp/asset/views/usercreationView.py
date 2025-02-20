@@ -61,13 +61,16 @@ def usermaster_get(request):
     user_data = []
     for user in users:
         groups = user.groups.all()
-        group_names = [group.name for group in groups]  
+        group_names = [group.name for group in groups]
+
+        customer_name = CustomerMaster.objects.filter(id = user.last_name).first().name if user.last_name else 'Admin'
 
         user_data.append({
             'id': user.id,
             'username': user.username,
             'email': user.email,
             'is_active': user.is_active,
+            'customer_name': customer_name,
             'groups': group_names,  
         })
 
@@ -92,7 +95,7 @@ def edit_usermaster_fetch(request,id):
             customer = CustomerMaster.objects.get(id=customer_id)
             customer_data = {"id": customer.id, "name": customer.name} 
         except CustomerMaster.DoesNotExist:
-            customer_data = "Unknown"  
+            customer_data = "Unknown"
 
     user_data = {
         "id": user.id,
@@ -118,6 +121,8 @@ def create_update_user(request, id=None):
         customer_id = data.get('customer_id')
         status_value = data.get('status')
         role_id = data.get('role_id')
+
+        print(password)
 
         is_active = 1 if status_value == 'Active' else 0
 

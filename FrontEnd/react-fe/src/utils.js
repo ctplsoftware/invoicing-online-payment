@@ -23,9 +23,9 @@ const exportToExcel = (data, fileName = "DataTable.xlsx") => {
   saveAs(blob, fileName);
 };
 
-export const BaseURL = 'https://api.chakravarthycommercials.com';
+// export const BaseURL = 'https://api.chakravarthycommercials.com';
 
-// export const BaseURL = 'http://127.0.0.1:8000';
-// export const BaseURL = 'http://192.168.100.124:8080'; 
+export const BaseURL = 'http://127.0.0.1:8000';
+// export const BaseURL = 'http://192.168.100.124:8080';
 
 

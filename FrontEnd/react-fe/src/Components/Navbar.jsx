@@ -181,6 +181,10 @@ const Navbar1 = ({ title }) => {
                   Order Report{" "}
                   </NavDropdown.Item>
 
+                  <NavDropdown.Item href="/landingpage/customer-credit-reports">
+                  Customer Credit Report{" "}
+                  </NavDropdown.Item>
+
                   <NavDropdown.Item href="/landingpage/einvoice-reports">
                   E-Invoice Report{" "}
                   </NavDropdown.Item>

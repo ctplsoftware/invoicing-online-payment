@@ -68,6 +68,8 @@ urlpatterns = [
     path('einvoice-cancel', TransactionView.cancel_e_invoice),
     path('cancel-order', TransactionView.cancel_order),
     path('einvoice-details-get', ReportViews.get_einvoice_details),
+    path('customer-list-get', ReportViews.get_customer_list),
+    path('customer-get', ReportViews.get_customer),
 
 
 

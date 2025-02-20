@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { API } from '../../API.js';
 import { useNavigate, useParams } from "react-router-dom";
 import '../../Styles/AdminMaster.css'; // Make sure to import the CSS file
+import { alertSuccess, alertError, alertWarning } from '../../alert.js';
+
 
 const Useredit = () => {
     const api = new API();
@@ -38,9 +40,6 @@ const Useredit = () => {
             }
         }
     };
-
-
-
 
     useEffect(() => {
         const fetchData = async () => {
@@ -84,11 +83,14 @@ const Useredit = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (formData.password !== formData.confirm_password) {
-            alert('Passwords do not match');
-            return;
+        if(formData.password != "" && formData.confirm_password != ""){
+            if (formData.password !== formData.confirm_password) {
+                alertWarning('Passwords do not match');
+                return;
+            }
+
         }
-        console.log("data", formData);
+        
 
         const submitData = {
             id: formData.id,
@@ -100,28 +102,26 @@ const Useredit = () => {
             customer_id: formData.customer_id,
         };
 
-        console.log("submitData..", submitData);
 
         try {
             await api.update_usermaster(
                 submitData,
                 (response) => {
-                    console.log("response in handleSubmit", response.data);
                     if (response.data.success) {
-                        alert("User updated successfully!");
+                        alertSuccess("User updated successfully!");
                         navigate('/landingpage/userlist');
                     } else {
-                        alert("Failed to edit part. Backend returned a failure.");
+                        alert("Failed to edit user. Backend returned a failure.");
                     }
                 },
                 (error) => {
                     console.error("Error in onFailure:", error);
-                    alert("Failed to edit part. An error occurred.");
+                    alertError("Failed to edit user. An error occurred.");
                 }
             );
         } catch (error) {
             console.error("Unexpected error in handleSubmit:", error);
-            alert("Failed to edit part. Please try again.");
+            alert("Failed to edit user. Please try again.");
         }
     
     };
@@ -165,7 +165,6 @@ const Useredit = () => {
                             value={formData.password}
                             style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px"}}
                             onChange={handleChange}
-                            required
                         />
                     </label>
                 </div>
@@ -181,7 +180,6 @@ const Useredit = () => {
                             value={formData.confirm_password}
                             style={{ borderRadius: "8px", padding: "10px", borderRadius: "30px"}}
                             onChange={handleChange}
-                            required
                         />
                     </label>
                     <label>

@@ -144,3 +144,35 @@ def get_einvoice_details(request):
     except Exception as e:
         print(e)
         return Response('error')
+    
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_customer_list(request):
+    try:
+        with transaction.atomic():
+            
+            customer_master = CustomerMaster.objects.values('id', 'name', 'gstin_number', 'credit_limit', 'used_limit', 'credit_days', 'contact_person', 'contact_number')
+            return Response(customer_master)
+    
+    except Exception as e:
+        print(e)
+        return Response('error')
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_customer(request):
+    try:
+        with transaction.atomic():
+            
+            customer_master = OrderHeader.objects.filter(customer_master_id = request.query_params.get('customer_master_id'), payment_type = 'credit').values('id', 'order_number', 'payment_type', 'part_name', 'quantity', 'unit_price', 'total_amount')
+
+            return Response(customer_master)
+
+
+
+
+    
+    except Exception as e:
+        print(e)
+        return Response('error')

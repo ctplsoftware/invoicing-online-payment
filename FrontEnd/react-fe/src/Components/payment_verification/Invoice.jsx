@@ -6,9 +6,10 @@ import '../payment_verification/invoice1.css'
 import logoImg from '../../Assets/printaxlogo.png';
 import Qrcode from '../../Assets/qrCode.png';
 
+import { QRCodeCanvas } from 'qrcode.react';
+
 import { API } from "../../API";
 
-// import QRCode from "qrcode.react";
 
 const TaxInvoice = () => {
 
@@ -69,8 +70,11 @@ const TaxInvoice = () => {
           <p >Ack Date: {data?.ack_date}</p>
           
           <div className="qr-code">
-          <img src={Qrcode} alt="Company Logo" style={{ height:'140px', marginTop:'-16%',marginLeft:'80%' }} />
-            {/* <QRCode value="a3c39dfe5ab841ab3c8889a9ca39de71f9a5251de80cdf02d9-c60a7af3fa76c9" size={100} /> */}
+          <QRCodeCanvas 
+            size={140} 
+            value={data?.qr_code_data} 
+            style={{ height: "140px", marginTop: "-16%", marginLeft: "80%" }} 
+          />
           </div>
         </div>
 

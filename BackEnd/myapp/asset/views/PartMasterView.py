@@ -10,7 +10,8 @@ from django.utils import timezone
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_part_master(request):
-    data = request.data.copy() 
+    data = request.data.copy()
+    print(data)
     data['created_by'] = request.data.get("user_id")
     serializer = PartMasterSerializer(data=data)
     if serializer.is_valid():
