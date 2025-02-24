@@ -106,7 +106,7 @@ def get_generate_order(request):
             total_addresses = list(CustomerMaster.objects.filter(id = customer_id).values_list('delivery_address', 'additional_address1', 'additional_address2').first())
 
             limits = CustomerMaster.objects.filter(id = customer_id).first()
-            credit_limit = float(limits.credit_limit) - float(limits.used_limit)
+            credit_limit = round(float(limits.credit_limit), 2) - round(float(limits.used_limit), 2)
 
             addresses = [address for address in total_addresses if address != '' and address is not None]
             part_details = [{'part_id': part['id'], 'part_name': part['part_name'], 'unit_price': part['unit_price'], 'stock': float(part['stock']) - float(part['allocated_stock']), 'uom': part['uom']} for part in part_master]
@@ -176,7 +176,7 @@ def create_order(request):
                     igst_amount = 0.0
                     sgst_amount = round(float(amount_inr * 0.09), 2)
                     cgst_amount = round(float(amount_inr * 0.09), 2)
-                    total_tax_amount = sgst_amount + cgst_amount
+                    total_tax_amount = round(float(sgst_amount + cgst_amount), 2)
                     
                 else:
 
@@ -222,17 +222,17 @@ def create_order(request):
                             'igst_percentage': igst_percentage,
                             'sgst_percentage': sgst_percentage,
                             'cgst_percentage': cgst_percentage,
-                            'igst_amount': igst_amount,
-                            'sgst_amount': sgst_amount,
-                            'cgst_amount': cgst_amount,
-                            'total_tax_amount': total_tax_amount,
+                            'igst_amount': round(float(igst_amount), 2),
+                            'sgst_amount': round(float(sgst_amount), 2),
+                            'cgst_amount': round(float(cgst_amount), 2),
+                            'total_tax_amount': round(float(total_tax_amount), 2),
                             'uom': part_master.uom,
                             'quantity': quantity,
                             'unit_price': part_master.unit_price,
                             'tax_percentage': 18.0,
                             'customer_name': customer_master.name,
-                            'amount_for_quantity': amount_inr,
-                            'total_amount': amount_inr_tax,
+                            'amount_for_quantity': round(float(amount_inr), 2),
+                            'total_amount': round(float(amount_inr_tax), 2),
                             'paid_amount': 0.0,
                             'ordered_by': request.data.get('user_id'),
                             'part_master_id': part_master.id,
@@ -275,17 +275,17 @@ def create_order(request):
                         'igst_percentage': igst_percentage,
                         'sgst_percentage': sgst_percentage,
                         'cgst_percentage': cgst_percentage,
-                        'igst_amount': igst_amount,
-                        'sgst_amount': sgst_amount,
-                        'cgst_amount': cgst_amount,
-                        'total_tax_amount': total_tax_amount,
+                        'igst_amount': round(float(igst_amount), 2),
+                        'sgst_amount': round(float(sgst_amount), 2),
+                        'cgst_amount': round(float(cgst_amount), 2),
+                        'total_tax_amount': round(float(total_tax_amount), 2),
                         'uom': part_master.uom,
                         'quantity': quantity,
                         'unit_price': part_master.unit_price,
                         'tax_percentage': 18.0,
                         'customer_name': customer_master.name,
-                        'amount_for_quantity': amount_inr,
-                        'total_amount': amount_inr_tax,
+                        'amount_for_quantity': round(float(amount_inr), 2),
+                        'total_amount': round(float(amount_inr_tax), 2),
                         'paid_amount': 0.0,
                         'ordered_by': request.data.get('user_id'),
                         'part_master_id': part_master.id,

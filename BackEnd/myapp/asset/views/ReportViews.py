@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.conf import settings
 from num2words import num2words
+from datetime import datetime
 
 
 @api_view(['GET'])
@@ -168,9 +169,50 @@ def get_customer(request):
             customer_master = OrderHeader.objects.filter(customer_master_id = request.query_params.get('customer_master_id'), payment_type = 'credit').values('id', 'order_number', 'payment_type', 'part_name', 'quantity', 'unit_price', 'total_amount')
 
             return Response(customer_master)
+    except Exception as e:
+        print(e)
+        return Response('error')
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_reports_filtered(request):
+    try:
+        with transaction.atomic():
+
+            start_date = request.query_params.get('start_date')
+            end_date = request.query_params.get('end_date')
+
+            start_date = datetime.strptime(start_date, "%Y-%m-%d")
+            end_date = datetime.strptime(end_date, "%Y-%m-%d")
+
+            end_date = end_date.replace(hour=23, minute=59, second=59)
 
 
+        
+            if request.query_params.get('key') == 'order':
 
+                response_data = OrderHeader.objects.values(
+                    'id', 'order_number', 'payment_type', 'customer_name', 'part_name', 
+                    'unit_price', 'quantity', 'total_amount', 'location_name', 
+                    'delivery_address', 'ordered_by', 'ordered_at', 'completed_status'
+                ).filter(
+                    Q(completed_status="no") | Q(completed_status="yes"),
+                    ordered_at__range=[start_date, end_date]
+                ).order_by('-id')
+
+                for data in response_data:
+                    data['ordered_by'] = User.objects.filter(id = data['ordered_by']).values_list('username', flat = True)
+
+                
+                return Response(response_data)
+
+            elif request.query_params.get('key') == 'e-invoice':
+
+                response_data = EInvoiceHeader.objects.values('order_header_id', 'order_header_id__order_number', 'Irn', 'AckDt', 'order_header_id__customer_master_id__gstin_number', 'order_header_id__customer_name', 'order_header_id__amount_for_quantity', 'order_header_id__cgst_amount', 'order_header_id__sgst_amount', 'order_header_id__igst_amount', 'order_header_id__total_amount', 'order_header_id__delivery_address', 'einvoice_status', 'order_header_id__completed_status').filter(AckDt__range = [start_date, end_date]).order_by('-id')
+                return Response(response_data)
+
+            else:
+                return Response('errorr')
 
     
     except Exception as e:

@@ -388,10 +388,10 @@ class API {
     }
   }
 
-  async get_order_list_filtered(data) {
+  async get_reports_filtered(data) {
     try {
       const response = await apiClient.get(
-        `/get-order-list`, {params: data}
+        `/get-reports-filtered`, {params: data}
       );
 
       return response.data;

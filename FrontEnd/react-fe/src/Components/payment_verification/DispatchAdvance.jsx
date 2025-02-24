@@ -137,11 +137,16 @@ function DispatchAdvance() {
     
     var paid_amount = formData?.order_header?.paid_amount;
 
-    var remaining = parseFloat(total_amount) - parseFloat(paid_amount); 
+    var remaining = (parseFloat(total_amount) - parseFloat(paid_amount)).toFixed(2);
+    
+    
     
     const parsedDetails = JSON.parse(userDetails);  
     
-    const paymentAmount = parseFloat(paymentTable.payment_amount);   
+    const paymentAmount = parseFloat(paymentTable.payment_amount);
+
+    console.log(remaining, 'remaining');
+    console.log(paymentAmount, 'paymentAmount');
     
     if (isNaN(paymentAmount) || paymentAmount <= 0) {
       alertWarning("Invalid payment amount. Please enter a valid number.");

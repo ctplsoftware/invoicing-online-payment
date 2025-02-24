@@ -107,7 +107,7 @@ function DispatchCredit() {
         
         var paid_amount = formData?.order_header?.paid_amount;
     
-        var remaining = parseFloat(total_amount) - parseFloat(paid_amount); 
+        var remaining = (parseFloat(total_amount) - parseFloat(paid_amount)).toFixed(2); 
         
         const parsedDetails = JSON.parse(userDetails);  
         

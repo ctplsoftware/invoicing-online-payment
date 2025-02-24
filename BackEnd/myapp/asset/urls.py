@@ -92,6 +92,7 @@ urlpatterns = [
     # Reports
     path('get-order-list', ReportViews.get_order_list),
     path('get-einvoice-order-list', ReportViews.get_einvoice_order_list),
+    path('get-reports-filtered', ReportViews.get_reports_filtered),
 
     
 ]

@@ -6,6 +6,8 @@ import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { alertError, alertSuccess, alertWarning } from "../../alert.js";
+
 
 export default function OrderReport() {
   const api = new API();
@@ -42,9 +44,10 @@ export default function OrderReport() {
       "Customer Name": row.customer_name,
       "Part Name": row.part_name,
       "Unit Price": row.unit_price,
-      "Quantity": row.quantity,
+      Quantity: row.quantity,
       "Total Amount": row.total_amount,
-      "Dispatched Location": row.location_name == null ? "Not choosed" : row.location_name,
+      "Dispatched Location":
+        row.location_name == null ? "Not choosed" : row.location_name,
       "Delivery Address": row.delivery_address,
       "Ordered By": row.ordered_by,
       "Order Date": new Date(row.ordered_at.split(".")[0]).toLocaleDateString(
@@ -88,7 +91,7 @@ export default function OrderReport() {
       selector: (row) => (
         <NavLink
           to={`/landingpage/order-details/${row.id}`}
-          state={{ order_header_id: row.id, from: 'order' }}
+          state={{ order_header_id: row.id, from: "order" }}
         >
           {row.order_number}
         </NavLink>
@@ -135,7 +138,8 @@ export default function OrderReport() {
 
     {
       name: "Dispatched Location",
-      cell: (row) => row.location_name == null ? "Not choosed" : row.location_name,
+      cell: (row) =>
+        row.location_name == null ? "Not choosed" : row.location_name,
       flex: 1.5,
     },
 
@@ -158,114 +162,152 @@ export default function OrderReport() {
     },
 
     {
-      name: 'Ordered Date',
-      selector: row => row.ordered_at,
-      cell: row => {
-          const formattedDate = new Date(row.ordered_at).toLocaleString('en-IN', {
-              dateStyle: 'medium',
-              timeStyle: 'short',
-              timeZone: 'Asia/Kolkata',
-          });
-          return formattedDate;
+      name: "Ordered Date",
+      selector: (row) => row.ordered_at,
+      cell: (row) => {
+        const formattedDate = new Date(row.ordered_at).toLocaleString("en-IN", {
+          dateStyle: "medium",
+          timeStyle: "short",
+          timeZone: "Asia/Kolkata",
+        });
+        return formattedDate;
       },
-      width: '180px',
-  },
+      width: "180px",
+    },
   ];
+
+  function handleFilter(){
+    if(startDate == "" || endDate == ""){
+      alertWarning("Please select both the dates!");
+    }
+    else{
+      const form_data = {
+        start_date: startDate,
+        end_date: endDate,
+        key: 'order'
+      }
+
+      async function get_reports_filter(){
+        const response = await api.get_reports_filtered(form_data);
+        setData([]);
+        setData(response);
+        
+      }
+
+      get_reports_filter();
+
+    }
+
+  }
 
   return (
     <>
-    <div style={{ width: '91%', marginLeft: '63px', marginTop: '25px' }}>
-      <div
-        style={{
-          width: "91%",
-          marginLeft: "63px",
-          marginTop: "30px",
-          marginBottom: "10px",
-        }}
-      >
-        <button onClick={() => exportToExcel(data)}>Download Excel</button>
-      </div>
-        <div>
-        <span style={{ paddingLeft: "30px", paddingRight: "15px" }}>
-        <b> Start Date</b>
-      </span>
-      <input
-        type="date"
-        value={startDate}
-        onChange={(e) => setStartDate(e.target.value)}
-        placeholder="Start Date"
-        required
-      />
-      <span style={{ paddingLeft: "30px", paddingRight: "15px" }}>
-        <b> End Date</b>
-      </span>
-      <input
-        type="date"
-        value={endDate}
-        onChange={(e) => setEndDate(e.target.value)}
-        placeholder="End Date"
-        required
-      />
+      <div style={{ width: "91%", marginLeft: "63px", marginTop: "25px" }}>
+        <div
+          style={{
+            width: "91%",
+            marginLeft: "63px",
+            marginTop: "30px",
+            marginBottom: "10px",
+          }}
+        >
+          <button onClick={() => exportToExcel(data)}>Download Excel</button>
         </div>
-      
-      <span
-        style={{
-          paddingLeft: "35px",
-          paddingRight: "10px",
-          paddingTop: "10px",
-        }}
-      ></span>
+        <div>
+          <span
+            style={{ paddingLeft: "30px", paddingRight: "15px", width: "40px" }}
+          >
+            <b> Start Date</b>
+          </span>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            placeholder="Start Date"
+            style={{ width: "20%" }}
+            required
+          />
+          <span
+            style={{ paddingLeft: "30px", paddingRight: "15px", width: "30px" }}
+          >
+            <b> End Date</b>
+          </span>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            placeholder="End Date"
+            style={{ width: "20%" }}
+            required
+          />
+          <span style={{ paddingLeft: "30px" }}>
+            <button
+              onClick={() => handleFilter()}
+              style={{ left: "auto" }}
+            >
+              Filter
+            </button>
+          </span>
+        </div>
 
-      <DataTable
-        columns={columns}
-        data={data}
-        pagination
-        highlightOnHover
-        striped
-        responsive
-        customStyles={{
-          headCells: {
-            style: {
-              backgroundColor: "#0b5ca0",
-              color: "#ffffff",
-              "&:hover": {
+        <span
+          style={{
+            paddingLeft: "35px",
+            paddingRight: "10px",
+            paddingTop: "10px",
+          }}
+        ></span>
+
+        <DataTable
+          columns={columns}
+          data={data}
+          pagination
+          highlightOnHover
+          striped
+          responsive
+          customStyles={{
+            headCells: {
+              style: {
                 backgroundColor: "#0b5ca0",
+                color: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#0b5ca0",
+                },
+              },
+              activeSortStyle: {
+                "&:hover": {
+                  color: "white",
+                },
               },
             },
-            activeSortStyle: {
-              "&:hover": {
-                color: "white",
+            rows: {
+              style: {
+                border: "0.4px solid #e0e0e0",
               },
             },
-          },
-          rows: {
-            style: {
-              border: "0.4px solid #e0e0e0",
+            headCells: {
+              style: {
+                backgroundColor: "#0b5ca0",
+                color: "#ffffff",
+                fontSize: "15px",
+                fontWeight: "bold",
+              },
             },
-          },
-          headCells: {
-            style: {
-              backgroundColor: "#0b5ca0",
-              color: "#ffffff",
-              fontSize: "15px",
-              fontWeight: "bold",
+            cells: {
+              style: {
+                border: "0.4px solid #e0e0e0",
+              },
             },
-          },
-          cells: {
-            style: {
-              border: "0.4px solid #e0e0e0",
+            pagination: {
+              style: {
+                fontSize: "12px",
+                padding: "10px",
+                justifyContent: "flex-end", // Align pagination to the left
+              },
             },
-          },
-          pagination: {
-            style: {
-              fontSize: "12px",
-              padding: "10px",
-              justifyContent: "flex-end", // Align pagination to the left
-            },
-          },
-        }}
-      />
-    </div>
+          }}
+        />
+      </div>
     </>
   );
 }
