@@ -18,7 +18,7 @@ from asset.serializers.CustomerSerializer import CustomerSerializer
 from django.contrib.auth.models import User
 import requests
 from decimal import Decimal
-
+from django.utils import timezone
 
 
 @api_view(['GET'])
@@ -216,21 +216,21 @@ def update_verified_completed(request):
 @permission_classes([IsAuthenticated])
 def create_e_invoice(request):
 
-    julian_date = base33()
-    current_year = str(datetime.datetime.now().year)[-2:]
-    today_count = get_count_requestid(RequestHeader)
+    # julian_date = base33()
+    # current_year = str(datetime.datetime.now().year)[-2:]
+    # today_count = get_count_requestid(RequestHeader)
 
 
-    requestid = f"REQUESTID{julian_date}{current_year}{today_count+1:04}"
-    document_number = f"DOCNO{julian_date}{today_count+1:04}"
+    # requestid = f"REQUESTID{julian_date}{current_year}{today_count+1:04}"
+    # document_number = f"DOCNO{julian_date}{today_count+1:04}"
 
-    request_header = {
-        'request_id': requestid,
-        'purpose': 'generate-irn',
-        'order_header_id': request.data.get('order_header_id')
-    }
+    # request_header = {
+    #     'request_id': requestid,
+    #     'purpose': 'generate-irn',
+    #     'order_header_id': request.data.get('order_header_id')
+    # }
     
-    RequestHeader.objects.create(**request_header)
+    # RequestHeader.objects.create(**request_header)
 
     try:
         with transaction.atomic():
@@ -275,198 +275,199 @@ def create_e_invoice(request):
 
                 
 
-                client_id = settings.CLIENT_ID
-                client_secret = settings.CLIENT_SECRET
+                # client_id = settings.CLIENT_ID
+                # client_secret = settings.CLIENT_SECRET
 
-                user_name = settings.USERNAME
-                password = settings.PASSWORD
-                gstin = settings.GSTIN
-                legal_name = settings.LEGAL_NAME
-                trade_name = settings.TRADE_NAME
-                address = settings.COMPANY_ADDRESS
-                location = settings.LOCATION
-                pin_code = settings.PIN_CODE
-                state_code = settings.STATE_CODE
-                phone_number = settings.PHONE_NUMBER
-                email_id = settings.EMAIL_ID
-
-                
-
-
-                # Generate access_token
-
-                authentication_url = settings.AUTHENTICATION_URL
-                authentication_headers = {
-                    'Content-Type': 'application/json',
-                    'gspappid': client_id,
-                    'gspappsecret': client_secret
-                }
-
-                authentication_response_object = requests.post(authentication_url, headers = authentication_headers)
-                authentication_response = authentication_response_object.json()
-
-
-
-                access_token = authentication_response['access_token']
-
-
-                # Generate IRN
-
-                generate_irn_url = settings.GENERATE_IRN_URL
-
-                generate_irn_headers = {
-                    'Content-Type': 'application/json',
-                    'Authorization': f"Bearer {str(access_token)}",
-                    'user_name': user_name,
-                    'password': password,
-                    'gstin': gstin,
-                    'requestid': requestid
-                }
-
-                # Inter state supplu will be available.
-                # Only B2B supply.
-                # GST is only 18% SGST - 9% and CGST - 9%.
-                # 
-
-
-                # Mandatory
-                
-                TranDtls = {
-                    "TaxSch": "GST",
-                    "SupTyp": "B2B",
-                    "RegRev": "Y",
-                    "EcmGstin": None,
-                    "IgstOnIntra": "N"
-                }
-
-                # Mandatory
-                DocDtls = {
-                    "Typ": "INV",
-                    "No": str(document_number),
-                    "Dt": today_date
-                }
-
-                # Mandatory
-                SellerDtls = {
-                    "Gstin": str(gstin),
-                    "LglNm": str(legal_name),
-                    "TrdNm": str(trade_name),
-                    "Addr1": str(address),
-                    "Addr2": str(address),
-                    "Loc": str(location),
-                    "Pin": '172001',
-                    "Stcd": f"{str(gstin)[0]}{str(gstin)[1]}",
-                    "Ph": str(phone_number),
-                    "Em": str(email_id)
-                }
-
-                # Mandatory
-                BuyerDtls = {
-                    "Gstin": customer_master.gstin_number,
-                    # Legal Name
-                    "LglNm": customer_master.LegalName,
-                    "TrdNm": customer_master.TradeName,
-                    # Point of sales (state code) company's state code. (seller)
-                    "Pos": "12",
-                    "Addr1": f"{customer_master.AddrFlno}, {customer_master.AddrBno}, {customer_master.AddrBnm}",
-                    "Addr2": f"{customer_master.AddrSt}, {customer_master.AddrPncd}",
-                    # Location (city)
-                    "Loc": customer_master.billing_address_city,
-                    "Pin": customer_master.AddrPncd,
-                    # State code -- first two digits of the gstin
-                    "Stcd": customer_master.StateCode,
-                }
-
-                # Mandatory
-                ItemList = [
-
-                    {
-
-                        "SlNo": "1", 
-                        "PrdDesc": part_master.part_description,
-                        "IsServc": "N",
-                        "HsnCd": part_master.hsn_code,
-                        "Qty": str(order_header.quantity),
-                        "Unit": part_master.uom,
-                        "UnitPrice": part_master.unit_price,
-                        "TotAmt": order_header.amount_for_quantity,
-                        "AssAmt": order_header.amount_for_quantity,
-                        "Discount": 0,
-                        "GstRt": 18,
-                        "IgstAmt": order_header.igst_amount,
-                        "CgstAmt": order_header.cgst_amount,
-                        "SgstAmt": order_header.sgst_amount,
-                        "TotItemVal": order_header.total_amount,
-                    }
-                ]
-
-                # Mandatory
-                ValDtls = {
-                    # Bill value - subtotal without gst
-                    "AssVal": order_header.amount_for_quantity,
-                    "CgstVal": order_header.cgst_amount,
-                    "SgstVal": order_header.sgst_amount,
-                    # IGST is required for inter state supply.
-                    "IgstVal": order_header.igst_amount,
-                    "Discount": 0,
-                    # Not needed
-                    "TotInvVal": order_header.total_amount
-                }
-                
-                generate_irn_request_body = {
-                    "Version": "1.1",
-                    "TranDtls": TranDtls,
-                    "DocDtls": DocDtls,
-                    "SellerDtls": SellerDtls,
-                    "BuyerDtls": BuyerDtls,
-                    "ItemList": ItemList,
-                    "ValDtls": ValDtls,
-                }
-
-
-                generate_irn_response_object = requests.post(generate_irn_url, json = generate_irn_request_body, headers = generate_irn_headers)
-
-                generate_irn_response = generate_irn_response_object.json()['result']
-
-
-
-                e_invoice_header = {
-                    'request_id': requestid,
-                    'AckNo': generate_irn_response['AckNo'],
-                    'AckDt': generate_irn_response['AckDt'],
-                    'Irn': generate_irn_response['Irn'],
-                    'SignedInvoice': generate_irn_response['SignedInvoice'],
-                    'SignedQRCode': generate_irn_response['SignedQRCode'],
-                    'Status': generate_irn_response['Status'],
-                    'EwbNo': generate_irn_response['EwbNo'],
-                    'EwbDt': generate_irn_response['EwbDt'],
-                    'EwbValidTill': generate_irn_response['EwbValidTill'],
-                    'Remarks': generate_irn_response['Remarks'],
-                    'order_header_id': order_header_id
-                }
-
-
-                header = EInvoiceHeader.objects.create(**e_invoice_header)
-
-                ItemList_dict = {item['SlNo']: item for item in ItemList}
+                # user_name = settings.USERNAME
+                # password = settings.PASSWORD
+                # gstin = settings.GSTIN
+                # legal_name = settings.LEGAL_NAME
+                # trade_name = settings.TRADE_NAME
+                # address = settings.COMPANY_ADDRESS
+                # location = settings.LOCATION
+                # pin_code = settings.PIN_CODE
+                # state_code = settings.STATE_CODE
+                # phone_number = settings.PHONE_NUMBER
+                # email_id = settings.EMAIL_ID
 
                 
 
-                e_invoice_transaction = {
-                    "e_invoice_header_id": header.id,
-                    "Version": "1.1",
-                    "TranDtls": TranDtls,
-                    "DocDtls": DocDtls,
-                    "SellerDtls": SellerDtls,
-                    "BuyerDtls": BuyerDtls,
-                    "ItemList": ItemList_dict,
-                    "ValDtls": ValDtls
-                }
 
-                EInvoiceTransaction.objects.create(**e_invoice_transaction)
+                # # Generate access_token
+
+                # authentication_url = settings.AUTHENTICATION_URL
+                # authentication_headers = {
+                #     'Content-Type': 'application/json',
+                #     'gspappid': client_id,
+                #     'gspappsecret': client_secret
+                # }
+
+                # authentication_response_object = requests.post(authentication_url, headers = authentication_headers)
+                # authentication_response = authentication_response_object.json()
+
+
+
+                # access_token = authentication_response['access_token']
+
+
+                # # Generate IRN
+
+                # generate_irn_url = settings.GENERATE_IRN_URL
+
+                # generate_irn_headers = {
+                #     'Content-Type': 'application/json',
+                #     'Authorization': f"Bearer {str(access_token)}",
+                #     'user_name': user_name,
+                #     'password': password,
+                #     'gstin': gstin,
+                #     'requestid': requestid
+                # }
+
+                # # Inter state supplu will be available.
+                # # Only B2B supply.
+                # # GST is only 18% SGST - 9% and CGST - 9%.
+                # # 
+
+
+                # # Mandatory
+                
+                # TranDtls = {
+                #     "TaxSch": "GST",
+                #     "SupTyp": "B2B",
+                #     "RegRev": "Y",
+                #     "EcmGstin": None,
+                #     "IgstOnIntra": "N"
+                # }
+
+                # # Mandatory
+                # DocDtls = {
+                #     "Typ": "INV",
+                #     "No": str(document_number),
+                #     "Dt": today_date
+                # }
+
+                # # Mandatory
+                # SellerDtls = {
+                #     "Gstin": str(gstin),
+                #     "LglNm": str(legal_name),
+                #     "TrdNm": str(trade_name),
+                #     "Addr1": str(address),
+                #     "Addr2": str(address),
+                #     "Loc": str(location),
+                #     "Pin": '172001',
+                #     "Stcd": f"{str(gstin)[0]}{str(gstin)[1]}",
+                #     "Ph": str(phone_number),
+                #     "Em": str(email_id)
+                # }
+
+                # # Mandatory
+                # BuyerDtls = {
+                #     "Gstin": customer_master.gstin_number,
+                #     # Legal Name
+                #     "LglNm": customer_master.LegalName,
+                #     "TrdNm": customer_master.TradeName,
+                #     # Point of sales (state code) company's state code. (seller)
+                #     "Pos": "12",
+                #     "Addr1": f"{customer_master.AddrFlno}, {customer_master.AddrBno}, {customer_master.AddrBnm}",
+                #     "Addr2": f"{customer_master.AddrSt}, {customer_master.AddrPncd}",
+                #     # Location (city)
+                #     "Loc": customer_master.billing_address_city,
+                #     "Pin": customer_master.AddrPncd,
+                #     # State code -- first two digits of the gstin
+                #     "Stcd": customer_master.StateCode,
+                # }
+
+                # # Mandatory
+                # ItemList = [
+
+                #     {
+
+                #         "SlNo": "1", 
+                #         "PrdDesc": part_master.part_description,
+                #         "IsServc": "N",
+                #         "HsnCd": part_master.hsn_code,
+                #         "Qty": str(order_header.quantity),
+                #         "Unit": part_master.uom,
+                #         "UnitPrice": part_master.unit_price,
+                #         "TotAmt": order_header.amount_for_quantity,
+                #         "AssAmt": order_header.amount_for_quantity,
+                #         "Discount": 0,
+                #         "GstRt": 18,
+                #         "IgstAmt": order_header.igst_amount,
+                #         "CgstAmt": order_header.cgst_amount,
+                #         "SgstAmt": order_header.sgst_amount,
+                #         "TotItemVal": order_header.total_amount,
+                #     }
+                # ]
+
+                # # Mandatory
+                # ValDtls = {
+                #     # Bill value - subtotal without gst
+                #     "AssVal": order_header.amount_for_quantity,
+                #     "CgstVal": order_header.cgst_amount,
+                #     "SgstVal": order_header.sgst_amount,
+                #     # IGST is required for inter state supply.
+                #     "IgstVal": order_header.igst_amount,
+                #     "Discount": 0,
+                #     # Not needed
+                #     "TotInvVal": order_header.total_amount
+                # }
+                
+                # generate_irn_request_body = {
+                #     "Version": "1.1",
+                #     "TranDtls": TranDtls,
+                #     "DocDtls": DocDtls,
+                #     "SellerDtls": SellerDtls,
+                #     "BuyerDtls": BuyerDtls,
+                #     "ItemList": ItemList,
+                #     "ValDtls": ValDtls,
+                # }
+
+
+                # generate_irn_response_object = requests.post(generate_irn_url, json = generate_irn_request_body, headers = generate_irn_headers)
+
+                # generate_irn_response = generate_irn_response_object.json()['result']
+
+
+
+                # e_invoice_header = {
+                #     'request_id': requestid,
+                #     'AckNo': generate_irn_response['AckNo'],
+                #     'AckDt': generate_irn_response['AckDt'],
+                #     'Irn': generate_irn_response['Irn'],
+                #     'SignedInvoice': generate_irn_response['SignedInvoice'],
+                #     'SignedQRCode': generate_irn_response['SignedQRCode'],
+                #     'Status': generate_irn_response['Status'],
+                #     'EwbNo': generate_irn_response['EwbNo'],
+                #     'EwbDt': generate_irn_response['EwbDt'],
+                #     'EwbValidTill': generate_irn_response['EwbValidTill'],
+                #     'Remarks': generate_irn_response['Remarks'],
+                #     'order_header_id': order_header_id
+                # }
+
+
+                # header = EInvoiceHeader.objects.create(**e_invoice_header)
+
+                # ItemList_dict = {item['SlNo']: item for item in ItemList}
+
+                
+
+                # e_invoice_transaction = {
+                #     "e_invoice_header_id": header.id,
+                #     "Version": "1.1",
+                #     "TranDtls": TranDtls,
+                #     "DocDtls": DocDtls,
+                #     "SellerDtls": SellerDtls,
+                #     "BuyerDtls": BuyerDtls,
+                #     "ItemList": ItemList_dict,
+                #     "ValDtls": ValDtls
+                # }
+
+                # EInvoiceTransaction.objects.create(**e_invoice_transaction)
 
                 order_header.invoice_generated_status = 'yes'
-                order_header.irn_invoice_number = header.Irn
+                order_header.invoice_at = timezone.now()
+                # order_header.irn_invoice_number = header.Irn
                 order_header.save()
 
                 return Response('success')
@@ -602,17 +603,17 @@ def cancel_e_invoice(request):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def cancel_order(request):
-    julian_date = base33()
-    current_year = str(datetime.datetime.now().year)[-2:]
-    today_count = get_count_requestid(RequestHeader)
+    # julian_date = base33()
+    # current_year = str(datetime.datetime.now().year)[-2:]
+    # today_count = get_count_requestid(RequestHeader)
 
-    requestid = f"REQUESTID{julian_date}{current_year}{today_count+1:04}"
-    request_header = {
-            'request_id': requestid,
-            'purpose': 'cancel-irn'
-    }
+    # requestid = f"REQUESTID{julian_date}{current_year}{today_count+1:04}"
+    # request_header = {
+    #         'request_id': requestid,
+    #         'purpose': 'cancel-irn'
+    # }
 
-    RequestHeader.objects.create(**request_header)
+    # RequestHeader.objects.create(**request_header)
 
 
 
@@ -635,81 +636,81 @@ def cancel_order(request):
                 part_master = PartMaster.objects.filter(id = order_header.part_master_id).first()
 
                 
-                irn = order_header.irn_invoice_number
+                # irn = order_header.irn_invoice_number
 
-                e_invoice_header = EInvoiceHeader.objects.filter(order_header_id = order_header.id).first()
+                # e_invoice_header = EInvoiceHeader.objects.filter(order_header_id = order_header.id).first()
 
 
-                if e_invoice_header:
+                # if e_invoice_header:
 
-                    client_id = settings.CLIENT_ID
-                    client_secret = settings.CLIENT_SECRET
+                #     client_id = settings.CLIENT_ID
+                #     client_secret = settings.CLIENT_SECRET
 
-                    user_name = settings.USERNAME
-                    password = settings.PASSWORD
-                    gstin = settings.GSTIN
+                #     user_name = settings.USERNAME
+                #     password = settings.PASSWORD
+                #     gstin = settings.GSTIN
 
-                    authentication_url = settings.AUTHENTICATION_URL
-                    authentication_headers = {
-                        'Content-Type': 'application/json',
-                        'gspappid': client_id,
-                        'gspappsecret': client_secret
-                    }
+                #     authentication_url = settings.AUTHENTICATION_URL
+                #     authentication_headers = {
+                #         'Content-Type': 'application/json',
+                #         'gspappid': client_id,
+                #         'gspappsecret': client_secret
+                #     }
 
-                    authentication_response_object = requests.post(authentication_url, headers = authentication_headers)
-                    authentication_response = authentication_response_object.json()
+                #     authentication_response_object = requests.post(authentication_url, headers = authentication_headers)
+                #     authentication_response = authentication_response_object.json()
 
                     
 
-                    access_token = authentication_response['access_token']
+                #     access_token = authentication_response['access_token']
 
 
-                    # Cancel E-Invoice
+                #     # Cancel E-Invoice
 
-                    cancel_irn_url = settings.CANCEL_IRN_URL
-                    cancel_irn_headers = {
-                        'Content-Type': 'application/json',
-                        'Authorization': f"Bearer {str(access_token)}",
-                        'user_name': user_name,
-                        'password': password,
-                        'gstin': gstin,
-                        'requestid': requestid
-                    }
+                #     cancel_irn_url = settings.CANCEL_IRN_URL
+                #     cancel_irn_headers = {
+                #         'Content-Type': 'application/json',
+                #         'Authorization': f"Bearer {str(access_token)}",
+                #         'user_name': user_name,
+                #         'password': password,
+                #         'gstin': gstin,
+                #         'requestid': requestid
+                #     }
 
-                    cancel_irn_request_body = {
-                        'irn': irn,
-                        'cnlrsn': '1',
-                        'cnlrem': 'Wrong Entry'
-                    }
-
-
-
-                    cancel_irn_response_object = requests.post(cancel_irn_url, json = cancel_irn_request_body, headers = cancel_irn_headers)
-                    cancel_irn_response = cancel_irn_response_object.json()['message']
+                #     cancel_irn_request_body = {
+                #         'irn': irn,
+                #         'cnlrsn': '1',
+                #         'cnlrem': 'Wrong Entry'
+                #     }
 
 
-                    if (cancel_irn_response['CancelDate'] - e_invoice_header.AckDt).days > 1:
-                        order_header.completed_status = 'cancelled'
-                        order_header.invoice_generated_status = 'marked as cancelled'
+
+                #     cancel_irn_response_object = requests.post(cancel_irn_url, json = cancel_irn_request_body, headers = cancel_irn_headers)
+                #     cancel_irn_response = cancel_irn_response_object.json()['message']
+
+
+                #     if (cancel_irn_response['CancelDate'] - e_invoice_header.AckDt).days > 1:
+                #         order_header.completed_status = 'cancelled'
+                #         order_header.invoice_generated_status = 'marked as cancelled'
                     
-                    else:
-                        order_header.completed_status = 'cancelled'
-                        order_header.invoice_generated_status = 'cancelled'
+                #     else:
+                order_header.completed_status = 'cancelled'
+                order_header.invoice_generated_status = 'cancelled'
 
 
-                    print(cancel_irn_response)
+                # print(cancel_irn_response)
 
 
-                    e_invoice_header.einvoice_status = 'cancelled'
-                    e_invoice_transaction = EInvoiceTransaction.objects.filter(e_invoice_header_id = e_invoice_header.id).first()
-                    e_invoice_transaction.status = 'cancelled'
+                # e_invoice_header.einvoice_status = 'cancelled'
+                # e_invoice_transaction = EInvoiceTransaction.objects.filter(e_invoice_header_id = e_invoice_header.id).first()
+                # e_invoice_transaction.status = 'cancelled'
 
-                    e_invoice_header.save()
-                    e_invoice_transaction.save()
+                # e_invoice_header.save()
+                # e_invoice_transaction.save()
                 
-                else:
-                    order_header.completed_status = 'cancelled'
-                    order_header.invoice_generated_status = 'cancelled'
+                # else:
+                #     order_header.completed_status = 'cancelled'
+                #     order_header.invoice_generated_status = 'cancelled'
 
                 
                 if order_header.dispatched_status == 'yes':

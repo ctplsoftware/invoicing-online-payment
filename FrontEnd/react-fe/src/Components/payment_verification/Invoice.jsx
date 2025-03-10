@@ -64,7 +64,7 @@ const TaxInvoice = () => {
       <div className="invoice-wrapper">
         <h2 className="invoice-title">TAX INVOICE</h2>
 
-        <div className="invoice-section" style={{textAlign:'justify' }}>
+        {/* <div className="invoice-section" style={{textAlign:'justify' }}>
           <p>IRN: {data?.irn_no}</p>
           <p >Ack No.: {data?.ack_no}</p>
           <p >Ack Date: {data?.ack_date}</p>
@@ -76,7 +76,7 @@ const TaxInvoice = () => {
             style={{ height: "140px", marginTop: "-16%", marginLeft: "80%" }} 
           />
           </div>
-        </div>
+        </div> */}
 
         <div className="invoice-header" style={{marginTop:'-2%',fontSize:'18px'}}>
           <div className="seller-buyer-section">

@@ -71,7 +71,7 @@ const LandingPage = () => {
         '/landingpage/generate-einvoice/': 'Generate E-Invoice',
         '/landingpage/order-reports': 'Order Reports',
         '/landingpage/customer-credit-reports': 'Customer Credit Reports',
-        '/landingpage/einvoice-reports': 'E-Invoice Reports',
+        // '/landingpage/einvoice-reports': 'E-Invoice Reports',
         '/landingpage/cancel-orders': 'Cancel Order',
         '/landingpage/cancel-order/': 'Cancel Order',
         '/landingpage/order-details/': 'Detailed Order Report',
@@ -138,7 +138,7 @@ const LandingPage = () => {
                     <Route path="/customer-credit-reports" element={<CustomerCreditReport />} />
                     <Route path="/customer-credit-detailed-reports/:id" element={<CustomerCreditDetailedReport />} />
 
-                    <Route path="/einvoice-reports" element={<EInvoiceReport />} />
+                    {/* <Route path="/einvoice-reports" element={<EInvoiceReport />} /> */}
                     <Route path="/cancel-orders" element={<OrderList />} />
                     <Route path="/cancel-order/:id" element={<CancelOrder />} />
                     <Route path="/order-details/:id" element={<OrderDetailedReport />} />

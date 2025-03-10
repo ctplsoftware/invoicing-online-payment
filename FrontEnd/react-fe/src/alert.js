@@ -8,7 +8,7 @@ export async function generateEInvoiceAlert(form_data, navigate, payment_type) {
 
   try {
     const { value: formValues } = await Swal.fire({
-      title: "Are you sure you want to generate the e-invoice?",
+      title: "Are you sure you want to generate invoice?",
       html:
         '<input id="swal-username" class="swal2-input" placeholder="Username">' +
         '<input id="swal-password" type="password" class="swal2-input" placeholder="Password">',

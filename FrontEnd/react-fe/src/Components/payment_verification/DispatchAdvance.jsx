@@ -181,7 +181,7 @@ function DispatchAdvance() {
       
       if (response.verified_status == "yes") {
         Swal.fire({
-          title: "Verified successfully! Do you want to generate an E-Invoice?",
+          title: "Verified successfully! Do you want to generate an invoice?",
           showCancelButton: true,
           confirmButtonText: "Yes",
           cancelButtonText: "No",

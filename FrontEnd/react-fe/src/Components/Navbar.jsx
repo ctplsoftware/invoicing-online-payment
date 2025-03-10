@@ -161,7 +161,7 @@ const Navbar1 = ({ title }) => {
                       Inward Process{" "}
                     </NavDropdown.Item>
                     <NavDropdown.Item href="/landingpage/einvoice-list">
-                      E-Invoice List Process{" "}
+                      Invoice List Process{" "}
                     </NavDropdown.Item>
                     <NavDropdown.Item href="/landingpage/cancel-orders">
                       Cancel Order Process{" "}
@@ -185,9 +185,9 @@ const Navbar1 = ({ title }) => {
                   Customer Credit Report{" "}
                   </NavDropdown.Item>
 
-                  <NavDropdown.Item href="/landingpage/einvoice-reports">
+                  {/* <NavDropdown.Item href="/landingpage/einvoice-reports">
                   E-Invoice Report{" "}
-                  </NavDropdown.Item>
+                  </NavDropdown.Item> */}
 
 
                   </>

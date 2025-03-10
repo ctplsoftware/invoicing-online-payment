@@ -65,7 +65,7 @@ def get_einvoice_details(request):
         with transaction.atomic():
             order_header = OrderHeader.objects.filter(id = request.query_params.get('order_header_id')).first()
             
-            if order_header.irn_invoice_number == None or order_header.irn_invoice_number == '' or order_header.completed_status == 'cancelled':
+            if order_header.completed_status == 'cancelled':
                 response_data = {
                     'data': None,
                     'message': 'E-Invoice not yet generated/cancelled for this order.',
@@ -74,20 +74,20 @@ def get_einvoice_details(request):
                 return Response(response_data)
 
             else:
-                e_invoice_header = EInvoiceHeader.objects.filter(order_header_id = order_header.id).first()
+                # e_invoice_header = EInvoiceHeader.objects.filter(order_header_id = order_header.id).first()
                 customer_master = CustomerMaster.objects.filter(id = order_header.customer_master_id).first()
 
 
-                formatted_date = e_invoice_header.AckDt.strftime("%d-%b-%Y")
+                formatted_date = order_header.invoice_at.strftime("%d-%b-%Y")
                 words = num2words(order_header.total_amount, lang='en')
 
                 data = {
-                    'ack_no': e_invoice_header.AckNo,
-                    'irn_no': e_invoice_header.Irn,
-                    'ack_date': formatted_date,
+                    # 'ack_no': e_invoice_header.AckNo,
+                    # 'irn_no': e_invoice_header.Irn,
+                    # 'ack_date': formatted_date,
 
                     'vendor_company_name': settings.COMPANY_NAME,
-                    'vendor_company_address': settings.COMPANY_ADDRESS,
+                    'vendor_company_address': settings.COMPANY_ADDRESS, 
                     'vendor_company_phone_number': settings.PHONE_NUMBER,
                     'vendor_company_pan': settings.PAN,
                     'vendor_company_gstin': settings.GSTIN,
@@ -133,7 +133,7 @@ def get_einvoice_details(request):
                     'amount_in_words': words.title(),
                     'total_tax_amount': order_header.total_tax_amount,
 
-                    'qr_code_data': e_invoice_header.SignedQRCode,
+                    # 'qr_code_data': e_invoice_header.SignedQRCode,
 
                 }
 
