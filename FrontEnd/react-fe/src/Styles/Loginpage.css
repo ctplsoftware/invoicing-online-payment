@@ -29,6 +29,7 @@ body {
 
 .loginpage {
     max-width: 390px;
+    margin-top:16%;
     background: #ffffff;
     padding: 30px;
     border-radius: 15px;

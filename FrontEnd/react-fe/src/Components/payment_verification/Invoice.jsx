@@ -63,6 +63,7 @@ const TaxInvoice = () => {
     <div className="invoice-container" style={{marginTop:'-2%'}}>
       <div className="invoice-wrapper">
         <h2 className="invoice-title">TAX INVOICE</h2>
+        <br />
 
         {/* <div className="invoice-section" style={{textAlign:'justify' }}>
           <p>IRN: {data?.irn_no}</p>
@@ -78,14 +79,14 @@ const TaxInvoice = () => {
           </div>
         </div> */}
 
-        <div className="invoice-header" style={{marginTop:'-2%',fontSize:'18px'}}>
+        <div className="invoice-header" style={{marginTop:'-2.2%',marginBottom:'-2.3%',padding:'0px',fontSize:'18px'}}>
           <div className="seller-buyer-section">
             <div className="seller-details">
             <div style={{marginBottom:'2%' }}> </div>
-              <h3 style={{marginTop:'-3%'}}>{data?.vendor_company_name}</h3>
-              <p style={{marginLeft:'22%',marginTop:'-1%'}}>{data?.vendor_company_address} . PAN : {data?.vendor_company_pan}. UDYAM : UDYAM-TN-02-0094436 (Micro)</p>
-              <p style={{marginLeft:'22%',marginTop:'-2%'}}>GSTIN/UIN: {data?.vendor_company_gstin}</p>
-              <p style={{marginLeft:'22%',marginTop:'-2%',marginBottom:'-1%'}}>Email: {data?.vendor_company_email}</p>
+              <h3 style={{marginTop:'-3%', textAlign:'justify' }}>{data?.vendor_company_name}</h3>
+              <p style={{marginTop:'-1%',textAlign:'justify'}}>{data?.vendor_company_address} . PAN : {data?.vendor_company_pan}. UDYAM : UDYAM-TN-02-0094436 (Micro)</p>
+              <p style={{marginTop:'-2%',textAlign:'justify'}}>GSTIN/UIN: {data?.vendor_company_gstin}</p>
+              <p style={{marginTop:'-2%',marginBottom:'-1%',textAlign:'justify'}}>Email: {data?.vendor_company_email}</p>
             </div>
             <div className="buyer-details">
               <h5> <span style={{fontSize:'14px'}}>Buyer (Bill to):</span><br /><strong> {data?.buyer_company_name} </strong></h5>
@@ -183,7 +184,7 @@ const TaxInvoice = () => {
         </div>
 
         {/* Additional Summary Table */}
-        <div className="invoice-content">
+        <div className="invoice-content" style={{marginTop:'-2.4%'}}>
           <table className="invoice-table">
             <thead style={{textAlign:'center'}}>
               <tr>
@@ -224,10 +225,10 @@ const TaxInvoice = () => {
             </tbody>
           </table>
         </div>
-  <p style={{textAlign:'justify', marginTop:'-1.5%', marginBottom:'-1.5%'}}><strong> Amount chargable(in words):</strong> <span style={{fontSize:'16px'}}><strong>INR {data?.amount_in_words} Only</strong></span></p>
+  <p style={{textAlign:'justify', marginTop:'-2.3%', padding:'10px',marginBottom:'-1.8%',border:'1px solid #000'}}><strong> Amount chargable(in words):</strong> <span style={{fontSize:'16px'}}><strong>INR {data?.amount_in_words} Only</strong></span></p>
 
 
-        <div className="invoice-footer" style={{ display: 'flex', justifyContent: 'space-between',border:'1px solid #000' }}>
+        <div className="invoice-footer" style={{ display: 'flex',marginTop:'15px', justifyContent: 'space-between',border:'1px solid #000' }}>
 {/* Left Section */}
 <div className="footer-left" style={{ width: '58%',padding:'10px' }}>
   <p style={{ marginTop:'-1.5%',marginBottom:'-0.5%'}}><strong>Tax Amount (in words):</strong> <span style={{fontSize:'16px'}}><strong>INR {data?.amount_in_words} Only</strong></span></p>

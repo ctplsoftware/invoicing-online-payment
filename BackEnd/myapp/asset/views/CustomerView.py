@@ -174,7 +174,7 @@ def update_customer(request, id):
             'name': request.data.get('name', '').strip(),
             'gstin_number': request.data.get('gstin_number', '').strip(),
 
-            'credit_limit': request.data.get('credit_limit', ''),
+            'credit_limit': request.data.get('credit_limit', '') if request.data.get('credit_limit', '') else 0,
             'credit_days': request.data.get('credit_days', '').strip(),
 
             'contact_person': request.data.get('contact_person', '').strip(),

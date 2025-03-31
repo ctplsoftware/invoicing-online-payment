@@ -127,7 +127,7 @@ thead {
   padding: 2px;
   border: 0.5px solid rgb(66, 66, 66);
   text-align: left;
-  
+  font-size: smaller !important;  
 
 }
 
@@ -156,9 +156,10 @@ thead {
   }
   
   .invoice-cell {
-    padding: 2px;
+    padding: 4px;
     border: 0.5px solid rgb(66, 66, 66);
     text-align: left;
+    font-size: smaller !important;
     
   
   }

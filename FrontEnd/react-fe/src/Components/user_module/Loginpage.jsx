@@ -5,6 +5,7 @@ import apiClient from "../../AxiosInterceptor/interceptor.js"; // Import your in
 import { useNavigate } from 'react-router-dom';
 import { fetchAndStorePermissions } from '../Permissions/PermissionsProvider';
 import { BaseURL } from "../../utils";
+import applogo from '../../Assets/loginlogomining.webp';
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -73,6 +74,7 @@ const LoginPage = () => {
             alert("Invalid Username or Password!!!");
         }
     };
+    
 
     const forgotPassword = (e) => {
         e.preventDefault();
@@ -88,10 +90,13 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="login-page-container">
+        <div className="login-page-container"  >
             <div className="left-side">
+            <img src={applogo} alt="application"/>
+
             </div>
             <div className="right-side">
+                
                 <div className="loginpage">
                     <div className="title-text">
                     </div>
@@ -106,11 +111,11 @@ const LoginPage = () => {
                                     <div className="field">
                                         <input type="password" placeholder="Enter Password" required value={l_password} onChange={(e) => setL_password(e.target.value)} />
                                     </div>
-                                    <div className="pass-link" style={{ textAlign: 'center' }}>
-                                        <a href="#" onClick={() => setIsLogin(false)}>Forgot password?</a>
+                                    <div className="pass-link" style={{ textAlign: 'center' ,}}>
+                                        <a href="#" onClick={() => setIsLogin(false)} >Forgot password?</a>
                                     </div>
                                     <div className="field btn">
-                                        <button className='btn-save'>Login</button>
+                                        <button className='btn-save' style={{backgroundColor:'#3e4950'}}>Login</button>
                                     </div>
                                 </form>
                             </div>
@@ -139,5 +144,7 @@ const LoginPage = () => {
         </div>
     );
 };
+
+
 
 export default LoginPage;

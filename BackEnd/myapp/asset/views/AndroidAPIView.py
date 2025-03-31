@@ -168,7 +168,7 @@ def create_order(request):
                 amount_inr = round(part_master.unit_price * quantity, 2)
                 amount_inr_tax = round(amount_inr + float(amount_inr * 0.18), 2)
 
-                if delivery_address_state_code == 33:
+                if f"{str(customer_master.gstin_number)[0]}{str(customer_master.gstin_number)[1]}" == "33":
                     igst_percentage = 0.0
                     sgst_percentage = 9.0
                     cgst_percentage = 9.0
@@ -561,7 +561,7 @@ def get_einvoice_details(request):
         with transaction.atomic():
             order_header = OrderHeader.objects.filter(order_number = request.query_params.get('order_no')).first()
             
-            if order_header.irn_invoice_number == None or order_header.irn_invoice_number == '' or order_header.completed_status == 'cancelled':
+            if order_header.completed_status == 'cancelled':
                 response_data = {
                     'data': None,
                     'message': 'E-Invoice not yet generated/cancelled for this order.',
@@ -570,17 +570,17 @@ def get_einvoice_details(request):
                 return Response(response_data)
 
             else:
-                e_invoice_header = EInvoiceHeader.objects.filter(order_header_id = order_header.id).first()
+                # e_invoice_header = EInvoiceHeader.objects.filter(order_header_id = order_header.id).first()
                 customer_master = CustomerMaster.objects.filter(id = order_header.customer_master_id).first()
 
 
-                formatted_date = e_invoice_header.AckDt.strftime("%d-%b-%Y")
+                formatted_date = order_header.ordered_at.strftime("%d-%b-%Y")
                 words = num2words(order_header.total_amount, lang='en')
 
 
                 data = {
-                    'ack_no': e_invoice_header.AckNo,
-                    'irn_no': e_invoice_header.Irn,
+                    'ack_no': 'abc',
+                    'irn_no': 'abc',
                     'ack_date': formatted_date,
 
                     'vendor_company_name': settings.COMPANY_NAME,
@@ -630,7 +630,7 @@ def get_einvoice_details(request):
                     'amount_in_words': words.title(),
                     'total_tax_amount': order_header.total_tax_amount,
 
-                    'qr_code_data': e_invoice_header.SignedQRCode,
+                    'qr_code_data': 'abc'
 
                 }
 
